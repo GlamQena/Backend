@@ -1,225 +1,70 @@
-Glam2ena ✨
-Qena's Premier Beauty & Cosmetics Platform
+# Getting Started with Create React App
 
-📋 Overview
-Glam2ena is a comprehensive e-commerce platform connecting beauty product shop owners with customers across Qena Governorate. We provide an integrated ecosystem featuring secure authentication, role-based dashboards, and a trusted network of vetted delivery workers for guaranteed fast, in-time delivery.
+This project was bootstrapped with [Create React App](https://github.com/facebook/create-react-app).
 
-✨ Key Features
-For Clients 👤
-Personalized Beauty Profile: Track skin type, concerns, and preferences
+## Available Scripts
 
-Smart Product Discovery: Browse categorized products with real reviews
+In the project directory, you can run:
 
-Secure Shopping Cart: Save items, track spending history
+### `npm start`
 
-Multi-payment Options: Card, cash, or wallet payments
+Runs the app in the development mode.\
+Open [http://localhost:3000](http://localhost:3000) to view it in your browser.
 
-Order Tracking: Real-time delivery status
+The page will reload when you make changes.\
+You may also see any lint errors in the console.
 
-For Shop Owners 🏪
-Store Management Dashboard: Add/edit products, track inventory
+### `npm test`
 
-Sales Analytics: Real-time revenue, commissions, and payouts
+Launches the test runner in the interactive watch mode.\
+See the section about [running tests](https://facebook.github.io/create-react-app/docs/running-tests) for more information.
 
-Commission Tracking: Clear breakdown of platform fees (configurable rates)
+### `npm run build`
 
-Customer Reviews: Moderate and respond to feedback
+Builds the app for production to the `build` folder.\
+It correctly bundles React in production mode and optimizes the build for the best performance.
 
-For Delivery Workers 🚚
-Delivery Dashboard: View assigned orders, optimize routes
+The build is minified and the filenames include the hashes.\
+Your app is ready to be deployed!
 
-Earnings Tracker: Commission-based payments (85% of delivery fee)
+See the section about [deployment](https://facebook.github.io/create-react-app/docs/deployment) for more information.
 
-Status Updates: Mark orders as picked up/delivered
+### `npm run eject`
 
-Customer Communication: In-app contact when needed
+**Note: this is a one-way operation. Once you `eject`, you can't go back!**
 
-For Administrators 👨‍💼
-Full Platform Oversight: Manage users, stores, and delivery workers
+If you aren't satisfied with the build tool and configuration choices, you can `eject` at any time. This command will remove the single build dependency from your project.
 
-Analytics Dashboard: Revenue, user growth, platform performance
+Instead, it will copy all the configuration files and the transitive dependencies (webpack, Babel, ESLint, etc) right into your project so you have full control over them. All of the commands except `eject` will still work, but they will point to the copied scripts so you can tweak them. At this point you're on your own.
 
-Permission System: Granular admin roles with specific permissions
+You don't have to ever use `eject`. The curated feature set is suitable for small and middle deployments, and you shouldn't feel obligated to use this feature. However we understand that this tool wouldn't be useful if you couldn't customize it when you are ready for it.
 
-Content Moderation: Approve reviews, monitor platform activity
+## Learn More
 
-🛡️ Security Architecture
-Based on our discussions, Glam2ena implements defense-in-depth security:
+You can learn more in the [Create React App documentation](https://facebook.github.io/create-react-app/docs/getting-started).
 
-Authentication & Session Management
-JWT-based authentication with dual-token strategy
+To learn React, check out the [React documentation](https://reactjs.org/).
 
-access_token: 15-minute lifespan (limits damage if stolen)
+### Code Splitting
 
-refresh_token: 7-day lifespan (rotated on each use)
+This section has moved here: [https://facebook.github.io/create-react-app/docs/code-splitting](https://facebook.github.io/create-react-app/docs/code-splitting)
 
-HTTP-only cookies for refresh tokens (prevents XSS theft)
+### Analyzing the Bundle Size
 
-2FA support with SMS/email verification
+This section has moved here: [https://facebook.github.io/create-react-app/docs/analyzing-the-bundle-size](https://facebook.github.io/create-react-app/docs/analyzing-the-bundle-size)
 
-Session tracking with device fingerprinting
+### Making a Progressive Web App
 
-OTP & Verification Flow
-text
-┌─────────────┐    ┌──────────────┐    ┌─────────────┐
-│  /otp/email │───▶│  /otp/verify │───▶│  Verified  │
-│   /send     │    │   /email     │    │   Status   │
-└─────────────┘    └──────────────┘    └─────────────┘
-Data Protection
-MongoDB sanitization (prevents NoSQL injection)
+This section has moved here: [https://facebook.github.io/create-react-app/docs/making-a-progressive-web-app](https://facebook.github.io/create-react-app/docs/making-a-progressive-web-app)
 
-Input validation using Zod schemas
+### Advanced Configuration
 
-Password hashing with bcrypt (salt rounds: 12)
+This section has moved here: [https://facebook.github.io/create-react-app/docs/advanced-configuration](https://facebook.github.io/create-react-app/docs/advanced-configuration)
 
-Rate limiting per endpoint:
+### Deployment
 
-Login: 5 attempts/15min
+This section has moved here: [https://facebook.github.io/create-react-app/docs/deployment](https://facebook.github.io/create-react-app/docs/deployment)
 
-OTP requests: 3/hour
+### `npm run build` fails to minify
 
-General API: 100/15min
-
-Security Headers
-Helmet.js for secure HTTP headers
-
-CORS properly configured for production domains
-
-XSS protection enabled
-
-HSTS for production environment
-
-🏗️ Technology Stack (MERN)
-Layer	Technology	Purpose
-Database	MongoDB with Mongoose	Data persistence with schema validation
-Backend	Express.js + Node.js	RESTful API server
-Frontend	React.js (planned)	Dynamic user interfaces
-Mobile	React Native (planned)	Cross-platform mobile apps
-Key Packages
-json
-{
-  "dependencies": {
-    "express": "^4.18.0",
-    "mongoose": "^7.5.0",
-    "jsonwebtoken": "^9.0.0",
-    "bcrypt": "^5.1.0",
-    "zod": "^3.22.0",
-    "express-rate-limit": "^6.10.0",
-    "helmet": "^7.0.0",
-    "express-mongo-sanitize": "^2.2.0",
-    "validator": "^13.11.0",
-    "nodemailer": "^6.9.0",
-    "twilio": "^4.19.0"
-  }
-}
-
-
-We follow strict secret management:
-
-gitignore
-# .gitignore
-.env
-.env.local
-.env.production
-*.env
-Share Securely with Team
-bash
-# Using lazy-vault for encrypted sharing
-lazy-vault encrypt    # Creates .env.enc (commit this!)
-lazy-vault decrypt    # Teammates decrypt with shared password
-
-Installation
-Clone the repository
-
-bash
-git clone https://github.com/your-org/glam2ena.git
-cd glam2ena
-Install dependencies
-
-bash
-npm install
-Set up environment
-
-bash
-cp .env.example .env
-# Edit .env with your values (never commit this!)
-Run development server
-
-bash
-npm run dev
-📁 Project Structure
-text
-glam2ena/
-├── server/
-│   ├── models/          # Mongoose models with discriminators
-│   │   ├── user.js      # Base user model
-│   │   ├── client.js    # Client discriminator
-│   │   ├── shop-owner.js
-│   │   └── ...
-│   ├── controllers/     # Business logic
-│   ├── routes/          # API endpoints (RESTful)
-│   │   ├── auth.js      # /auth/*, /otp/*, /password/*
-│   │   └── ...
-│   ├── middleware/      # Auth, validation, rate limiting
-│   ├── utils/           # Helpers, email, SMS
-│   └── config/          # Database, environment
-├── client/              # React frontend (planned)
-
-🧪 API Endpoint Conventions
-Following RESTful best practices:
-
-javascript
-// Auth routes
-POST   /api/v1/auth/register
-POST   /api/v1/auth/login
-DELETE /api/v1/auth/logout
-
-// OTP routes
-POST   /api/v1/otp/email/send
-POST   /api/v1/otp/email/verify
-POST   /api/v1/otp/sms/send
-POST   /api/v1/otp/sms/verify
-
-// Password management
-POST   /api/v1/password/reset
-POST   /api/v1/password/change
-
-
-🛡️ Security Checklist
-Authentication: JWT with refresh token rotation
-
-Validation: Zod schemas for all inputs
-
-Rate Limiting: Per-endpoint limits
-
-Sanitization: MongoDB query sanitization
-
-Headers: Helmet.js for security headers
-
-Password: Bcrypt hashing with salt
-
-Secrets: Never committed, shared via encrypted vault (lazy-vault)
-
-2FA: Optional email/SMS verification
-
-
-🧪 Testing
-bash
-# Unit tests
-npm test
-
-# Integration tests
-npm test:integration
-
-# Security audit
-npm audit
-
-
-* securing envirinment privacy
-
-use lazy-vault for securly share .env file to github in encrypted format and password-based access.
-
-- npx lazy-vault init (create lazy.config.json file)
-- npx lazy-vault lock (Encrypts local .env file and saves it to env.enc)
-- npx lazy-vault sync (Decrypts .env.enc and merges it with local .env)
-  
+This section has moved here: [https://facebook.github.io/create-react-app/docs/troubleshooting#npm-run-build-fails-to-minify](https://facebook.github.io/create-react-app/docs/troubleshooting#npm-run-build-fails-to-minify)

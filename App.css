@@ -1,0 +1,8 @@
+ body{
+  background-color: dimgray;
+ }
+ .div1{
+  background-color: firebrick;
+  display: flex;
+  justify-content: space-evenly;
+ }
