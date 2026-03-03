@@ -1,14 +1,16 @@
-import {registerController} from '../controllers/auth/register.js'
-import {loginController} from '../controllers/auth/login.js'
-import {sendEmailOtpController} from '../controllers/auth/sendEmailOtp.js'
-import {sendSmsOtpController} from '../controllers/auth/sendSmsOtp.js'
-import {verifyEmailOtpController} from '../controllers/auth/verifyEmailOtp.js'
-import {verifySmsOtpController} from '../controllers/auth/verifySmsOtp.js'
-import {resetPasswordController} from '../controllers/auth/resetPassword.js'
-import {logoutController} from '../controllers/auth/logout.js'
+const registerController= require('../controllers/auth/register.js');
+const loginController= require('../controllers/auth/login.js');
+const sendEmailOtpController= require('../controllers/auth/sendEmailOtp.js');
+const sendSmsOtpController= require('../controllers/auth/sendSmsOtp.js');
+const verifyEmailOtpController= require('../controllers/auth/verifyEmailOtp.js');
+const verifySmsOtpController= require('../controllers/auth/verifySmsOtp.js');
+const resetPasswordController= require('../controllers/auth/resetPassword.js');
+const logoutController= require('../controllers/auth/logout.js');
+
+const express= require("express");
 
 
-import {router} from 'express';
+const router= express.Router();
 
 router.post("/register", registerController);
 router.post("/login", loginController);

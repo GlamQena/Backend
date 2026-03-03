@@ -1,4 +1,4 @@
-import mongoose from 'mongoose';
+const mongoose= require('mongoose');
 const validator= require("validator");
 
 const options={
@@ -84,7 +84,6 @@ const UserSchema= new mongoose.Schema({
     gender:{
         type: String,
         enum:["male", "female"],
-        required: true,
     },
 
     twoFactorEnabled:{
@@ -145,4 +144,6 @@ UserSchema.virtual("age").get(function (){
     return age;
 });//this function call fire each time the property accessed from the model
 
-export const userModel= mongoose.model('user', UserSchema);
+const userModel= mongoose.model('user', UserSchema);
+
+module.exports= userModel;

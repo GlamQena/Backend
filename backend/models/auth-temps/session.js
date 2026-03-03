@@ -1,6 +1,6 @@
 import mongoose from 'mongoose';
 
-const TokenSchema= new mongoose.Schema({
+const SessionSchema= new mongoose.Schema({
     userId:{
         type: mongoose.Schema.Types.ObjectId,
         ref: "user",
@@ -60,4 +60,5 @@ const TokenSchema= new mongoose.Schema({
 
 }, {timestamps: true, versionKey: false});
 
-export const tokenModel= mongoose.model("token", TokenSchema);
+const sessionModel= mongoose.model("session", SessionSchema);
+module.exports= sessionModel;

@@ -1,4 +1,4 @@
-import userModel from '../../models/users/user';
+const userModel= require('../../models/users/user');
 
 const loginController= async (req, res)=>{
 

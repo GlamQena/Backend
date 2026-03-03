@@ -100,4 +100,4 @@ const ClientSchema= new mongoose.Schema({
 })
 
 const clientModel= userModel.discriminator("client", ClientSchema);
-export {userModel, clientModel};
+module.exports= {userModel, clientModel};
