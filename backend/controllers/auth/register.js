@@ -1,7 +1,7 @@
-import userModel from '../../models/users/user';
+const userModel= require('../../models/users/user');
 
-const loginController= async (req, res)=>{
+const registerController= async (req, res)=>{
 
 }
 
-module.exports= loginController;
+module.exports= registerController;
