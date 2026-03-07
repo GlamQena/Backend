@@ -10,7 +10,7 @@ const TokenSchema= new mongoose.Schema({
 
     for:{
         type:String,
-        enum: ["resetPassword", "verifyEmail", "refreshToken"],
+        enum: ["resetPassword", "refreshToken", "accessToken"],
         required: true,
         default: null,
         index: true,
