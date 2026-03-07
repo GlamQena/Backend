@@ -8,7 +8,7 @@ const TokenSchema= new mongoose.Schema({
         index: true,
     },
 
-    for:{
+    type:{
         type:String,
         enum: ["resetPassword", "refreshToken", "accessToken"],
         required: true,
