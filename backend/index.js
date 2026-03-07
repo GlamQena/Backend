@@ -5,13 +5,19 @@ const session = require("express-session");
 const cookie_parser = require("cookie-parser");
 const connect_mongodb = require("./config/connectMongoDB.js");
 const {connect_redis} = require("./config/connectRedis");
+const applySecurity = require("./middleware/applySecurity.js");
+const applyLogger = require("./middleware/logger.js");
 const mongoose = require("mongoose");
 const authRouter = require("./router/auth.js");
+const paymentCheckout= require("./controllers/order/paymentCheckout.js");
+const checkPaymentCompletion= require("./controllers/order/checkPaymentCompletion.js");
 
 require("dotenv").config({ path: path.join(__dirname, "./env") });
 
 const app = express();
 app.use(express.json());
+applySecurity(app);
+applyLogger(app);
 
 //enable cookies
 const allowedOrigins = [
@@ -51,6 +57,8 @@ app.use(
 
 //routes
 app.use("/auth", authRouter);
+app.get("/order/payment/checkout", paymentCheckout);
+app.post("/order/payment/check-completion", checkPaymentCompletion);
 
 //mongodb connection
 connect_mongodb();
