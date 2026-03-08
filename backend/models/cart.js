@@ -6,6 +6,7 @@ const CartSchema = new mongoose.Schema(
       type: mongoose.Schema.Types.ObjectId,
       ref: "client",
     },
+
     products: {
       type: [
         {
@@ -22,16 +23,16 @@ const CartSchema = new mongoose.Schema(
         },
       ],
     },
+
     total_price: {
       type: Number,
     },
   },
   {
     timestamps: true,
+    versionKey: false,
   },
 );
 
-
-const cartModel = mongoose.model("cart",CartSchema)
-
-export default cartModel
+const cartModel = mongoose.model("cart",CartSchema);
+module.exports= cartModel;

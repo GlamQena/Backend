@@ -6,6 +6,7 @@ const OrderSchema = new mongoose.Schema(
       type: mongoose.Schema.Types.ObjectId,
       ref: "user",
     },
+
     Products: {
       type: [
         {
@@ -22,12 +23,15 @@ const OrderSchema = new mongoose.Schema(
         },
       ],
     },
-    total_amount: {
+
+    total_quantity: {
       type: Number,
     },
+
     total_price: {
       type: Number,
     },
+
     status: {
       type: String,
       enum: [
@@ -38,16 +42,15 @@ const OrderSchema = new mongoose.Schema(
         "delivered",
       ],
     },
+
     cancel_reason: {
       type: String,
     },
+
     hasReviewed: {
       type: Boolean,
-    },
-    review_IDs: {
-      type: [mongoose.Schema.Types.ObjectId],
-      ref: "review",
-    },
+    }, //to request the customer to leave a review on it
+
     payment_id: {
       type: mongoose.Schema.Types.ObjectId,
       ref: "payment",
@@ -55,9 +58,10 @@ const OrderSchema = new mongoose.Schema(
   },
   {
     timestamps: true,
+    versionKey: false,
   },
 );
 
 const orderModel = mongoose.model("order",OrderSchema)
 
-export default orderModel
+module.exports= orderModel;

@@ -1,5 +1,5 @@
 const axios= require("axios");
-const sendMail = require("../../utils/mailSender");
+const sendMail = require("../../../utils/mailSender");
 const path= require("path");
 require("dotenv").config({path: path.join(__dirname, "../.env")});
 
@@ -10,6 +10,7 @@ const paymob_iframe_id= process.env.PAYMOB_IFRAME_ID;
 
 const paymentCheckout= async(req, res)=>{
     try{
+        //TODO-> get the billing data from req.body and store in client model after verifying the phone with sms otp.
         const authToken= await getAuthToken();
         const order_id= await registerOrder(authToken, 100000, [{name: "prod1", quantity:2, amount_cents: 50000, description:"dddf"},{name: "prod2", quantity:3, amount_cents: 50000, description: "hgvfcdxdd"}]);
         const paymentToken= await getPaymentKey(authToken, order_id, 100000, {

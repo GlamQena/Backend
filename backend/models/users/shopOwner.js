@@ -1,3 +1,4 @@
+import mongoose from "mongoose";
 import userModel from "./user.js";
 
 const ShopOwnerSchema = new mongoose.Schema({
@@ -54,14 +55,15 @@ const ShopOwnerSchema = new mongoose.Schema({
         "Banque Misr",
         "Banque du Caire",
         "Agricultural Bank of Egypt",
-        "Credit Agricole Egypt",
       ],
       required: true,
     },
   },
+
   store_description: {
     type: String,
   },
+
   store_address: {
     city: {
       type: String,
@@ -70,26 +72,33 @@ const ShopOwnerSchema = new mongoose.Schema({
       type: String,
     },
   },
+
   total_products: {
     type: Number,
   },
+
   total_orders: {
     type: Number,
   },
+
   total_revenue: {
     type: Number,
-  },
+  }, //from the platform
+
   average_rating: {
     type: Number,
     min: 0,
     max: 5,
   },
+
   total_rates: {
     type: Number,
   },
+
   is_approved: {
     type: Boolean,
-  },
+  }, //by the admin
+
   social_links: {
     type: [
       {
@@ -103,6 +112,13 @@ const ShopOwnerSchema = new mongoose.Schema({
       },
     ],
   },
+
+  interactive_clients:[
+    {
+      type: mongoose.Schema.Types.ObjectId,
+      ref: "client",
+    }
+  ]
 });
 
 const shopOwnerModel = userModel.discriminator("shop_owner", ShopOwnerSchema);
