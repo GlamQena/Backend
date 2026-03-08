@@ -63,7 +63,7 @@ const UserSchema = new mongoose.Schema(
 
     phoneNumber: {
       type: String,
-      required: true, //for 2FA
+      // required: true,
       index: true,
       validate: {
         validator: (v) => validator.isMobilePhone(v, "ar-EG"), // /^01[0-2,5]{1}[0-9]{8}$/.test(v)
@@ -87,9 +87,10 @@ const UserSchema = new mongoose.Schema(
       type: String,
       enum: ["male", "female"],
     },
+
     isVerified: {
       type: Boolean,
-    },
+    }, //means his identity 
 
     isEmailVerified: {
       type: Boolean,
@@ -109,10 +110,6 @@ const UserSchema = new mongoose.Schema(
         validator: (v) => v.length > 0,
         error: "you must provide at least one notification preference!",
       },
-    },
-    createdAt:{
-      type:Date,
-      default:Date.now
     }
   },
   options,

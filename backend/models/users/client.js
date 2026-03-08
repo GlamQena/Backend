@@ -7,7 +7,7 @@ const ClientSchema = new mongoose.Schema({
     ref: "cart",
     required: true,
     index: true,
-  }, //commented until create cart model
+  },
 
   skinType: {
     type: String,
@@ -30,7 +30,6 @@ const ClientSchema = new mongoose.Schema({
       "oiliness",
       "blackheads",
       "whiteheads",
-      "uneven_texture",
     ],
     validate: {
       validator: function (concerns) {
@@ -68,10 +67,7 @@ const ClientSchema = new mongoose.Schema({
           index: true,
         },
 
-        inStock: {
-          type: Boolean,
-          default: true,
-        },
+        inStock: Boolean,
 
         image: String,
       },
@@ -89,7 +85,7 @@ const ClientSchema = new mongoose.Schema({
       lastUpdated: {
         type: Date,
         default: Date.now,
-      },
+      },//track the date of the last order paid to suggest leave a review on it
 
       history: [
         {
@@ -97,7 +93,7 @@ const ClientSchema = new mongoose.Schema({
           orderId: { type: mongoose.Schema.Types.ObjectId, ref: "order" },
           date: { type: Date, default: Date.now },
         },
-      ],
+      ], //show in the shopOwner dashboard in the interactive clients list
     },
   }, //the costs client afford its lifeTime with our website
 
@@ -107,7 +103,7 @@ const ClientSchema = new mongoose.Schema({
     min: 0,
     index: true,
   },
-});
+}); //the term 'amount' used represent the cost
 
 const clientModel = userModel.discriminator("client", ClientSchema);
 module.exports = { userModel, clientModel };

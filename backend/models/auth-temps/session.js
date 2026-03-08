@@ -43,6 +43,7 @@ const SessionSchema = new mongoose.Schema(
       type: String,
       enum: ["active", "idle", "closed"],
     },
+    
     isActive: {
       type: Boolean,
       default: true,

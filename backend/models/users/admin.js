@@ -5,9 +5,11 @@ const AdminSchema = new mongoose.Schema({
     type: mongoose.Schema.ObjectId,
     ref: "admin",
   },
+
   lastActivity: {
     type: Date,
   },
+
   permission: {
     type: [String],
     enum: [
