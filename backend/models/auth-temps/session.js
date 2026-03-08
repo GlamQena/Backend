@@ -1,4 +1,4 @@
-import mongoose from "mongoose";
+const mongoose= require("mongoose");
 
 const SessionSchema = new mongoose.Schema(
   {
@@ -61,4 +61,5 @@ const SessionSchema = new mongoose.Schema(
 );
 
 const sessionModel = mongoose.model("session", SessionSchema);
+
 module.exports = sessionModel;

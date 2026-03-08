@@ -1,5 +1,5 @@
-import mongoose from "mongoose";
-import userModel from "./user.js";
+const mongoose= require("mongoose");
+const userModel= require("./user.js");
 
 const ShopOwnerSchema = new mongoose.Schema({
   storeName: {
@@ -122,4 +122,5 @@ const ShopOwnerSchema = new mongoose.Schema({
 });
 
 const shopOwnerModel = userModel.discriminator("shop_owner", ShopOwnerSchema);
+
 module.exports = { userModel, shopOwnerModel };
