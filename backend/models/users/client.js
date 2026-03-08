@@ -1,5 +1,5 @@
-import mongoose from "mongoose";
-import userModel from "./user.js";
+const mongoose= require("mongoose");
+const userModel= require("./user.js");
 
 const ClientSchema = new mongoose.Schema({
   cartId: {
@@ -37,7 +37,7 @@ const ClientSchema = new mongoose.Schema({
       },
       error: "can't choose more than 5 skin concerns!",
     },
-  },
+  }, //for ai-based recommendations (future feature)
 
   wishlist: {
     type: [
@@ -103,7 +103,8 @@ const ClientSchema = new mongoose.Schema({
     min: 0,
     index: true,
   },
-}); //the term 'amount' used represent the cost
+  //TODO-> add address details required for paymob payment billing data and for production later.
+}); //the used term 'amount' represent the cost
 
 const clientModel = userModel.discriminator("client", ClientSchema);
 module.exports = { userModel, clientModel };

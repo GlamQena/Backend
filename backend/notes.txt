@@ -1,4 +1,4 @@
-- use common js(module.exports, require) as ES modules throw error.
+- use common js(module.exports, require) as the type specified in package.json to be 'commonjs'.
 
                     security packages
 - express-rate-limit: https://www.npmjs.com/package/express-rate-limit

@@ -1,4 +1,4 @@
-import mongoose from "mongoose";
+const mongoose= require("mongoose");
 
 const OrderSchema = new mongoose.Schema(
   {
@@ -62,6 +62,6 @@ const OrderSchema = new mongoose.Schema(
   },
 );
 
-const orderModel = mongoose.model("order",OrderSchema)
+const orderModel = mongoose.model("order", OrderSchema);
 
 module.exports= orderModel;
