@@ -1,10 +1,7 @@
-const userModel= require('../../models/users/user');
+const {clientModel, userModel} = require("../../models/users/client");
+const {storeOwnerModel} = require("../../models/users/storeOwner");
 
-const Customer = require('../../models/users/customer');  
-const StoreOwner = require('../../models/users/storeOwner');  
-const DeliveryAgent = require('../../models/users/deliveryAgent');
-
-const bcrypt = require('bcryptjs');
+const bcrypt = require('bcrypt');
 
 const loginController= async (req, res)=>{
     try{
@@ -27,16 +24,12 @@ const loginController= async (req, res)=>{
         }
 
         let roleData = null;
-        if (user.role === "customer") {
-            roleData = await Customer.findOne({ user_id: user._id });
+        if (user.role === "client") {
+            roleData = await clientModel.findOne({ user_id: user._id });
         }
 
         if (user.role === "store_owner") {
-            roleData = await StoreOwner.findOne({ user_id: user._id });
-        }
-
-        if (user.role === "delivery_agent") {
-            roleData = await DeliveryAgent.findOne({ user_id: user._id });
+            roleData = await storeOwnerModel.findOne({ user_id: user._id });
         }
 
         res.status(200).json({

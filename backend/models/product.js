@@ -1,10 +1,10 @@
-const mongoose= require("mongoose");
+const mongoose = require("mongoose");
 
 const ProductSchema = new mongoose.Schema(
   {
     owner_store_id: {
       type: mongoose.Schema.Types.ObjectId,
-      ref: "shop_owner",
+      ref: "store_owner",
     },
 
     category_id: {
@@ -38,7 +38,7 @@ const ProductSchema = new mongoose.Schema(
     },
 
     hasReviewed: Boolean,
-    
+
     review_IDs: {
       type: [mongoose.Schema.Types.ObjectId],
       ref: "review",
@@ -53,4 +53,4 @@ const ProductSchema = new mongoose.Schema(
 
 let productModel = mongoose.model("product", ProductSchema);
 
-module.exports= productModel;
+module.exports = productModel;
