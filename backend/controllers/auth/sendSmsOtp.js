@@ -8,7 +8,7 @@ const sendSmsOtpController= async (req, res)=>{
         const {phone} =req.body;
         redisClient.del(`otp ${phone}`);
         if(await redisClient.get(`otp ${phone}`))
-            res.status(400).json({message: "you're otp already sent, try again later"});
+            return res.status(400).json({message: "you're otp already sent, try again later"});
         const twilioClient= twilio(process.env.TWILIO_ACCOUNT_SID, process.env.TWILIO_AUTH_TOKEN);
         const OTP= crypto.randomInt(100000, 900000).toString() //Math.floor((Math.random()*900000)+100000).toString();
         redisClient.set(`otp ${phone}`, OTP, {EX: 10});

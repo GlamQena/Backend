@@ -1,8 +1,9 @@
-const mongoose= require("mongoose");
-const userModel= require("./user.js");
+const mongoose = require("mongoose");
+const userModel = require("./user.js");
+const validator= require("validator")
 
-const ShopOwnerSchema = new mongoose.Schema({
-  storeName: {
+const storeOwnerSchema = new mongoose.Schema({
+  store_name: {
     type: String,
     trim: true,
     maxlength: 100,
@@ -10,7 +11,7 @@ const ShopOwnerSchema = new mongoose.Schema({
     index: true,
   },
 
-  businessPhone: {
+  store_phone: {
     type: String,
     required: true,
     unique: true,
@@ -22,14 +23,14 @@ const ShopOwnerSchema = new mongoose.Schema({
     },
   },
 
-  businessEmail: {
+  store_email: {
     type: String,
     unique: true,
     required: true,
     lowercase: true,
     trim: true,
     validate: {
-      validator: validator.isEmail,
+      validator: (v)=> validator.isEmail(v),
       message: (props) => `${props.value} is not a valid email!`,
     },
   },
@@ -37,12 +38,10 @@ const ShopOwnerSchema = new mongoose.Schema({
   bankAccount: {
     accountName: {
       type: String,
-      required: true,
     },
     accountNumber: {
       type: String,
       trim: true,
-      required: true,
       validate: {
         validator: (v) => !v || /^[0-9]{10,20}$/.test(v),
         message: (props) => `${props.value} not valid banck account number!`,
@@ -56,7 +55,6 @@ const ShopOwnerSchema = new mongoose.Schema({
         "Banque du Caire",
         "Agricultural Bank of Egypt",
       ],
-      required: true,
     },
   },
 
@@ -66,6 +64,9 @@ const ShopOwnerSchema = new mongoose.Schema({
 
   store_address: {
     city: {
+      type: String,
+    },
+    district: {
       type: String,
     },
     street: {
@@ -107,20 +108,23 @@ const ShopOwnerSchema = new mongoose.Schema({
           enum: ["facebook", "youTube", "instagram", "tiktok", "x", "linkedin"],
         },
         page_url: {
-          type: URL,
+          type: String,
         },
       },
     ],
   },
 
-  interactive_clients:[
+  interactive_clients: [
     {
       type: mongoose.Schema.Types.ObjectId,
       ref: "client",
-    }
-  ]
+    },
+  ],
 });
 
-const shopOwnerModel = userModel.discriminator("shop_owner", ShopOwnerSchema);
+const storeOwnerModel = userModel.discriminator(
+  "store_owner",
+  storeOwnerSchema,
+);
 
-module.exports = { userModel, shopOwnerModel };
+module.exports = { userModel, storeOwnerModel };

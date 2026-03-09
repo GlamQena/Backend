@@ -9,7 +9,7 @@ const options = {
 
 const UserSchema = new mongoose.Schema(
   {
-    userName: {
+    username: {
       type: String,
       unique: true,
       required: true,
@@ -57,7 +57,7 @@ const UserSchema = new mongoose.Schema(
     role: {
       type: String,
       index: true,
-      enum: ["user", "client", "shop_owner", "admin"],
+      enum: ["user", "client", "store_owner", "admin"],
       default: "user",
     },
 
@@ -90,7 +90,7 @@ const UserSchema = new mongoose.Schema(
 
     isVerified: {
       type: Boolean,
-    }, //means his identity 
+    }, //means his identity
 
     isEmailVerified: {
       type: Boolean,
@@ -110,7 +110,7 @@ const UserSchema = new mongoose.Schema(
         validator: (v) => v.length > 0,
         error: "you must provide at least one notification preference!",
       },
-    }
+    },
   },
   options,
 );

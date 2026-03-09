@@ -1,8 +1,8 @@
-const mongoose= require("mongoose");
-const userModel= require("./user.js");
+const mongoose = require("mongoose");
+const userModel = require("./user.js");
 
 const ClientSchema = new mongoose.Schema({
-  cartId: {
+  cart_id: {
     type: mongoose.Schema.Types.ObjectId,
     ref: "cart",
     required: true,
@@ -85,7 +85,7 @@ const ClientSchema = new mongoose.Schema({
       lastUpdated: {
         type: Date,
         default: Date.now,
-      },//track the date of the last order paid to suggest leave a review on it
+      }, //track the date of the last order paid to suggest leave a review on it
 
       history: [
         {
@@ -93,7 +93,7 @@ const ClientSchema = new mongoose.Schema({
           orderId: { type: mongoose.Schema.Types.ObjectId, ref: "order" },
           date: { type: Date, default: Date.now },
         },
-      ], //show in the shopOwner dashboard in the interactive clients list
+      ], //show in the storeOwner dashboard in the interactive clients list
     },
   }, //the costs client afford its lifeTime with our website
 

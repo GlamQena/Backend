@@ -1,4 +1,4 @@
-const mongoose= require("mongoose");
+const mongoose = require("mongoose");
 
 const PaymentSchema = new mongoose.Schema(
   {
@@ -14,7 +14,7 @@ const PaymentSchema = new mongoose.Schema(
 
     storeOwner_id: {
       type: mongoose.Schema.Types.ObjectId,
-      ref: "shop_owner",
+      ref: "store_owner",
     },
 
     amount: {
@@ -38,7 +38,7 @@ const PaymentSchema = new mongoose.Schema(
     payment_status: {
       type: String,
       enum: ["pending", "refunded", "failed", "completed", "processing"],
-    },//refunded(استرجع) and pending related to 'cash', while failed and processing for 'card' and 'wallet'. 
+    }, //refunded(استرجع) and pending related to 'cash', while failed and processing for 'card' and 'wallet'.
     //'completed' include all types.
 
     profit_breakdown: {
@@ -60,11 +60,9 @@ const PaymentSchema = new mongoose.Schema(
     },
   },
 
-  { timestamps: true,
-    versionKey: false,
-  },
+  { timestamps: true, versionKey: false },
 );
 
 const paymentModel = mongoose.model("payment", PaymentSchema);
 
-module.exports= paymentModel;
+module.exports = paymentModel;

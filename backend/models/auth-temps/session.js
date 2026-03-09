@@ -1,4 +1,4 @@
-const mongoose= require("mongoose");
+const mongoose = require("mongoose");
 
 const SessionSchema = new mongoose.Schema(
   {
@@ -21,7 +21,7 @@ const SessionSchema = new mongoose.Schema(
 
     userRole: {
       type: String,
-      enum: ["user", "client", "shop_owner", "admin"],
+      enum: ["user", "client", "store_owner", "admin"],
       required: true,
       index: true,
     }, // set for direct access for refreshing access-token
@@ -43,7 +43,7 @@ const SessionSchema = new mongoose.Schema(
       type: String,
       enum: ["active", "idle", "closed"],
     },
-    
+
     isActive: {
       type: Boolean,
       default: true,
