@@ -10,15 +10,15 @@ const resetPasswordController = async (req, res) => {
   if (!user) {
     return res.status(404).json({ message: "your account doesn't exist!" });
   }
-  const otpObject = await otpModel.findOne({ userId: user._id });
+  const otpObject = await otpModel.findOne({ userId: user._id , for: "resetPassword"});
   if (!otpObject) {
     return res.status(400).json({ message: "Expirated OTP" });
   }
   if (!otpObject.isVerified) {
-    return res.status(400).json({ message: "Expirated OTP" });
+    return res.status(400).json({ message: "Unverified OTP" });
   }
 
-  if(password != confirmPassword)
+  if(password !== confirmPassword)
     return res.status(400).json({message:"you entered unmatched passwords!"});
 
   user.password = await bcrypt.hash(password, 10);

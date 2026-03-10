@@ -1,4 +1,4 @@
-import jwt from "jsonwebtoken";
+const jwt= require("jsonwebtoken");
 const userModel = require("../../models/users/user");
 
 const verifyEmailController = async (req, res) => {
@@ -43,6 +43,7 @@ const verifyEmailController = async (req, res) => {
     return res.status(200).json({
       message: "Email verified successfully",
     });
+    //TODO redirect to frontend verification page
 
   } catch (error) {
     
