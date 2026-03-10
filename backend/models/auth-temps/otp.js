@@ -1,11 +1,12 @@
-const mongoose= require("mongoose");
+const mongoose = require("mongoose");
 
-const OTPSchema= new mongoose.Schema({
-    userId:{
-        type: mongoose.Schema.Types.ObjectId,
-        ref: "user",
-        index: true,
-        required: true,
+const OTPSchema = new mongoose.Schema(
+  {
+    userId: {
+      type: mongoose.Schema.Types.ObjectId,
+      ref: "user",
+      index: true,
+      required: true,
     },
 
     for:{
@@ -16,37 +17,42 @@ const OTPSchema= new mongoose.Schema({
         index: true,
     },
 
-    otpCode:{
-        type: String,
-        minlength: 6,
-        maxlength:6,
-        index: true,
-        required: true,
+    otpCode: {
+      type: String,
+      minlength: 6,
+      maxlength: 6,
+      index: true,
+      required: true,
     },
 
-    isVerfied:{
-        type: Boolean,
-        default: false,
+    isActive: {
+      type: Boolean,
     },
 
-    otpExpiry:{
-        type: Date,
-        index: true,
-        required: true,
-        default: ()=> newDate(Date.now()+ 10+60+1000), //10 min
+    otpExpiry: {
+      type: Date,
+      index: true,
+      required: true,
+      default: Date.now() + 10 * 60 * 1000,
     },
 
-    otpAttempts:{
-        type: Number,
-        min:0,
-        max: 3, //per hour
-        default:0,
-        index: true,
+    isVerified:{
+      type: Boolean,
+      default: false,
     },
 
-    firstAttemptAt: Date,
+    otpAttempts: {
+      type: Number,
+      min: 0,
+      max: 3,
+      default: 0,
+      index: true,
+    },
 
-}, {timestamps: true, versionKey: false});
+    // createdAt:{type:Date, default: Date.now, expires: "10m"} //TTL (time to live)
+  },
+  { timestamps: true, versionKey: false },
+);
 
-const otpModel= mongoose.model("otp", OTPSchema);
-module.exports= otpModel;
+const otpModel = mongoose.model("otp", OTPSchema);
+module.exports = otpModel;
