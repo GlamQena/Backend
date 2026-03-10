@@ -46,7 +46,6 @@ async function sendEmailVerificationToUser(email, token) {
     const url = `http://localhost:${process.env.PORT || 3000}/auth/verify/${email}/${token}`;
 
     try {
-
         const templatePath = path.join(__dirname, "../templates/email.template.html");
 
         let emailTemp = await fs.readFile(templatePath, "utf-8");
@@ -71,15 +70,12 @@ async function setUserVerification(user, ex) {
 
     user.isEmailVerified = false;
 
-
     const payload={
             id: user._id,
             email: user.email,
             role: user.role,
     }
     const emailToken =  jwt.sign(payload, process.env.JWT_SECRET, {expiresIn:ex|| "8h"});
-
-
     
     await sendEmailVerificationToUser(user.email, emailToken);
 }

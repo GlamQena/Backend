@@ -1,5 +1,5 @@
 const axios= require("axios");
-const sendMail = require("../../../utils/mailSender");
+const {sendEmail} = require("../../../utils/mailSender");
 const path= require("path");
 require("dotenv").config({path: path.join(__dirname, "../.env")});
 
@@ -32,7 +32,7 @@ const paymentCheckout= async(req, res)=>{
             subject:"payment receipt", 
             text: `https://accept.paymob.com/api/acceptance/iframes/${paymob_iframe_id}?payment_token=${paymentToken}`
         }
-        await sendMail(mailOptions);
+        await sendEmail(mailOptions);
         res.status(200).json({message: "payment receipt url sent to you're email..."});
     }catch(err){
         console.error(`error chekout the payment-> ${err}`);

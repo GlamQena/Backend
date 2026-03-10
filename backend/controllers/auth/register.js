@@ -60,7 +60,7 @@ const registerController = async (req, res) => {
         district: rest.address?.district || null,
         street: rest.address?.street || null,
       },
-      gender: rest.gender && rest.gender.trim().toLowerCase(),
+      gender: rest.gender? rest.gender.trim().toLowerCase(): null,
     };
 
     let newUser //create newUser to store created user's data to send verification email 
@@ -74,7 +74,6 @@ const registerController = async (req, res) => {
       newUser = await storeOwnerModel.create({ ...commonData, ...storeCredentials});//save store owner in newUser
     }
 
-
       // send verifyEmailToken to user email and set isEmailVerified to false until user verify his email
     if (!newUser) {
       return res.status(400).json({ message: "user account not created!" });
@@ -83,10 +82,9 @@ const registerController = async (req, res) => {
       await setUserVerification(newUser, "10M");
 
     res.status(201).json({
-      message: "user account created successfully, please verify your email to activate your account!",
+      message: "your account created successfully, please verify your email to activate it!",
       role,
     });
-
 
   } catch (error) {
     res.status(500).json({ message: "internal server error!", error:error.message });
