@@ -2,6 +2,7 @@ const {clientModel, userModel} = require("../../models/users/client");
 const {storeOwnerModel} = require("../../models/users/storeOwner");
 const cartModel= require("../../models/cart");
 const bcrypt = require("bcrypt");
+const { setUserVerification } = require("../../utils/mailSender");
 
 const registerController = async (req, res) => {
   try {
@@ -62,21 +63,31 @@ const registerController = async (req, res) => {
       gender: rest.gender && rest.gender.trim().toLowerCase(),
     };
 
+    let newUser //create newUser to store created user's data to send verification email 
+
     if (role === "client") {
       const newCart= await cartModel.create({products: [], total_price:0});
-      await clientModel.create({cart_id: newCart._id, ...commonData});
+      newUser = await clientModel.create({cart_id: newCart._id, ...commonData});//save client in newUser
     }
 
     if (role === "store_owner") {
-      await storeOwnerModel.create({ ...commonData, ...storeCredentials});
+      newUser = await storeOwnerModel.create({ ...commonData, ...storeCredentials});//save store owner in newUser
     }
 
+
+      // send verifyEmailToken to user email and set isEmailVerified to false until user verify his email
+    if (!newUser) {
+      return res.status(400).json({ message: "user account not created!" });
+    }
+    
+      await setUserVerification(newUser, "10M");
+
     res.status(201).json({
-      message: "user account created successfully...",
+      message: "user account created successfully, please verify your email to activate your account!",
       role,
     });
 
-    //TODO-> send verifyEmailToken
+
   } catch (error) {
     res.status(500).json({ message: "internal server error!", error:error.message });
   }

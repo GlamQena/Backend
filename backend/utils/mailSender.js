@@ -1,6 +1,10 @@
 const nodemailer= require("nodemailer");
 const path= require("path");
 require("dotenv").config({path: path.join(__dirname, "../.env")});
+const fs = require("fs").promises;
+const jwt = require("jsonwebtoken");
+
+
 
 const transporter= nodemailer.createTransport({
     service: "gmail",
@@ -13,14 +17,75 @@ const transporter= nodemailer.createTransport({
     }
 });
 
-const sendMail= async(options)=>{
-    transporter.sendMail(options, (error, info)=>{
-        if(error){
-            console.error(`error sending email-> ${error}`);
-        }
-        else
-            console.log(info);
-    });
+// const sendMail= async(options)=>{
+//     transporter.sendMail(options, (error, info)=>{
+//         if(error){
+//             console.error(`error sending email-> ${error}`);
+//         }
+//         else
+//             console.log(info);
+//     });
+// }
+
+
+async function sendEmail(options) {
+    const mailOptions = {
+        from: process.env.EMAIL,
+        ...options
+    };
+
+    try {
+        const info = await transporter.sendMail(mailOptions);
+        console.log("email send to:", info.accepted);
+    } catch (err) {
+        console.log("failed to send email:", err);
+    }
 }
 
-module.exports= sendMail;
+async function sendEmailVerificationToUser(email, token) {
+    const url = `http://localhost:${process.env.PORT || 3000}/auth/verify/${email}/${token}`;
+
+    try {
+
+        const templatePath = path.join(__dirname, "../templates/email.template.html");
+
+        let emailTemp = await fs.readFile(templatePath, "utf-8");
+
+        emailTemp = emailTemp.replace("{url}", url);
+
+        await sendEmail({ 
+            to: email, 
+            subject: "Email Verification", 
+            html: emailTemp 
+        });
+
+        if (process.env.NODE_ENV === "development") {
+            console.log(url);
+        }
+    } catch (err) {
+        console.log("Error reading template or sending email:", err);
+    }
+}
+
+async function setUserVerification(user, ex) {
+
+    user.isEmailVerified = false;
+
+
+    const payload={
+            id: user._id,
+            email: user.email,
+            role: user.role,
+    }
+    const emailToken =  jwt.sign(payload, process.env.JWT_SECRET, {expiresIn:ex|| "8h"});
+
+
+    
+    await sendEmailVerificationToUser(user.email, emailToken);
+}
+
+module.exports = {
+    setUserVerification,
+    sendEmailVerificationToUser,
+    sendEmail
+};
