@@ -13,13 +13,8 @@ const transporter= nodemailer.createTransport({
     }
 });
 
-const sendMail= async(content)=>{
-    transporter.sendMail({
-        from: process.env.EMAIL, 
-        to:"semooohany@gmail.com", 
-        subject:"payment receipt", 
-        text: content
-    }, (error, info)=>{
+const sendMail= async(options)=>{
+    transporter.sendMail(options, (error, info)=>{
         if(error){
             console.error(`error sending email-> ${error}`);
         }
