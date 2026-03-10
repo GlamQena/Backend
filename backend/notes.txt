@@ -23,3 +23,5 @@
  1- write the message at the first line in orange 
  2- press 'Esc' to exit the '--insert--' mode
  3- write ':wq' to "write" the message and "quit" the editor
+
+ -cookies set without maxAge will be expired when the user close the window tab.

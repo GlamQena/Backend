@@ -76,6 +76,7 @@ const registerController = async (req, res) => {
       role,
     });
 
+    //TODO-> send verifyEmailToken
   } catch (error) {
     res.status(500).json({ message: "internal server error!", error:error.message });
   }

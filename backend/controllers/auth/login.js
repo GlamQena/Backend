@@ -1,47 +1,66 @@
 const {clientModel, userModel} = require("../../models/users/client");
 const {storeOwnerModel} = require("../../models/users/storeOwner");
-
+const jwt= require("jsonwebtoken");
 const bcrypt = require('bcrypt');
 
 const loginController= async (req, res)=>{
     try{
-        const { email, password } = req.body;
+        const {emailOrUsername, password, rememberMe } = req.body;
 
-        if (!email || !password) {
-            return res.status(400).json({ message: "Email and password are required" });
+        if (!emailOrUsername || !password) {
+            return res.status(400).json({ message: "username|email and password are required" });
         }
 
-        const formattedEmail = email.trim().toLowerCase();
+        const formattedEmailOrUsername = emailOrUsername.trim().toLowerCase();
 
-        const user = await userModel.findOne({ email: formattedEmail });
+        // if(role!="client" && role!="store_owner")
+        //     return res.status(400).json({message:"invalid user role!"});
+        
+        const user= await userModel.findOne({ $or:[{email: formattedEmailOrUsername}, {username: formattedEmailOrUsername}]}).select("+password");
+
         if (!user) {
-            return res.status(401).json({ message: "Invalid email or password" });
+            return res.status(401).json({ message: "Invalid email or username" });
         }
 
-        const isMatch = await bcrypt.compare(password, user.password);
-        if (!isMatch) {
-            return res.status(401).json({ message: "Invalid email or password" });
+        try{
+            const isMatch = bcrypt.compareSync(password, user.password);
+            if (!isMatch) {
+                return res.status(401).json({ message: "Invalid password" });
+            }
+        }catch(error){
+            return res.status(400).json({message:"error comparing the password with the exist one!", error: error.message});
         }
-
-        let roleData = null;
+                
+        let userData;
         if (user.role === "client") {
-            roleData = await clientModel.findOne({ user_id: user._id });
+            userData = await clientModel.findOne({ _id: user._id }).lean();
         }
 
         if (user.role === "store_owner") {
-            roleData = await storeOwnerModel.findOne({ user_id: user._id });
+            userData = await storeOwnerModel.findOne({ _id: user._id }).lean();
         }
 
+        const accessToken= jwt.sign({user_id:user._id, role:user.role}, process.env.ACCESS_TOKEN_SECRET);
+        res.cookie("accessToken", accessToken, {
+            httpOnly: true,
+            secure: process.env.NODE_ENV=="PRODUCTION",
+            maxAge: 15*60*1000,
+            samesite: "strict",
+        });
+
+        const refreshTokenAge= rememberMe? 30*24*60*60*1000 : 7*24*60*60*1000;
+        const refreshToken= jwt.sign({user_id:user._id, role:user.role}, process.env.REFRESH_TOKEN_SECRET);
+        res.cookie("refreshToken", refreshToken, {
+            httpOnly: true,
+            secure: process.env.NODE_ENV=="PRODUCTION",
+            maxAge: refreshTokenAge,
+            samesite: "strict",
+        });
+
         res.status(200).json({
-            message: "Login successful",
-            user: {
-                id: user._id,
-                username: user.username,
-                email: user.email,
-                role: user.role
-            }
-        })
-    
+            message: "user logged in successfully...",
+            user: userData,
+        });
         
     } catch (error){
          res.status(500).json({ message: error.message });

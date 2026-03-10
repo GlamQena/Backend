@@ -10,7 +10,7 @@ const OTPSchema= new mongoose.Schema({
 
     for:{
         type:String,
-        enum: ["verifyPhone", "verifyEmail"],
+        enum: ["verifyPhone", "resetPassword"],
         required: true,
         default: null,
         index: true,
