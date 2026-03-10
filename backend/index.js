@@ -9,8 +9,8 @@ const applySecurity = require("./middleware/applySecurity.js");
 const applyLogger = require("./middleware/logger.js");
 const mongoose = require("mongoose");
 const authRouter = require("./router/auth.js");
-const paymentCheckout= require("./controllers/customer/order/paymentCheckout.js");
-const checkPaymentCompletion= require("./controllers/customer/order/checkPaymentCompletion.js");
+//const paymentCheckout= require("./controllers/order/paymentCheckout.js");
+//const checkPaymentCompletion= require("./controllers/order/checkPaymentCompletion.js");
 
 require("dotenv").config({ path: path.join(__dirname, "./env") });
 
@@ -57,8 +57,8 @@ app.use(
 
 //routes
 app.use("/auth", authRouter);
-app.get("/order/payment/checkout", paymentCheckout);
-app.post("/order/payment/check-completion", checkPaymentCompletion);
+//app.get("/order/payment/checkout", paymentCheckout);
+//app.post("/order/payment/check-completion", checkPaymentCompletion);
 
 //mongodb connection
 connect_mongodb();

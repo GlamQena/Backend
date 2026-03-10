@@ -15,7 +15,7 @@ const router= express.Router();
 
 router.post("/register", registerController);
 router.post("/login", loginController);
-router.post("/email/verify", verifyEmailController); //with token
+router.get("/verify/:email/:token", verifyEmailController); //with token
 router.post("/password/send-otp", sendPasswordOtpController);
 router.post("/password/verify-otp", verifyPasswordOtpController);
 router.post("/password/reset", resetPasswordController);
