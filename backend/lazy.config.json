@@ -1,0 +1,12 @@
+{
+  "default": {
+    "source": ".env",
+    "output": ".env.enc",
+    "security": "light"
+  },
+  "production": {
+    "source": ".env.prod",
+    "output": ".env.prod.enc",
+    "security": "heavy"
+  }
+}
