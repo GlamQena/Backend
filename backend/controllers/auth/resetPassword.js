@@ -1,9 +1,15 @@
 const otpModel = require("../../models/auth-temps/otp");
 const userModel = require("../../models/users/user");
+const {resetPasswordSchema}= require("../../validations/auth");
 const bcrypt= require("bcrypt");
 
 const resetPasswordController = async (req, res) => {
-  const { email, password, confirmPassword } = req.body;
+  const { email, newPassword, confirmPassword } = req.body;
+
+  const parsedResetPassSchema= resetPasswordSchema.safeParse({newPassword, confirmPassword});
+  if(!parsedResetPassSchema.success){
+    return res.status(400).json({message: parsedResetPassSchema.error.issues[0].message});
+  }
 
   const user = await userModel.findOne({ email });
 
@@ -18,10 +24,7 @@ const resetPasswordController = async (req, res) => {
     return res.status(400).json({ message: "Unverified OTP" });
   }
 
-  if(password !== confirmPassword)
-    return res.status(400).json({message:"you entered unmatched passwords!"});
-
-  user.password = await bcrypt.hash(password, 10);
+  user.password = await bcrypt.hash(newPassword, 10);
 
   otpObject.isVerified = false;
 

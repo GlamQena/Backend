@@ -3,43 +3,24 @@ const {storeOwnerModel} = require("../../models/users/storeOwner");
 const cartModel= require("../../models/cart");
 const bcrypt = require("bcrypt");
 const { setUserVerification } = require("../../utils/mailSender");
+const { registerSchema, storeOwnerSpecificRegister}= require("../../validations/auth");
 
 const registerController = async (req, res) => {
   try {
-    const { role, username, email, password, confirm_password, ...rest } =
-      req.body;
+    const parsedRegister= registerSchema.safeParse(req.body);
+    if(!parsedRegister.success)
+      return res.status(400).json({message: parsedRegister.error.issues[0].message});
 
-    if (!role || !username || !email || !password || !confirm_password) {
-      return res
-        .status(400)
-        .json({ message: "role and authentication fields are required!" });
-    }
-
-    if(role!="client" && role!="store_owner")
-        return res.status(400).json({message: "not valid role!"});
+    const { role, username, email, password, ...otherData} = parsedRegister.data;
 
     if (role === "store_owner") {
-      const {store_name, store_email, store_phone, store_address}= rest;
-      if(!store_name ||! store_email ||! store_phone ||! store_address)
-        return res.status(400).json({message: "all store credentials are required!"});
-      var storeCredentials= {store_name, store_email, store_phone, store_address};
-    }
-
-    const formattedEmail = email.trim().toLowerCase();
-    const formattedUsername = username.trim().toLowerCase();
-
-    if (password.length < 8) {
-      return res
-        .status(400)
-        .json({ message: "Password must be at least 8 characters!" });
-    }
-
-    if (password !== confirm_password) {
-      return res.status(400).json({ message: "Passwords do not match!" });
+      var parsedStoreOwnerRegister= storeOwnerSpecificRegister.safeParse(req.body);
+      if(!parsedStoreOwnerRegister.success)
+      return res.status(400).json({message: parsedStoreOwnerRegister.error.issues[0].message});
     }
 
     const existingUser = await userModel.findOne({
-      $or: [{ email: formattedEmail }, { username: formattedUsername }],
+      $or: [{ email: email }, { username: username }],
     });
     if (existingUser) {
       return res
@@ -49,29 +30,23 @@ const registerController = async (req, res) => {
 
     const hashedPassword = await bcrypt.hash(password, 10);
 
+    let newUser
     const commonData = {
-      username: formattedUsername,
-      email: formattedEmail,
+      username,
+      email,
       password: hashedPassword,
-      phone: rest.phone || null,
-      birthdate: rest.birthdate || null,
-      address: {
-        city: rest.address?.city || null,
-        district: rest.address?.district || null,
-        street: rest.address?.street || null,
-      },
-      gender: rest.gender? rest.gender.trim().toLowerCase(): null,
+      phone: otherData.phone || null,
+      birthdate: otherData.birthdate || null,
+      gender: otherData.gender || null,
+      address: otherData.address || null,
     };
-
-    let newUser //create newUser to store created user's data to send verification email 
-
     if (role === "client") {
       const newCart= await cartModel.create({products: [], total_price:0});
       newUser = await clientModel.create({cart_id: newCart._id, ...commonData});//save client in newUser
     }
 
     if (role === "store_owner") {
-      newUser = await storeOwnerModel.create({ ...commonData, ...storeCredentials});//save store owner in newUser
+      newUser = await storeOwnerModel.create({ ...commonData, ...parsedStoreOwnerRegister.data});//save store owner in newUser
     }
 
       // send verifyEmailToken to user email and set isEmailVerified to false until user verify his email

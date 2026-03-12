@@ -1,5 +1,6 @@
 const jwt= require("jsonwebtoken");
 const userModel = require("../../models/users/user");
+const setAccessRefreshTokens= require("../../utils/acc_ref_tokens");
 
 const verifyEmailController = async (req, res) => {
   try {
@@ -39,6 +40,8 @@ const verifyEmailController = async (req, res) => {
 
     user.isEmailVerified = true;
     await user.save();
+
+    await setAccessRefreshTokens(res, false);
 
     return res.status(200).json({
       message: "Email verified successfully",
