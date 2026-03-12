@@ -1,22 +1,18 @@
 const {clientModel, userModel} = require("../../models/users/client");
 const {storeOwnerModel} = require("../../models/users/storeOwner");
-const jwt= require("jsonwebtoken");
+const setAccessRefreshTokens= require("../../utils/acc_ref_tokens");
+const {loginSchema}= require("../../validations/auth");
 const bcrypt = require('bcrypt');
 
 const loginController= async (req, res)=>{
     try{
-        const {emailOrUsername, password, rememberMe } = req.body;
+        const {usernameOrEmail, password, rememberMe } = req.body;
 
-        if (!emailOrUsername || !password) {
-            return res.status(400).json({ message: "username|email and password are required" });
-        }
+        const validatedLoginSchema= loginSchema.safeParse({usernameOrEmail, password});
+        if(!validatedLoginSchema.success)
+            return res.status(400).json({message: validatedLoginSchema.error.issues[0].message});
 
-        const formattedEmailOrUsername = emailOrUsername.trim().toLowerCase();
-
-        // if(role!="client" && role!="store_owner")
-        //     return res.status(400).json({message:"invalid user role!"});
-        
-        const user= await userModel.findOne({ $or:[{email: formattedEmailOrUsername}, {username: formattedEmailOrUsername}]}).select("+password");
+        const user= await userModel.findOne({ $or:[{email: usernameOrEmail}, {username: usernameOrEmail}]}).select("+password");
 
         if (!user) {
             return res.status(401).json({ message: "Invalid email or username" });
@@ -33,29 +29,17 @@ const loginController= async (req, res)=>{
                 
         let userData;
         if (user.role === "client") {
-            userData = await clientModel.findOne({ _id: user._id }).lean();
+            userData = await clientModel.findOne({ _id: user._id }).select("-password").lean();
         }
 
         if (user.role === "store_owner") {
-            userData = await storeOwnerModel.findOne({ _id: user._id }).lean();
+            userData = await storeOwnerModel.findOne({ _id: user._id }).select("-password").lean();
         }
 
-        const accessToken= jwt.sign({user_id:user._id, role:user.role}, process.env.ACCESS_TOKEN_SECRET);
-        res.cookie("accessToken", accessToken, {
-            httpOnly: true,
-            secure: process.env.NODE_ENV=="PRODUCTION",
-            maxAge: 15*60*1000,
-            samesite: "strict",
-        });
-
-        const refreshTokenAge= rememberMe? 30*24*60*60*1000 : 7*24*60*60*1000;
-        const refreshToken= jwt.sign({user_id:user._id, role:user.role}, process.env.REFRESH_TOKEN_SECRET);
-        res.cookie("refreshToken", refreshToken, {
-            httpOnly: true,
-            secure: process.env.NODE_ENV=="PRODUCTION",
-            maxAge: refreshTokenAge,
-            samesite: "strict",
-        });
+        await setAccessRefreshTokens(res, user, rememberMe);
+        if(userData.password){
+            delete userData.password;
+        }
 
         res.status(200).json({
             message: "user logged in successfully...",
@@ -63,7 +47,7 @@ const loginController= async (req, res)=>{
         });
         
     } catch (error){
-         res.status(500).json({ message: error.message });
+         res.status(500).json({ message: "internal server error", error:error.message});
     }
 }
 
