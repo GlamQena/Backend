@@ -57,7 +57,7 @@ const registerController = async (req, res) => {
       await setUserVerification(newUser, "10M");
 
     res.status(201).json({
-      message: "your account created successfully, please verify your email to activate it!",
+      message: "verification link sent to your email to activate your created account!",
       role,
     });
 
