@@ -1,4 +1,6 @@
 const userModel = require("./user.js");
+const mongoose = require("mongoose");
+const validator = require("validator");
 
 const AdminSchema = new mongoose.Schema({
   createdBy: {

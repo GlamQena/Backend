@@ -7,6 +7,9 @@ const verifyPasswordOtpController= require('../controllers/auth/verifyPasswordOt
 const verifySmsOtpController= require('../controllers/auth/verifySmsOtp.js');
 const resetPasswordController= require('../controllers/auth/resetPassword.js');
 const logoutController= require('../controllers/auth/logout.js');
+const refreshAccessTokenController= require('../controllers/auth/refreshToken.js');
+const editProfileController= require('../controllers/auth/editProfile.js');
+const deleteProfileController= require('../controllers/auth/deleteProfile.js');
 
 const express= require("express");
 
@@ -22,5 +25,8 @@ router.post("/password/reset", resetPasswordController);
 router.post("/sms/send-otp", sendSmsOtpController);
 router.post("/sms/verify-otp", verifySmsOtpController);
 router.delete("/logout", logoutController);
+router.get("/refresh-token", refreshAccessTokenController);
+router.put("/profile/edit", editProfileController);
+router.delete("/profile/delete", deleteProfileController);
 
 module.exports= router;

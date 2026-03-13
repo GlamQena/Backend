@@ -4,8 +4,6 @@ require("dotenv").config({path: path.join(__dirname, "../.env")});
 const fs = require("fs").promises;
 const jwt = require("jsonwebtoken");
 
-
-
 const transporter= nodemailer.createTransport({
     service: "gmail",
     auth:{
@@ -17,17 +15,6 @@ const transporter= nodemailer.createTransport({
     }
 });
 
-// const sendMail= async(options)=>{
-//     transporter.sendMail(options, (error, info)=>{
-//         if(error){
-//             console.error(`error sending email-> ${error}`);
-//         }
-//         else
-//             console.log(info);
-//     });
-// }
-
-
 async function sendEmail(options) {
     const mailOptions = {
         from: process.env.EMAIL,
@@ -36,7 +23,7 @@ async function sendEmail(options) {
 
     try {
         const info = await transporter.sendMail(mailOptions);
-        console.log("email send to:", info.accepted);
+        console.log("email sent to:", info.accepted);
     } catch (err) {
         console.log("failed to send email:", err);
     }
@@ -72,7 +59,6 @@ async function setUserVerification(user, ex) {
 
     const payload={
             id: user._id,
-            email: user.email,
             role: user.role,
     }
     const emailToken =  jwt.sign(payload, process.env.JWT_SECRET, {expiresIn:ex|| "8h"});
