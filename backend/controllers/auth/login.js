@@ -1,6 +1,6 @@
 const {clientModel, userModel} = require("../../models/users/client");
 const {storeOwnerModel} = require("../../models/users/storeOwner");
-const setAccessRefreshTokens= require("../../utils/acc_ref_tokens");
+const {setAccessRefreshTokens} = require("../../utils/acc_ref_tokens");
 const {loginSchema}= require("../../validations/auth");
 const bcrypt = require('bcrypt');
 
@@ -36,13 +36,13 @@ const loginController= async (req, res)=>{
             userData = await storeOwnerModel.findOne({ _id: user._id }).select("-password").lean();
         }
 
-        await setAccessRefreshTokens(res, user, rememberMe);
+        await setAccessRefreshTokens(req, res, user, rememberMe);
         if(userData.password){
             delete userData.password;
         }
 
         res.status(200).json({
-            message: "user logged in successfully...",
+            message: "successful login...",
             user: userData,
         });
         

@@ -102,6 +102,7 @@ const UserSchema = new mongoose.Schema(
     notifications: {
       type: [String],
       enum: ["email", "push", "sms"],
+      default: ["email"],
       validate: {
         validator: (v) => v.length > 0,
         message: (props)=> "you must provide at least one notification preference!",

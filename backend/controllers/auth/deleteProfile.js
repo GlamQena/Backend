@@ -1,8 +1,8 @@
- import { clientModel} from "../../models/users/client";
- import { storeOwnerModel } from "../../models/users/storeOwner";
- import { userModel } from "../../models/users/user";
- import Cart from "../../models/cart";
- import Product from "../../models/product";
+ const { clientModel} = require("../../models/users/client");
+ const { storeOwnerModel } = require("../../models/users/storeOwner");
+ const { userModel } = require("../../models/users/user");
+ const Cart = require("../../models/cart");
+ const Product = require("../../models/product");
  
  const deleteProfileController= async(req, res)=>{
   try {

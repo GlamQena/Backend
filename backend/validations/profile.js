@@ -7,11 +7,11 @@ const commonProfileFields= zod.object({
     email: emailField,
     firstName: optionalSchemaHandler(nameField("firstName")),
     lastName: optionalSchemaHandler(nameField("lastName")),
-    notifications: zod.array(zod.enum(["email", "push", "sms"], {message:"notification available options [email, sms, push]"})).min(1, {message: "you must provide at least one notification preference"}),
+    notifications: zod.array(zod.enum(["email", "push", "sms"], {message:"notification available options [email, sms, push]"})).min(1, {message: "you must provide at least one notification preference"}).default(["email"]),
 }).extend(commonOptionalFields.shape);
 
 const clientProfile= zod.object({
-    skinType: optionalSchemaHandler(zod.string().toLowerCase().trim().enum(["oily", "dry", "combination", "sensitive", "normal"], {message: "Skin type must be oily, dry, combination, sensitive, or normal"}).optional().default("normal")),
+    skinType: optionalSchemaHandler(zod.enum(["oily", "dry", "combination", "sensitive", "normal"], {message: "Skin type must be oily, dry, combination, sensitive, or normal"}).optional().default("normal")),
     skinConcerns: zod.preprocess((val)=>{
         if(!val || (Array.isArray(val) && val.length===0)) 
             return undefined
@@ -32,7 +32,7 @@ const storeOwnerProfile= zod.object({
                 return undefined
             return val.trim()
         },
-        zod.string().enum(["البنك الأهلي المصري", "بنك مصر", "بنك القاهرة", "البنك الزراعي المصري",], {message:"unsupported bank!"}).optional()
+        zod.enum(["البنك الأهلي المصري", "بنك مصر", "بنك القاهرة", "البنك الزراعي المصري",], {message:"unsupported bank!"}).optional()
         ),
     }).optional()
 })
@@ -43,4 +43,4 @@ const adminProfile= zod.object({
 
 }).extend(commonProfileFields.shape);
 
-MediaSourceHandle.exports= {clientProfile, storeOwnerProfile, adminProfile};
+module.exports= {clientProfile, storeOwnerProfile, adminProfile};
