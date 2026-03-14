@@ -10,7 +10,7 @@ const registerController = async (req, res) => {
     const parsedRegister= registerSchema.safeParse(req.body);
     if(!parsedRegister.success)
       return res.status(400).json({message: parsedRegister.error.issues[0].message});
-
+console.log("parsed data: ", parsedRegister.data);
     const { role, username, email, password, ...otherData} = parsedRegister.data;
 
     if (role === "store_owner") {
