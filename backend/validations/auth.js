@@ -49,18 +49,6 @@ const passwordField= z.string({required_error: "password is required"}).trim()
 
 const confirmPasswordField= z.string().nonempty({message: "confirm password mustn't be empty!"});
 
-const addressField= z.preprocess(
-        (val) => {
-            if (!val || typeof val !== "object") return undefined;
-            return val;
-        },
-        z.object({
-            city: z.string().trim().max(50, { message: "city must be at most 50 characters" }).optional(),
-            district: z.string().trim().max(50, { message: "district must be at most 50 characters" }).optional(),
-            street: z.string().trim().max(100, { message: "street must be at most 100 characters" }).optional()
-        }).optional()
-    );
-
 const commonOptionalFields= z.object({
     address:z.preprocess(
         (val) => {

@@ -59,6 +59,7 @@ async function setUserVerification(user, ex) {
 
     const payload={
             id: user._id,
+            email: user.email,
             role: user.role,
     }
     const emailToken =  jwt.sign(payload, process.env.JWT_SECRET, {expiresIn:ex|| "8h"});

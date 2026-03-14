@@ -1,4 +1,4 @@
-export const flattenObject = (obj, prefix = '') => {
+const flattenObject = (obj, prefix = '') => {
   let result = {};
   for (const key in obj) {
     if (typeof obj[key] === 'object' && obj[key] !== null && !Array.isArray(obj[key])) {
@@ -13,3 +13,5 @@ export const flattenObject = (obj, prefix = '') => {
   }
   return result;
 };
+
+module.exports= flattenObject;
