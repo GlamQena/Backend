@@ -71,7 +71,7 @@ mongoose.connection.once("connected", async () => {
     if (err) {
       console.error(`error listening on port: ${process.env.PORT}!`);
     } else {
-      console.log(`express server listenning on port-> ${process.env.PORT}...`);
+      console.log(`express server listening on port-> ${process.env.PORT}...`);
     }
   });
 });

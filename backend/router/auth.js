@@ -12,6 +12,7 @@ const editProfileController= require('../controllers/auth/editProfile.js');
 const deleteProfileController= require('../controllers/auth/deleteProfile.js');
 
 const express= require("express");
+const checkAuth = require('../middleware/checkAuth.js');
 
 
 const router= express.Router();
@@ -26,7 +27,7 @@ router.post("/sms/send-otp", sendSmsOtpController);
 router.post("/sms/verify-otp", verifySmsOtpController);
 router.delete("/logout", logoutController);
 router.get("/refresh-token", refreshAccessTokenController);
-router.put("/profile/edit", editProfileController);
+router.put("/profile/edit", checkAuth,editProfileController);
 router.delete("/profile/delete", deleteProfileController);
 
 module.exports= router;
