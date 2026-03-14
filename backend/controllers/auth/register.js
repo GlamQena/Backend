@@ -13,8 +13,9 @@ const registerController = async (req, res) => {
 
     const { role, username, email, password, ...otherData} = parsedRegister.data;
 
+    let parsedStoreOwnerRegister;
     if (role === "store_owner") {
-      var parsedStoreOwnerRegister= storeOwnerSpecificRegister.safeParse(req.body);
+      parsedStoreOwnerRegister= storeOwnerSpecificRegister.safeParse(req.body);
       if(!parsedStoreOwnerRegister.success)
       return res.status(400).json({message: parsedStoreOwnerRegister.error.issues[0].message});
     }
@@ -40,12 +41,16 @@ const registerController = async (req, res) => {
       gender: otherData.gender || null,
       address: otherData.address || null,
     };
+
     if (role === "client") {
       const newCart= await cartModel.create({products: [], total_price:0});
       newUser = await clientModel.create({cart_id: newCart._id, ...commonData});//save client in newUser
     }
 
     if (role === "store_owner") {
+      if(!parsedStoreOwnerRegister)
+        return res.status(400).json({message: "store owner account validations failed!"});
+      
       newUser = await storeOwnerModel.create({ ...commonData, ...parsedStoreOwnerRegister.data});//save store owner in newUser
     }
 

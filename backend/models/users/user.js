@@ -40,8 +40,8 @@ const UserSchema = new mongoose.Schema(
       lowercase: true,
       trim: true,
       index: true,
-      validator: {
-        validate: (v) => validator.isEmail(v), // /^[a-z0-9.%_+-]{3,}@[a-z0-9.-]+\.[a-z]{2,}$/.test(v)
+      validate: {
+        validator: (v) => validator.isEmail(v), // /^[a-z0-9.%_+-]{3,}@[a-z0-9.-]+\.[a-z]{2,}$/.test(v)
         message: (props) => `${props.value} not valid email syntax!`,
       },
     },
@@ -87,12 +87,7 @@ const UserSchema = new mongoose.Schema(
     gender: {
       type: String,
       enum: ["male", "female"],
-      default: null,
     },
-
-    isVerified: {
-      type: Boolean,
-    }, //means his identity
 
     isEmailVerified: {
       type: Boolean,
@@ -107,10 +102,9 @@ const UserSchema = new mongoose.Schema(
     notifications: {
       type: [String],
       enum: ["email", "push", "sms"],
-      default: ["email"],
       validate: {
         validator: (v) => v.length > 0,
-        error: "you must provide at least one notification preference!",
+        message: (props)=> "you must provide at least one notification preference!",
       },
     },
   },

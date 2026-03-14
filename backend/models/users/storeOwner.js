@@ -35,9 +35,39 @@ const storeOwnerSchema = new mongoose.Schema({
     },
   },
 
+  isStoreEmailVerified: {
+    type: Boolean,
+    default: false,
+  },
+
+  store_address: {
+    type:{
+      city: {
+        type: String,
+        required: true,
+      },
+
+      district: {
+        type: String,
+        required: true,
+      },
+
+      street: {
+        type: String,
+        required: true,
+      },
+    },
+    required: true,
+  },
+
+  store_description: {
+    type: String,
+  },
+
   bankAccount: {
     accountName: {
       type: String,
+      trim: true,
     },
     accountNumber: {
       type: String,
@@ -50,76 +80,69 @@ const storeOwnerSchema = new mongoose.Schema({
     bankName: {
       type: String,
       enum: [
-        "National Bank of Egypt (NBE)",
-        "Banque Misr",
-        "Banque du Caire",
-        "Agricultural Bank of Egypt",
+        "البنك الأهلي المصري",
+        "بنك مصر",
+        "بنك القاهرة",
+        "البنك الزراعي المصري",
       ],
-    },
-  },
-
-  store_description: {
-    type: String,
-  },
-
-  store_address: {
-    city: {
-      type: String,
-    },
-    district: {
-      type: String,
-    },
-    street: {
-      type: String,
     },
   },
 
   total_products: {
     type: Number,
+    default: 0,
   },
 
   total_orders: {
     type: Number,
+    default: 0,
   },
 
   total_revenue: {
     type: Number,
+    default: 0,
   }, //from the platform
 
   average_rating: {
     type: Number,
     min: 0,
     max: 5,
+    default: 0,
   },
 
   total_rates: {
     type: Number,
+    default: 0,
   },
 
   is_approved: {
     type: Boolean,
+    default: false,
   }, //by the admin
 
-  social_links: {
+  // social_links: {
+  //   type: [
+  //     {
+  //       platform_name: {
+  //         type: String,
+  //         enum: ["facebook", "youTube", "instagram", "tiktok", "x", "linkedin"],
+  //       },
+  //       page_url: {
+  //         type: String,
+  //       },
+  //     },
+  //   ],
+  // },
+
+  interactive_clients: {
     type: [
       {
-        platform_name: {
-          type: String,
-          enum: ["facebook", "youTube", "instagram", "tiktok", "x", "linkedin"],
-        },
-        page_url: {
-          type: String,
-        },
+        type: mongoose.Schema.Types.ObjectId,
+        ref: "client",
       },
     ],
-  },
-
-  interactive_clients: [
-    {
-      type: mongoose.Schema.Types.ObjectId,
-      ref: "client",
-    },
-  ],
+    default: [],
+  }
 });
 
 const storeOwnerModel = userModel.discriminator(
