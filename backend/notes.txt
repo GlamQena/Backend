@@ -25,3 +25,8 @@
  3- write ':wq' to "write" the message and "quit" the editor
 
  -cookies set without maxAge will be expired when the user close the window tab.
+
+                    zod validations
+- .optional() method pass the undefined values, while .nullable() pass the null values
+  ,but both can't handle the empty string coming from the front-end form so it must handled with preprocess function to return undefined 
+- handle all non-value cases (null, undefined, "", "   ") to return only undefined for the database document to be clean (undefined fields without default value don't appear).

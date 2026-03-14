@@ -37,6 +37,7 @@ const ClientSchema = new mongoose.Schema({
       },
       error: "can't choose more than 5 skin concerns!",
     },
+    default: [],
   }, //for ai-based recommendations (future feature)
 
   wishlist: {
@@ -72,6 +73,7 @@ const ClientSchema = new mongoose.Schema({
         image: String,
       },
     ],
+    default: [],
   }, //list of products interest the client but can't afford them or out-of-stock
 
   totalSpent: {

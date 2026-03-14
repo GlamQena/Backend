@@ -6,6 +6,7 @@ const AdminSchema = new mongoose.Schema({
   createdBy: {
     type: mongoose.Schema.ObjectId,
     ref: "admin",
+    required: true,
   },
 
   lastActivity: {
@@ -28,7 +29,7 @@ const AdminSchema = new mongoose.Schema({
       validator: (v) => {
         return v.length >= 5;
       },
-      message: "the admin must have at least 5 permissions!",
+      message: (props)=> "the admin must have at least 5 permissions!",
     },
     default: [
       "manageUsers",
