@@ -33,7 +33,7 @@ const OTPSchema = new mongoose.Schema(
       type: Date,
       index: true,
       required: true,
-      default: ()=> Date.now() + 10 * 60 * 1000,
+      default: ()=> Date.now() + 1 * 60 * 1000, //1min
     },
 
     isVerified:{
@@ -49,7 +49,7 @@ const OTPSchema = new mongoose.Schema(
       index: true,
     },
 
-    // createdAt:{type:Date, default: Date.now, expires: "10m"} //TTL (time to live)
+    // createdAt:{type:Date, default: Date.now, expires: "1m"} //TTL (time to live)
   },
   { timestamps: true, versionKey: false },
 );
