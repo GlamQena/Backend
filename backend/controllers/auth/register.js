@@ -59,7 +59,7 @@ console.log("parsed data: ", parsedRegister.data);
       return res.status(400).json({ message: "user account not created!" });
     }
     
-      await setUserVerification(newUser, "10M");
+      await setUserVerification(newUser, "10m");
 
     res.status(201).json({
       message: "verification link sent to your email to activate your created account!",
