@@ -13,13 +13,15 @@ const deleteProfileController= require('../controllers/auth/deleteProfile.js');
 
 const express= require("express");
 const checkAuth = require('../middleware/checkAuth.js');
+const sendEmailTokenController = require('../controllers/auth/sendEmailToken.js');
 
 
 const router= express.Router();
 
 router.post("/register", registerController);
 router.post("/login", loginController);
-router.get("/verify/:email/:token", verifyEmailController); //with token
+router.post("/email/send-token", sendEmailTokenController);
+router.get("/verify/:email/:token", verifyEmailController);
 router.post("/password/send-otp", sendPasswordOtpController);
 router.post("/password/verify-otp", verifyPasswordOtpController);
 router.post("/password/reset", resetPasswordController);
