@@ -7,7 +7,7 @@ const verifyEmailController = async (req, res) => {
     
     const { email, token } = req.params;
 
-    const user = await userModel.findOne({ email });
+    const user = await userModel.findOne({ email }).select("-password");
 
     if (!user) {
       return res.status(404).json({
@@ -41,12 +41,15 @@ const verifyEmailController = async (req, res) => {
     user.isEmailVerified = true;
     await user.save();
 
+    if(user.password)
+      delete user["password"];
+    
     await setAccessRefreshTokens(req, res, user, false);
 
     return res.status(200).json({
       message: "Email verified successfully",
+      user
     });
-    //TODO redirect to frontend verification page
 
   } catch (error) {
     
