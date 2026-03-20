@@ -20,9 +20,10 @@
  3- 'git push -u origin main' (push to the remote main branch)
 
 * leave merge commit message in Vim editor:
- 1- write the message at the first line in orange 
- 2- press 'Esc' to exit the '--insert--' mode
- 3- write ':wq' to "write" the message and "quit" the editor
+ 1-press 'i' to enable INSERT mode
+ 2- write the message at the first line in orange 
+ 3- press 'Esc' to exit the '--insert--' mode
+ 4- write ':wq' to "write" the message and "quit" the editor
 
  -cookies set without maxAge will be expired when the user close the window tab.
 
