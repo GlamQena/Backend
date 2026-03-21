@@ -39,6 +39,9 @@ const verifyEmailController = async (req, res) => {
     }
 
     user.isEmailVerified = true;
+    if(user.role==="store_owner" && email===user.store_email)
+      user.isStoreEmailVerified=true;
+
     await user.save();
 
     if(user.password)

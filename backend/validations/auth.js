@@ -1,12 +1,30 @@
 const z= require("zod");
 
-const optionalSchemaHandler= (schema)=>
-    z.preprocess((val)=> {
-         // !val covers undefined, null, empty string
-        if (!val || (typeof val === "string" && val.trim() === ""))
+const optionalSchemaHandler = (schema) =>
+    z.preprocess((val) => {
+        // Handle undefined, null, empty string, and empty objects
+        if (!val || (typeof val === "string" && val.trim() === "")) {
             return undefined;
+        }
+        
+        if (typeof val === "object" && val !== null && Object.keys(val).length === 0) {
+            return undefined;
+        }
         return val;
-    }, schema);
+    }, schema.optional());
+
+const optionalDateHandler = z.preprocess((val) => {
+    if (!val || val === "") return undefined;
+    const date = new Date(val);
+    return isNaN(date.getTime()) ? undefined : date;
+}, z.date().optional());
+
+const optionalEnumHandler = (enumValues) => z.preprocess((val) => {
+    if (!val || val === "") return undefined;
+    return val.toString().toLowerCase().trim();
+}, z.enum(enumValues, { 
+    message: `must be one of: ${enumValues.join(", ")}` 
+}).optional());
 
 const emailField= z
   .string({ required_error: "email is required" })
@@ -34,7 +52,7 @@ const usernameOrEmailField= z.string({required_error: "usernameOrEmail is requir
         if(!parsedUsername.success)
             ctx.addIssue({
                 code: z.ZodIssueCode.custom,
-                message: `username error: ${parsedEmail.error.issues[0].message}`,
+                message: `username error: ${parsedUsername.error.issues[0].message}`,
                 path: ["usernameOrEmail"],
             });
     }
@@ -49,36 +67,21 @@ const passwordField= z.string({required_error: "password is required"}).trim()
 
 const confirmPasswordField= z.string().nonempty({message: "confirm password mustn't be empty!"});
 
-const commonOptionalFields= z.object({
-    address:z.preprocess(
-        (val) => {
-            if (!val || typeof val !== "object") return undefined;
-            return val;
-        },
+const commonOptionalFields = z.object({
+    address: optionalSchemaHandler(
         z.object({
-            city: z.string().trim().max(50, { message: "city must be at most 50 characters" }).optional(),
-            district: z.string().trim().max(50, { message: "district must be at most 50 characters" }).optional(),
-            street: z.string().trim().max(100, { message: "street must be at most 100 characters" }).optional()
-        }).optional()
+            city: z.string().trim().max(50, { message: "city must be at most 50 characters" }),
+            district: z.string().trim().max(50, { message: "district must be at most 50 characters" }),
+            street: z.string().trim().max(100, { message: "street must be at most 100 characters" })
+        })
     ),
-    phone: optionalSchemaHandler(z.string().trim().regex(/^01[0125]{1}[0-9]{8}$/, {message: "invalid egyptian phone (must start with 012, 010, 011 or 015 then 8 digits)"})),
-    birthdate: z.preprocess(
-        (val) => {
-            if (!val || val === "") return undefined;
-            const date = new Date(val);
-            return isNaN(date.getTime()) ? undefined : date;
-        },
-        z.date().optional()
+    phone: optionalSchemaHandler(
+        z.string().trim().regex(/^01[0125]{1}[0-9]{8}$/, { 
+            message: "invalid egyptian phone (must start with 012, 010, 011 or 015 then 8 digits)" 
+        })
     ),
-    gender: z.preprocess(
-        (val) => {
-            if (!val || val === "") return undefined;
-            return val.toString().toLowerCase().trim();
-        },
-        z.enum(["male", "female"], { 
-            message: "gender must be male or female" 
-        }).optional()
-    ),
+    birthdate: optionalDateHandler,
+    gender: optionalEnumHandler(["male", "female"]),
 });
 
 const loginSchema= z.object({usernameOrEmail: usernameOrEmailField, password: passwordField});
@@ -116,4 +119,4 @@ const storeOwnerSpecificRegister= z.object({
 const resetPasswordSchema= z.object({newPassword:passwordField, confirmPassword:confirmPasswordField})
 .refine((data)=> data.newPassword === data.confirmPassword, {message: "new password and its confirm must match!", path: ["confirmPassword"]});
 
-module.exports= {loginSchema, registerSchema, resetPasswordSchema, storeOwnerSpecificRegister, emailField, commonOptionalFields, optionalSchemaHandler};
+module.exports= {loginSchema, registerSchema, resetPasswordSchema, storeOwnerSpecificRegister, emailField, commonOptionalFields, optionalSchemaHandler, optionalEnumHandler};
