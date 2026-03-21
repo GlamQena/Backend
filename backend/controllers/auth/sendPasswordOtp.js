@@ -33,7 +33,7 @@ const sendPasswordOtpController = async (req, res) => {
       });
     }
 
-    await sendEmail({
+    sendEmail({
       to: email,
       subject: "Password Reset Code",
       html: `<h2>Your OTP is: ${otp}</h2>`,
