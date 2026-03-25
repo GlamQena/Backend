@@ -43,8 +43,8 @@ console.log("parsed data: ", parsedRegister.data);
     };
 
     if (role === "client") {
-      const newCart= await cartModel.create({products: [], total_price:0});
-      newUser = await clientModel.create({cart_id: newCart._id, ...commonData});//save client in newUser
+      newUser = await clientModel.create({...commonData});
+      await cartModel.create({client_id: newUser._id, products: [], total_price:0});
     }
 
     if (role === "store_owner") {

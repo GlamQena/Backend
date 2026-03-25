@@ -2,13 +2,6 @@ const mongoose = require("mongoose");
 const userModel = require("./user.js");
 
 const ClientSchema = new mongoose.Schema({
-  cart_id: {
-    type: mongoose.Schema.Types.ObjectId,
-    ref: "cart",
-    required: true,
-    index: true,
-  },
-
   skinType: {
     type: String,
     enum: {
