@@ -5,29 +5,47 @@ const ReviewSchema = new mongoose.Schema(
     client_id: {
       type: mongoose.Schema.Types.ObjectId,
       ref: "client",
+      required: true,
+      index: true,
     },
 
     product_id: {
       type: mongoose.Schema.Types.ObjectId,
       ref: "product",
+      required: true,
+      index: true,
     },
 
     store_owner_id: {
       type: mongoose.Schema.Types.ObjectId,
       ref: "store_owner",
+      required: true,
+      index: true,
     },
 
     rate: {
       type: Number,
       min: 0,
       max: 5,
-    }, //will be integer not double value initially
+      required: true,
+    },
 
     comment: {
       type: String,
     },
 
-    // images :[URL],
+    images : {
+      type: [String],
+      validate:{
+        validator: (v)=> {
+          if(v.length===0)
+            return true;  //pass if no images provided making it optional
+          return v>=1 && v<=7;
+        },
+        message: (props)=> "you must provide at least 3 images for the product but don't exceed 7"
+      },
+      default: []
+    },
 
     // replies:
     // [{
@@ -52,9 +70,15 @@ const ReviewSchema = new mongoose.Schema(
     //   }
     // }],
 
-    isApproved: Boolean, //by the product storeOwner
+    isApproved: {
+      type: Boolean,
+      default: false,
+    }, //by the product storeOwner
 
-    isActive: Boolean,
+    isActive: {
+      type: Boolean,
+      default: true,
+    },
   },
   {
     timestamps: true,

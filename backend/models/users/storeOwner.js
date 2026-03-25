@@ -98,11 +98,6 @@ const storeOwnerSchema = new mongoose.Schema({
     default: 0,
   },
 
-  total_revenue: {
-    type: Number,
-    default: 0,
-  }, //from the platform
-
   average_rating: {
     type: Number,
     min: 0,
@@ -119,20 +114,6 @@ const storeOwnerSchema = new mongoose.Schema({
     type: Boolean,
     default: false,
   }, //by the admin
-
-  // social_links: {
-  //   type: [
-  //     {
-  //       platform_name: {
-  //         type: String,
-  //         enum: ["facebook", "youTube", "instagram", "tiktok", "x", "linkedin"],
-  //       },
-  //       page_url: {
-  //         type: String,
-  //       },
-  //     },
-  //   ],
-  // },
 
   interactive_clients: {
     type: [
