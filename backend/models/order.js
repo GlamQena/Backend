@@ -27,8 +27,16 @@ const OrderSchema = new mongoose.Schema(
                 required: true,
                 index: true,
               },
+              name: {
+                type: String,
+                trim: true,
+              },
+              price: {
+                type: Number,
+              },
               quantity: {
                 type: Number,
+                max: 99,
                 min: 1,
                 required: true,
               },
@@ -178,28 +186,33 @@ const OrderSchema = new mongoose.Schema(
 );
 
 OrderSchema.pre("save", function(next) {
-  this.subtotal_price=0;
+  try{
+    this.subtotal_price=0;
 
-  this.products.forEach((store=>{
-    store.store_subtotal=0;
+    this.products.forEach((store=>{
+      store.store_subtotal=0;
 
-    store.products.forEach((prod)=>{
-      store.store_subtotal+= prod.subtotal_price;
-    });
+      store.products.forEach((prod)=>{
+        prod.subtotal_price= prod.price * prod.quantity;
+        store.store_subtotal+= prod.subtotal_price;
+      });
 
-    const store_payout= this.profit_breakdown.stores_payout.find(s=> s.owner_store_id==store.owner_store_id);
-      if(store_payout)
-        store_payout.amount = (COMMISSION_RATES.STORE_PAYOUT * store.store_subtotal).toFixed(2);
+      const store_payout= this.profit_breakdown.stores_payout.find(s=> s.owner_store_id==store.owner_store_id);
+        if(store_payout)
+          store_payout.amount = (COMMISSION_RATES.STORE_PAYOUT * store.store_subtotal).toFixed(2);
 
-    this.subtotal_price+=store.store_subtotal;
-  }));
+      this.subtotal_price+=store.store_subtotal;
+    }));
 
-  this.profit_breakdown.platform_revenue.products= (COMMISSION_RATES.PRODUCT_COMMISSION * this.subtotal_price).toFixed(2);
-  this.profit_breakdown.platform_revenue.delivery= ((1/COMMISSION_RATES.DELIVERY_PAYOUT) * COMMISSION_RATES.DELIVERY_COMMISSION * this.profit_breakdown.bosta_delivery_cost).toFixed(2);
-  this.delivery_cost= this.profit_breakdown.bosta_delivery_cost + this.profit_breakdown.platform_revenue.delivery;
-  this.total_price= this.subtotal_price + this.delivery_cost;
+    this.profit_breakdown.platform_revenue.products= (COMMISSION_RATES.PRODUCT_COMMISSION * this.subtotal_price).toFixed(2);
+    this.profit_breakdown.platform_revenue.delivery= ((1/COMMISSION_RATES.DELIVERY_PAYOUT) * COMMISSION_RATES.DELIVERY_COMMISSION * this.profit_breakdown.bosta_delivery_cost).toFixed(2);
+    this.delivery_cost= this.profit_breakdown.bosta_delivery_cost + this.profit_breakdown.platform_revenue.delivery;
+    this.total_price= this.subtotal_price + this.delivery_cost;
 
-  next();
+    next();
+  }catch(error){
+    next(error);
+  }
 });
 
 const orderModel = mongoose.model("order", OrderSchema);
