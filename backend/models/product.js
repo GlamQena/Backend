@@ -5,15 +5,20 @@ const ProductSchema = new mongoose.Schema(
     owner_store_id: {
       type: mongoose.Schema.Types.ObjectId,
       ref: "store_owner",
+      required: true,
+      index: true,
     },
 
     category_id: {
       type: mongoose.Schema.Types.ObjectId,
       ref: "category",
+      required: true,
+      index: true,
     },
 
     name: {
       type: String,
+      required: true,
     },
 
     description: {
@@ -22,32 +27,61 @@ const ProductSchema = new mongoose.Schema(
 
     price: {
       type: Number,
+      min: 0,
+      required: true,
     },
 
     stock: {
       type: Number,
+      min: 0,
+      required: true,
     }, //available quantity
 
     ingredients: {
       type: [String],
     },
 
+    images :{
+      type: [String],
+      validate:{
+        validator: (v)=> v.length>=3 && v.length<=7,
+        error: (data)=> "you must provide at least 3 images for the product but don't exceed 7"
+      }
+    },
+
     skinType: {
       type: String,
       enum: ["oily", "dry", "combination", "sensitive", "normal"],
+      default: "normal",
     },
 
-    hasReviewed: Boolean,
+    hasReviewed: {
+      type: Boolean,
+      default: false,
+    },
 
+    average_rating: {
+      type: Number,
+      min: 0,
+      max: 5,
+      default: 0,
+    },
+
+    total_rates: {
+      type: Number,
+      default: 0,
+    },
+  
     review_IDs: {
       type: [mongoose.Schema.Types.ObjectId],
       ref: "review",
+      default: [],
     },
   },
 
   {
     timestamps: true,
-    versionKEy: false,
+    versionKey: false,
   },
 );
 

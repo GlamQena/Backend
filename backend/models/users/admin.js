@@ -23,7 +23,6 @@ const AdminSchema = new mongoose.Schema({
       "manageProducts",
       "manageOrders",
       "manageCategories",
-      "manageDelivery",
     ],
     validate: {
       validator: (v) => {
@@ -39,6 +38,14 @@ const AdminSchema = new mongoose.Schema({
       "manageCategories",
     ],
   },
+
+  orders_management:{
+    dailyOrders: Number,
+    dailyRevenue: Number,
+    pendingShipments: Number,    // From Bosta webhooks
+    failedDeliveries: Number,
+    lastSyncWithBosta: Date
+  }
 });
 
 const adminModel = userModel.discriminator("admin", AdminSchema); //discriminator key value must match role enum values.
