@@ -8,9 +8,8 @@ const verifySmsOtpController= require('../controllers/auth/verifySmsOtp.js');
 const resetPasswordController= require('../controllers/auth/resetPassword.js');
 const logoutController= require('../controllers/auth/logout.js');
 const refreshAccessTokenController= require('../controllers/auth/refreshToken.js');
-
-const express= require("express");
 const sendEmailTokenController = require('../controllers/auth/sendEmailToken.js');
+const express= require("express");
 
 
 const router= express.Router();

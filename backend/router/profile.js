@@ -6,8 +6,8 @@ const deleteProfileController= require('../controllers/profile/deleteProfile.js'
 
 const profileRouter= express.Router();
 
-router.get("/profile/", getUserProfileController);
-router.put("/profile/edit", checkAuth, editProfileController);
-router.delete("/profile/delete", deleteProfileController);
+profileRouter.get("/", checkAuth, getUserProfileController);
+profileRouter.put("/edit", checkAuth, editProfileController);
+profileRouter.delete("/delete", checkAuth, deleteProfileController);
 
 module.exports= profileRouter;
