@@ -80,7 +80,7 @@ const UserSchema = new mongoose.Schema(
       },
     },
 
-    birthDate: {
+    birthdate: {
       type: Date,
     },
 

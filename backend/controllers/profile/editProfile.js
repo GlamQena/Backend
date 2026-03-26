@@ -3,6 +3,7 @@ const {clientModel} = require('../../models/users/client.js');
 const {storeOwnerModel} = require('../../models/users/storeOwner.js');
 const {adminModel} = require('../../models/users/admin.js');
 const {clientProfile, storeOwnerProfile, adminProfile}= require("../../validations/profile.js");
+const { setUserVerification } = require("../../utils/mailSender");
 
 const editProfileController= async(req, res)=>{
 try {
@@ -60,6 +61,12 @@ try {
         updateQuery.$set[key]= validatedData[key];
     });
 
+    let emailChanged= false;
+    if(validatedData.email !== req.user.email){
+      updateQuery.$set["isEmailVerified"]= false;
+      emailChanged= true;
+    }
+
     if(Object.keys(updateQuery.$set) === 0)
       delete updateQuery.$set;
 
@@ -69,7 +76,7 @@ try {
     if(Object.keys(updateQuery) === 0)
       return res.status(400).json({message: "no available data to update!"});
 
-    console.log("model-> ", model);
+    // console.log("model-> ", model);
     const updatedUser = await model.findByIdAndUpdate(
       userId,
       updateQuery, 
@@ -80,8 +87,11 @@ try {
       return res.status(404).json({ message: "User not found" });
     }
 
+    if(emailChanged)
+      setUserVerification(updatedUser, "10m");
+
     res.status(200).json({
-      message: "Profile updated successfully",
+      message: `Profile updated successfully${emailChanged && ", verification link sent to your email"}`,
       data: updatedUser
     });
 
