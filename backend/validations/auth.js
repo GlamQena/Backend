@@ -116,7 +116,11 @@ const storeOwnerSpecificRegister= z.object({
     }, {required_error: "store address is required!"}),
 });
 
-const resetPasswordSchema= z.object({newPassword:passwordField, confirmPassword:confirmPasswordField})
-.refine((data)=> data.newPassword === data.confirmPassword, {message: "new password and its confirm must match!", path: ["confirmPassword"]});
+const newConfirmPasswords= z.object({newPassword:passwordField, confirmNewPassword:confirmPasswordField})
+.refine((data)=> data.newPassword === data.confirmNewPassword, {message: "new password and its confirm must match!", path: ["confirmPassword"]});
 
-module.exports= {loginSchema, registerSchema, resetPasswordSchema, storeOwnerSpecificRegister, emailField, commonOptionalFields, optionalSchemaHandler, optionalEnumHandler};
+const resetPasswordSchema= newConfirmPasswords;
+const changePasswordSchema= z.object({currentPassword: passwordField})
+.extend(newConfirmPasswords.shape);
+
+module.exports= {loginSchema, registerSchema, resetPasswordSchema, changePasswordSchema, storeOwnerSpecificRegister, emailField, commonOptionalFields, optionalSchemaHandler, optionalEnumHandler};
