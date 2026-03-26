@@ -1,6 +1,7 @@
 const jwt= require("jsonwebtoken");
-const userModel= require("../models/users/user");
-
+const {clientModel}= require("../models/users/client");
+const {adminModel}= require("../models/users/admin");
+const {storeOwnerModel}= require("../models/users/storeOwner");
 
 const checkAuth= async(req, res, next)=>{
     const token= req.headers.token? req.headers.token : req.cookies.accessToken;
@@ -8,13 +9,37 @@ const checkAuth= async(req, res, next)=>{
 
     if(!token)
         return res.status(401).json({message: "you're not authorized, please login first!"});
+
     jwt.verify(token, process.env.ACCESS_TOKEN_SECRET, async (err, decodedToken)=>{
         if(err){
             return res.status(401).json({message: `error decoding the access token-> ${err}`});
         }
-        const user= await userModel.findOne({role: decodedToken.role, _id:decodedToken.user_id}).lean();
-        if(!user)
-            return res.status(404).json({message: "user not found"});
+
+        console.log("decoded token => ", decodedToken);
+
+        const userRole= decodedToken.role;
+        const userId= decodedToken.user_id;
+        let model;
+
+        switch (userRole) {
+            case 'client':
+                model = clientModel;
+                break;
+            case 'store_owner':
+                model = storeOwnerModel;
+                break;
+            case 'admin':
+                model = adminModel;
+                break;
+            default:
+                model = clientModel;
+        }
+
+        const user = await model.findById(userId).lean();
+
+        if (!user) {
+            return res.status(404).json({ message: "User not found" });
+        }
 
         console.log("checkAuth user-> ", user);
         req.user= user;
