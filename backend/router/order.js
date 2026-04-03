@@ -10,7 +10,7 @@ const router = express.Router();
 router.use(checkAuth);
 router.post("/", placeOrderController);
 router.get("/history", getOrderHistoryController);
-router.post("/checkout", paymentCheckoutController);
+router.post("/:id/payment", paymentCheckoutController);
 router.post("/completion", checkPaymentCompletion);
 
 module.exports = router;

@@ -12,7 +12,7 @@ const paymentCheckoutController = async (req, res) => {
   try {
     //TODO-> get the billing data from req.body and store in client model after verifying the phone with sms otp.
     const authToken = await getAuthToken();
-    //TODO-> get the order products (stored on clicking checkout from cart page)
+    //TODO-> get the order products by the id
     const order_id = await registerOrder(authToken, 100000, [
       { name: "prod1", quantity: 2, amount_cents: 50000, description: "dddf" },
       {

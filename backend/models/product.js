@@ -49,6 +49,25 @@ const ProductSchema = new mongoose.Schema(
       }
     },
 
+    weight:{
+      type: Number,
+      default: 0.5 //in KG
+    }, //affect delivery cost
+
+    dimensions: {
+      type: {
+        length: { type: Number, default: 15 , min:1, max:100},
+        width: { type: Number, default: 10 , min:1, max:100},
+        height: { type: Number, default: 5 , min:1, max:100}
+      },
+
+      default: {
+        length: 15,
+        width: 10,
+        height: 5
+      }
+    },
+
     skinType: {
       type: String,
       enum: ["oily", "dry", "combination", "sensitive", "normal"],
