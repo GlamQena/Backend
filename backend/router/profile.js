@@ -5,12 +5,12 @@ const editProfileController= require('../controllers/profile/editProfile.js');
 const changePasswordController= require('../controllers/profile/changePassword.js');
 const deleteProfileController= require('../controllers/profile/deleteProfile.js');
 
-const profileRouter= express.Router();
+const router= express.Router();
 
-profileRouter.use(checkAuth);
-profileRouter.get("/", getUserProfileController);
-profileRouter.put("/edit", editProfileController);
-profileRouter.patch("/change-password", changePasswordController);
-profileRouter.delete("/delete", deleteProfileController);
+router.use(checkAuth);
+router.get("/", getUserProfileController);
+router.put("/edit", editProfileController);
+router.patch("/change-password", changePasswordController);
+router.delete("/delete", deleteProfileController);
 
-module.exports= profileRouter;
+module.exports= router;
