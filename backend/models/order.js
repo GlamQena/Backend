@@ -134,11 +134,6 @@ const OrderSchema = new mongoose.Schema(
       type: String,
     },
 
-    hasReviewed: {
-      type: Boolean,
-      default: false,
-    }, //to request the customer to leave a review for its products
-
     profit_breakdown: {
       type: {
         platform_revenue: {

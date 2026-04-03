@@ -12,28 +12,28 @@ const paymentCheckout= async(req, res)=>{
     try{
         //TODO-> get the billing data from req.body and store in client model after verifying the phone with sms otp.
         const authToken= await getAuthToken();
+        //TODO-> get the order products (stored on clicking checkout from cart page)
         const order_id= await registerOrder(authToken, 100000, [{name: "prod1", quantity:2, amount_cents: 50000, description:"dddf"},{name: "prod2", quantity:3, amount_cents: 50000, description: "hgvfcdxdd"}]);
         const paymentToken= await getPaymentKey(authToken, order_id, 100000, {
         first_name: "Semon",
         last_name: "hany",
         email: "semonhany848@gmail.com",
-        phone_number: "01000000000", 
-        name:"semon fathy", 
+        phone_number: "01000000000",
         city:"nag7ammadi", 
         street: "ali farok",
-        building: "NA", 
-        floor: "NA",    
-        apartment: "NA",
-        country: "EG"  }, paymob_card_integration_id);
+        apartment: "safara",
+        building: "24",
+        floor: "2",
+        country: "EG"  }, paymob_card_integration_id); //paymob billing data doesn't support district property and all these billing properties are required
         
         const mailOptions={
             from: process.env.EMAIL, 
             to:"semooohany@gmail.com", 
-            subject:"payment receipt", 
+            subject:"payment information", 
             text: `https://accept.paymob.com/api/acceptance/iframes/${paymob_iframe_id}?payment_token=${paymentToken}`
         }
         await sendEmail(mailOptions);
-        res.status(200).json({message: "payment receipt url sent to you're email..."});
+        res.status(200).json({message: "payment url sent to you're email..."});
     }catch(err){
         console.error(`error chekout the payment-> ${err}`);
     }
