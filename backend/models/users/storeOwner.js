@@ -88,6 +88,26 @@ const storeOwnerSchema = new mongoose.Schema({
     },
   },
 
+  products:{
+    type: [
+      {
+        product_id:{
+          type: mongoose.Schema.Types.ObjectId,
+          ref: "product",
+        },
+        
+        addeddAt: Date,
+
+        isActive: {
+          type: Boolean,
+          default: true,
+        }
+      }
+    ],
+
+    default: [],
+  },
+
   total_products: {
     type: Number,
     default: 0,

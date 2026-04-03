@@ -44,7 +44,7 @@ console.log("parsed data: ", parsedRegister.data);
 
     if (role === "client") {
       newUser = await clientModel.create({...commonData});
-      await cartModel.create({client_id: newUser._id, products: [], total_price:0});
+      //TODO make the guest cart the new logged-in client cart (if exist)
     }
 
     if (role === "store_owner") {
