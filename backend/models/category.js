@@ -1,5 +1,4 @@
 const mongoose = require("mongoose");
-const { maxLength } = require("zod");
 
 const CategorySchema = new mongoose.Schema(
   {
@@ -9,8 +8,6 @@ const CategorySchema = new mongoose.Schema(
       required: true,
       index: true,
       unique: true,
-      //TODO=> add enum values here based on the skinTypes & concerns and the fake data available categories
-
       enum: [
         "Cleansers",
         "Moisturizers",
@@ -26,6 +23,7 @@ const CategorySchema = new mongoose.Schema(
         "Mascara",
         "Eyeliner",
         "Brushes",
+        "Others"
       ],
     },
 
@@ -34,12 +32,6 @@ const CategorySchema = new mongoose.Schema(
       trim: true,
       maxlength: 500,
     },
-
-    // productIds:  [{
-    //   type: mongoose.Schema.Types.ObjectId,
-    //   ref: "product",
-    //   index: true,
-    // }], --> not needed as we can get the products of a category by querying the products collection with the category_id field
 
     isActive: {
       type: Boolean,

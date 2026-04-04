@@ -15,9 +15,9 @@ const addNewProductController = async (req, res) => {
             owner_store_id: req.user.id
         });
 
-        res.status(201).json(newProduct);
+        res.status(201).json({message: "product created successfully", newProduct});
     } catch (error) {
-        res.status(400).json({ message: error.message });
+        res.status(500).json({ message: "internal server error", error: error.message });
     };
 
 
