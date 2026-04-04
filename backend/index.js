@@ -22,6 +22,7 @@ const app = express();
 app.use(express.json());
 applySecurity(app);
 applyLogger(app);
+app.use("/uploads", express.static(path.join(__dirname, "uploads")));
 
 //enable cookies
 const allowedOrigins = [
@@ -74,7 +75,7 @@ connect_mongodb();
 
 mongoose.connection.once("connected", async () => {
   console.log("server connected to mongodb successfully...");
-  await connect_redis();
+  //await connect_redis();
 
   app.listen(process.env.PORT, (err) => {
     if (err) {
