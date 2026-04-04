@@ -1,5 +1,5 @@
 const jwt= require("jsonwebtoken");
-const {clientModel, userModel}= require("../../models/users/client");
+const {clientModel}= require("../../models/users/client");
 const {storeOwnerModel}= require("../../models/users/storeOwner");
 const {adminModel}= require("../../models/users/admin");
 const {setAccessToken}= require("../../utils/acc_ref_tokens");
@@ -35,7 +35,7 @@ const refreshAccessTokenController= async(req, res)=>{
             res.status(401).json({message:"doesn't supported role!"});
     }
 
-    setAccessToken(req, res, loggedUser);
+    setAccessToken(res, loggedUser);
     res.status(200).json({message: "access token refreshed successfully", user: loggedUser});
 }
 
