@@ -22,6 +22,7 @@ const app = express();
 app.use(express.json());
 applySecurity(app);
 applyLogger(app);
+app.use("/uploads", express.static(path.join(__dirname, "uploads")));
 
 //enable cookies
 const allowedOrigins = [

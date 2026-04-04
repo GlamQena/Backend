@@ -2,22 +2,25 @@ const path= require("path");
 require("dotenv").config({path: path.join(__dirname, "../.env")});
 const jwt= require("jsonwebtoken");
 
-const setAccessRefreshTokens= async (req, res, user, rememberMe=false)=>{
-    try{
-        setAccessToken(req, res, user);
 
-        const refreshTokenAge= rememberMe? process.env.REFRESH_TOKEN_EXPIRY_REMEMBERED : process.env.REFRESH_TOKEN_EXPIRY_NORMAL;
+const setAccessRefreshTokens= (res, user, rememberMe=false)=>{
+    try{
+        setAccessToken(res, user);
+
+       const refreshTokenMaxAge= rememberMe? parseInt(process.env.REFRESH_TOKEN_REMEMBERED_MS) : parseInt(process.env.REFRESH_TOKEN_NORMAL_MS);
+        const refreshTokenExpiry= rememberMe? process.env.REFRESH_TOKEN_EXPIRY_REMEMBERED : process.env.REFRESH_TOKEN_EXPIRY_NORMAL;
+
         const refreshToken= jwt.sign(
             {user_id:user._id, role:user.role}, 
             process.env.REFRESH_TOKEN_SECRET, 
-            {expiresIn: refreshTokenAge}
+            {expiresIn: refreshTokenExpiry}
         );
 
         res.cookie("refreshToken", refreshToken, {
             httpOnly: true,
             secure: process.env.NODE_ENV=="PRODUCTION",
-            maxAge: refreshTokenAge,
-            samesite: "strict",
+            maxAge: refreshTokenMaxAge,
+            sameSite: "strict",
         });
 
         console.log("refresh token created successfully => " + refreshToken);
@@ -26,7 +29,7 @@ const setAccessRefreshTokens= async (req, res, user, rememberMe=false)=>{
     }
 }
 
-const setAccessToken= async (req, res, user)=>{
+const setAccessToken= (res, user)=>{
     try{
         const accessToken= jwt.sign(
             {user_id:user._id, role:user.role}, 
@@ -34,14 +37,11 @@ const setAccessToken= async (req, res, user)=>{
             {expiresIn: process.env.ACCESS_TOKEN_EXPIRY}
             );
 
-        if(req.cookies.accessToken)
-            res.clearCookie("accessToken");
-
         res.cookie("accessToken", accessToken, {
             httpOnly: true,
             secure: process.env.NODE_ENV=="PRODUCTION",
-            maxAge: process.env.ACCESS_TOKEN_EXPIRY,
-            samesite: "strict",
+            maxAge: parseInt(process.env.ACCESS_TOKEN_MS),
+            sameSite: "Strict",
         });
 
         console.log("access token created successfully => " + accessToken);

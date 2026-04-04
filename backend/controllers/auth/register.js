@@ -3,6 +3,7 @@ const {storeOwnerModel} = require("../../models/users/storeOwner");
 const cartModel= require("../../models/cart");
 const bcrypt = require("bcrypt");
 const { setUserVerification } = require("../../utils/mailSender");
+const {setAccessRefreshTokens} = require("../../utils/acc_ref_tokens");
 const { registerSchema, storeOwnerSpecificRegister}= require("../../validations/auth");
 
 const registerController = async (req, res) => {
@@ -54,12 +55,12 @@ console.log("parsed data: ", parsedRegister.data);
       newUser = await storeOwnerModel.create({ ...commonData, ...parsedStoreOwnerRegister.data});//save store owner in newUser
     }
 
-      // send verifyEmailToken to user email and set isEmailVerified to false until user verify his email
     if (!newUser) {
       return res.status(400).json({ message: "user account not created!" });
     }
-    
-      await setUserVerification(newUser, "10m");
+
+    setAccessRefreshTokens(res, newUser, false);
+    await setUserVerification(newUser, "10m");
 
     res.status(201).json({
       message: "verification link sent to your email to activate your created account!",

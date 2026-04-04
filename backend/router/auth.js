@@ -10,9 +10,12 @@ const logoutController= require('../controllers/auth/logout.js');
 const refreshAccessTokenController= require('../controllers/auth/refreshToken.js');
 const sendEmailTokenController = require('../controllers/auth/sendEmailToken.js');
 const express= require("express");
+const cookieParser = require('cookie-parser'); 
 
 
 const router= express.Router();
+router.use(cookieParser()); 
+
 
 router.post("/register", registerController);
 router.post("/login", loginController);

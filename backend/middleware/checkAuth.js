@@ -1,7 +1,4 @@
 const jwt= require("jsonwebtoken");
-const {clientModel}= require("../models/users/client");
-const {adminModel}= require("../models/users/admin");
-const {storeOwnerModel}= require("../models/users/storeOwner");
 
 const checkAuth= async(req, res, next)=>{
     const token= req.headers.token? req.headers.token : req.cookies.accessToken;
@@ -17,32 +14,11 @@ const checkAuth= async(req, res, next)=>{
 
         console.log("decoded token => ", decodedToken);
 
-        const userRole= decodedToken.role;
-        const userId= decodedToken.user_id;
-        let model;
+        const role= decodedToken.role;
+        const id= decodedToken.user_id;
 
-        switch (userRole) {
-            case 'client':
-                model = clientModel;
-                break;
-            case 'store_owner':
-                model = storeOwnerModel;
-                break;
-            case 'admin':
-                model = adminModel;
-                break;
-            default:
-                model = clientModel;
-        }
+        req.user = {id, role};
 
-        const user = await model.findById(userId).lean();
-
-        if (!user) {
-            return res.status(404).json({ message: "User not found" });
-        }
-
-        console.log("checkAuth user-> ", user);
-        req.user= user;
         next();
     });
 }
