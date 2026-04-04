@@ -4,21 +4,27 @@ const {adminModel}= require("../models/users/admin");
 const {storeOwnerModel}= require("../models/users/storeOwner");
 
 const checkAuth= async(req, res, next)=>{
-    const token= req.headers.token? req.headers.token : req.cookies.accessToken;
+    const token= req.headers.token? req.headers.token : req.cookies.refreshToken;
     //consider the token come as a header prop from postman or with Authorization from frontend 'Bearer [token]'.
 
     if(!token)
         return res.status(401).json({message: "you're not authorized, please login first!"});
 
-    jwt.verify(token, process.env.ACCESS_TOKEN_SECRET, async (err, decodedToken)=>{
+    jwt.verify(token, process.env.REFRESH_TOKEN_SECRET, async (err, decodedToken)=>{
         if(err){
-            return res.status(401).json({message: `error decoding the access token-> ${err}`});
+            return res.status(401).json({message: `error decoding the refresh token-> ${err}`});
         }
 
         console.log("decoded token => ", decodedToken);
 
         const userRole= decodedToken.role;
         const userId= decodedToken.user_id;
+
+        req.user = {
+            user_id: decodedToken.user_id,
+            role: decodedToken.role
+        };
+
         let model;
 
         switch (userRole) {
@@ -42,7 +48,6 @@ const checkAuth= async(req, res, next)=>{
         }
 
         console.log("checkAuth user-> ", user);
-        req.user= user;
         next();
     });
 }
