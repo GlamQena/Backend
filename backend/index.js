@@ -20,9 +20,9 @@ require("dotenv").config({ path: path.join(__dirname, "./env") });
 
 const app = express();
 app.use(express.json());
-applySecurity(app);
-applyLogger(app);
-app.use("/uploads", express.static(path.join(__dirname, "uploads")));
+
+app.use( express.static(path.join(__dirname, 'uploads'))); //to allow access the photos in uploads folder
+
 
 //enable cookies
 const allowedOrigins = [
