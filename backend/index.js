@@ -15,7 +15,7 @@ const productsRouter= require("./router/products.js");
 const storesRouter= require("./router/stores.js");
 const categoriesRouter= require("./router/categories.js");
 const usersRouter= require("./router/users.js");
-const cartRouter= require("./router/products.js");
+const cartRouter= require("./router/cart.js");
 
 require("dotenv").config({ path: path.join(__dirname, "./env") });
 
