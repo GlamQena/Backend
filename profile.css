@@ -1,0 +1,599 @@
+/* import fonts */
+@import url('https://fonts.googleapis.com/css2?family=Tajawal:wght@400;500;600;700&display=swap');
+
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+body {
+    background: var(--خلفية-الصفحة);
+    font-family: 'Tajawal', 'Segoe UI', system-ui, sans-serif;
+    padding: 2rem;
+    min-height: 100vh;
+    transition: all 0.3s ease;
+}
+
+/*  loading */
+.loading {
+    text-align: center;
+    font-size: 1.5rem;
+    padding: 3rem;
+    color: var(--نص-رئيسي);
+    font-weight: 500;
+    background: var(--خلفية-البطاقة);
+    border-radius: var(--راديوس-البطاقة);
+    max-width: 400px;
+    margin: 2rem auto;
+    box-shadow: var(--ظل-البطاقة);
+    border: 1px solid var(--حد-واضح);
+}
+
+/* main page  */
+.profile-page-wrapper {
+    max-width: 1400px;
+    margin: 0 auto;
+    background: var(--خلفية-البطاقة);
+    border-radius: var(--راديوس-البطاقة);
+    box-shadow: var(--ظل-البطاقة);
+    overflow: hidden;
+    animation: fadeIn 0.5s ease-out;
+    border: 1px solid var(--حد-واضح);
+}
+
+@keyframes fadeIn {
+    from {
+        opacity: 0;
+        transform: translateY(20px);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+form {
+    padding: 2rem 2rem 1.5rem;
+}
+
+/*   access&fail */
+.success-message {
+    background: var(--أخضر-نجاح);
+    background: linear-gradient(135deg, var(--أخضر-نجاح) 0%, #16a34a 100%);
+    color: white;
+    padding: 1rem 1.5rem;
+    border-radius: var(--راديوس-الحقل);
+    border-right: 5px solid var(--ذهبي);
+    margin-bottom: 1.5rem;
+    font-weight: 500;
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    animation: slideIn 0.3s ease-out;
+}
+
+.error-message {
+    background: var(--أحمر-خافت);
+    color: var(--أحمر-خطأ);
+    padding: 1rem 1.5rem;
+    border-radius: var(--راديوس-الحقل);
+    border-right: 5px solid var(--أحمر-خطأ);
+    margin-bottom: 1.5rem;
+    font-weight: 500;
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    animation: slideIn 0.3s ease-out;
+}
+
+@keyframes slideIn {
+    from {
+        opacity: 0;
+        transform: translateX(-20px);
+    }
+    to {
+        opacity: 1;
+        transform: translateX(0);
+    }
+}
+
+.status-msg {
+    background: var(--بنفسجي-خافت);
+    padding: 0.6rem 1.2rem;
+    border-radius: var(--راديوس-الزر);
+    font-size: 0.85rem;
+    display: inline-block;
+    margin-bottom: 0.75rem;
+    color: var(--نص-ثانوي);
+}
+
+
+.profile-content-grid {
+    display: flex;
+    gap: 2rem;
+    flex-wrap: wrap;
+}
+
+.main-form-content {
+    flex: 2;
+    min-width: 260px;
+}
+
+.sidebar-form-content {
+    flex: 1;
+    min-width: 260px;
+}
+
+/* cards  */
+.form-card {
+    background: var(--خلفية-البطاقة);
+    border-radius: var(--راديوس-البطاقة);
+    padding: 1.5rem;
+    margin-bottom: 1.8rem;
+    box-shadow: var(--ظل-البطاقة);
+    border: 1px solid var(--حد-واضح);
+    transition: all 0.3s ease;
+}
+
+.form-card:hover {
+    transform: translateY(-2px);
+    border-color: var(--بنفسجي);
+    box-shadow: 0 20px 40px rgba(168, 85, 247, 0.15);
+}
+
+.form-card h3 {
+    font-size: 1.35rem;
+    font-weight: 600;
+    margin-bottom: 1.2rem;
+    color: var(--نص-رئيسي);
+    border-right: 4px solid var(--بنفسجي);
+    padding-right: 0.8rem;
+    display: inline-block;
+}
+
+
+.inputs-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(240px, 1fr));
+    gap: 1rem;
+    margin-bottom: 1.2rem;
+}
+
+.input-field label {
+    display: block;
+    font-size: 0.85rem;
+    font-weight: 600;
+    color: var(--نص-خافت);
+    margin-bottom: 0.5rem;
+}
+
+.input-field input {
+    width: 100%;
+    padding: var(--padding-الحقل);
+    border: 1px solid var(--حد-خافت);
+    border-radius: var(--راديوس-الحقل);
+    font-size: 0.95rem;
+    transition: all 0.3s ease;
+    background: var(--خلفية-2);
+    font-family: inherit;
+    color: var(--نص-رئيسي);
+    height: var(--ارتفاع-الحقل);
+}
+
+.input-field input:focus {
+    outline: none;
+    border-color: var(--حد-تركيز);
+    box-shadow: var(--ظل-تركيز-الحقل);
+    background: var(--خلفية-3);
+}
+
+.input-field input::placeholder {
+    color: var(--نص-placeholder);
+}
+
+/* gender  */
+.gender-toggle {
+    display: flex;
+    align-items: center;
+    gap: 1rem;
+    flex-wrap: wrap;
+    margin: 1.5rem 0 0.8rem;
+    padding-top: 0.5rem;
+}
+
+.gender-toggle p {
+    font-weight: 600;
+    color: var(--نص-رئيسي);
+    margin-left: 0.5rem;
+}
+
+.gender-toggle button {
+    background: var(--خلفية-2);
+    border: 1px solid var(--حد-خافت);
+    padding: 0.6rem 1.5rem;
+    border-radius: var(--راديوس-الزر);
+    font-weight: 500;
+    cursor: pointer;
+    font-family: inherit;
+    font-size: 0.9rem;
+    transition: all 0.3s ease;
+    color: var(--نص-ثانوي);
+}
+
+.gender-toggle button:hover {
+    background: var(--خلفية-3);
+    transform: scale(1.05);
+    border-color: var(--بنفسجي);
+}
+
+.gender-toggle button.active {
+    background: var(--تدرج-الأزرار);
+    color: white;
+    box-shadow: var(--ظل-الزر);
+    border: none;
+}
+
+/*  address */
+.address-fields h3 {
+    margin: 1rem 0 0.8rem;
+    font-size: 1.1rem;
+    color: var(--نص-رئيسي);
+}
+
+.address-inputs {
+    display: flex;
+    gap: 1rem;
+    flex-wrap: wrap;
+}
+
+.address-inputs input {
+    flex: 1;
+    padding: var(--padding-الحقل);
+    border: 1px solid var(--حد-خافت);
+    border-radius: var(--راديوس-الحقل);
+    transition: all 0.3s ease;
+    background: var(--خلفية-2);
+    color: var(--نص-رئيسي);
+    height: var(--ارتفاع-الحقل);
+}
+
+.address-inputs input:focus {
+    outline: none;
+    border-color: var(--حد-تركيز);
+    box-shadow: var(--ظل-تركيز-الحقل);
+    background: var(--خلفية-3);
+}
+
+.address-inputs input::placeholder {
+    color: var(--نص-placeholder);
+}
+
+/*  skine care buttons  */
+.skin-types, .skin-interests {
+    margin: 1rem 0;
+}
+
+.skin-types p, .skin-interests p {
+    font-weight: 600;
+    margin-bottom: 0.8rem;
+    color: var(--نص-رئيسي);
+}
+
+.chip {
+    background: var(--خلفية-2);
+    border: 1px solid var(--حد-خافت);
+    padding: 0.5rem 1.3rem;
+    border-radius: var(--راديوس-الزر);
+    margin: 0.3rem 0.4rem;
+    font-size: 0.85rem;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    font-family: inherit;
+    color: var(--نص-ثانوي);
+}
+
+.chip:hover {
+    background: var(--خلفية-3);
+    transform: translateY(-2px);
+    border-color: var(--بنفسجي);
+}
+
+.chip.active {
+    background: var(--تدرج-الأزرار);
+    color: white;
+    box-shadow: var(--ظل-الزر);
+    border: none;
+}
+
+/*   owner fields */
+input[name="storeName"], 
+textarea[name="storeDescription"], 
+input[name="bankOwner"], 
+input[name="iban"] {
+    width: 100%;
+    padding: var(--padding-الحقل);
+    margin: 0.5rem 0;
+    border-radius: var(--راديوس-الحقل);
+    border: 1px solid var(--حد-خافت);
+    font-family: inherit;
+    transition: all 0.3s ease;
+    background: var(--خلفية-2);
+    color: var(--نص-رئيسي);
+}
+
+input[name="storeName"]:focus,
+textarea[name="storeDescription"]:focus,
+input[name="bankOwner"]:focus,
+input[name="iban"]:focus {
+    outline: none;
+    border-color: var(--حد-تركيز);
+    box-shadow: var(--ظل-تركيز-الحقل);
+    background: var(--خلفية-3);
+}
+
+input[name="storeName"]::placeholder,
+textarea::placeholder,
+input[name="bankOwner"]::placeholder,
+input[name="iban"]::placeholder {
+    color: var(--نص-placeholder);
+}
+
+textarea {
+    resize: vertical;
+    min-height: 100px;
+}
+
+hr {
+    margin: 1.5rem 0;
+    border: none;
+    height: 1px;
+    background: var(--حد-واضح);
+}
+
+/*  admin permissions */
+.permissions-grid {
+    display: flex;
+    flex-direction: column;
+    gap: 0.8rem;
+}
+
+.permission-item {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    background: var(--خلفية-2);
+    padding: 0.8rem 1rem;
+    border-radius: var(--راديوس-الحقل);
+    transition: all 0.3s ease;
+    border: 1px solid var(--حد-خافت);
+}
+
+.permission-item:hover {
+    background: var(--خلفية-3);
+    transform: translateX(-5px);
+    border-color: var(--بنفسجي);
+}
+
+.permission-item span {
+    font-weight: 500;
+    color: var(--نص-رئيسي);
+}
+
+.permission-item input {
+    width: 1.3rem;
+    height: 1.3rem;
+    accent-color: var(--بنفسجي);
+    cursor: pointer;
+}
+
+
+.checkbox-item {
+    display: flex;
+    align-items: center;
+    gap: 0.8rem;
+    margin: 1rem 0;
+    cursor: pointer;
+    font-weight: 500;
+    color: var(--نص-ثانوي);
+    transition: all 0.3s ease;
+    padding: 0.5rem;
+    border-radius: var(--راديوس-الحقل);
+}
+
+.checkbox-item:hover {
+    background: var(--بنفسجي-خافت);
+    transform: translateX(5px);
+}
+
+.checkbox-item input {
+    width: 1.3rem;
+    height: 1.3rem;
+    accent-color: var(--بنفسجي);
+    cursor: pointer;
+}
+
+/*  password field  */
+.sidebar-form-content input[type="password"] {
+    width: 100%;
+    padding: var(--padding-الحقل);
+    margin: 0.5rem 0;
+    border-radius: var(--راديوس-الحقل);
+    border: 1px solid var(--حد-خافت);
+    background: var(--خلفية-2);
+    transition: all 0.3s ease;
+    color: var(--نص-رئيسي);
+    height: var(--ارتفاع-الحقل);
+}
+
+.sidebar-form-content input[type="password"]:focus {
+    outline: none;
+    border-color: var(--حد-تركيز);
+    box-shadow: var(--ظل-تركيز-الحقل);
+    background: var(--خلفية-3);
+}
+
+.sidebar-form-content input[type="password"]::placeholder {
+    color: var(--نص-placeholder);
+}
+
+/* footer  */
+.sticky-footer {
+    display: flex;
+    gap: 1rem;
+    justify-content: flex-end;
+    align-items: center;
+    margin-top: 2rem;
+    padding-top: 1.5rem;
+    border-top: 1px solid var(--حد-واضح);
+    flex-wrap: wrap;
+    position: sticky;
+    bottom: 0;
+    background: var(--خلفية-البطاقة);
+    z-index: 10;
+}
+
+/* buttons */
+.btn-primary {
+    background: var(--تدرج-الأزرار);
+    border: none;
+    padding: 0 2rem;
+    border-radius: var(--راديوس-الزر);
+    font-weight: 600;
+    font-size: 1rem;
+    color: white;
+    cursor: pointer;
+    font-family: inherit;
+    transition: all 0.3s ease;
+    box-shadow: var(--ظل-الزر);
+    height: var(--ارتفاع-الزر);
+}
+
+.btn-primary:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 6px 25px rgba(168, 85, 247, 0.5);
+}
+
+.btn-primary:active {
+    transform: translateY(0);
+}
+
+.btn-secondary {
+    background: var(--خلفية-2);
+    border: 1px solid var(--حد-واضح);
+    padding: 0 2rem;
+    border-radius: var(--راديوس-الزر);
+    font-weight: 500;
+    cursor: pointer;
+    font-family: inherit;
+    color: var(--نص-ثانوي);
+    transition: all 0.3s ease;
+    height: var(--ارتفاع-الزر);
+}
+
+.btn-secondary:hover {
+    background: var(--خلفية-3);
+    transform: translateY(-2px);
+    border-color: var(--بنفسجي);
+    color: var(--نص-رئيسي);
+}
+
+/* responsive */
+@media (max-width: 850px) {
+    body {
+        padding: 1rem;
+    }
+    
+    form {
+        padding: 1.2rem;
+    }
+    
+    .form-card {
+        padding: 1.2rem;
+    }
+}
+
+@media (max-width: 640px) {
+    .sticky-footer {
+        justify-content: center;
+        flex-direction: column;
+    }
+    
+    .btn-primary, .btn-secondary {
+        width: 100%;
+        text-align: center;
+    }
+    
+    .gender-toggle {
+        justify-content: center;
+    }
+    
+    .inputs-grid {
+        grid-template-columns: 1fr;
+    }
+    
+    .address-inputs {
+        flex-direction: column;
+    }
+}
+
+
+::-webkit-scrollbar {
+    width: 8px;
+}
+
+::-webkit-scrollbar-track {
+    background: var(--خلفية-2);
+    border-radius: 10px;
+}
+
+::-webkit-scrollbar-thumb {
+    background: var(--بنفسجي);
+    border-radius: 10px;
+}
+
+::-webkit-scrollbar-thumb:hover {
+    background: var(--وردي);
+}
+
+/*    info-card */
+.info-card {
+    background: var(--خلفية-البطاقة);
+    border-radius: var(--راديوس-البطاقة);
+    padding: 1.5rem;
+    margin-bottom: 1.8rem;
+    box-shadow: var(--ظل-البطاقة);
+    border: 1px solid var(--حد-واضح);
+}
+
+.info-card h3 {
+    font-size: 1.35rem;
+    font-weight: 600;
+    margin-bottom: 1.2rem;
+    color: var(--نص-رئيسي);
+    border-right: 4px solid var(--بنفسجي);
+    padding-right: 0.8rem;
+    display: inline-block;
+}
+
+/*   skincare-section */
+.skincare-section {
+    background: var(--خلفية-البطاقة);
+    border: 1px solid var(--حد-واضح);
+}
+
+/*    hover    */
+section:hover {
+    border-color: var(--بنفسجي);
+}
+
+/*  icon & links  */
+a {
+    color: var(--بنفسجي);
+    text-decoration: none;
+    transition: all 0.3s ease;
+}
+
+a:hover {
+    color: var(--وردي);
+}
