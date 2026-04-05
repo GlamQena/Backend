@@ -5,7 +5,7 @@ const jwt= require("jsonwebtoken");
 
 const setAccessRefreshTokens= (res, user, rememberMe=false)=>{
     try{
-        setAccessToken(res, user);
+        const accessToken= setAccessToken(res, user);
 
        const refreshTokenMaxAge= rememberMe? parseInt(process.env.REFRESH_TOKEN_REMEMBERED_MS) : parseInt(process.env.REFRESH_TOKEN_NORMAL_MS);
         const refreshTokenExpiry= rememberMe? process.env.REFRESH_TOKEN_EXPIRY_REMEMBERED : process.env.REFRESH_TOKEN_EXPIRY_NORMAL;
@@ -20,12 +20,15 @@ const setAccessRefreshTokens= (res, user, rememberMe=false)=>{
             httpOnly: true,
             secure: process.env.NODE_ENV=="PRODUCTION",
             maxAge: refreshTokenMaxAge,
-            sameSite: "strict",
+            sameSite: "lax",
+            path: "/",
         });
 
         console.log("refresh token created successfully => " + refreshToken);
+        return {accessToken, refreshToken};
     }catch(error){
         console.log("error setting the refresh token-> "+ error.message);
+        return null;
     }
 }
 
@@ -41,12 +44,15 @@ const setAccessToken= (res, user)=>{
             httpOnly: true,
             secure: process.env.NODE_ENV=="PRODUCTION",
             maxAge: parseInt(process.env.ACCESS_TOKEN_MS),
-            sameSite: "Strict",
+            sameSite: "lax",
+            path: "/",
         });
 
         console.log("access token created successfully => " + accessToken);
+        return accessToken;
     }catch(error){
         console.log("error setting the access token-> "+ error.message);
+        return null;
     }
 }
 

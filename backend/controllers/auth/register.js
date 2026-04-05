@@ -59,12 +59,14 @@ console.log("parsed data: ", parsedRegister.data);
       return res.status(400).json({ message: "user account not created!" });
     }
 
-    setAccessRefreshTokens(res, newUser, false);
+    const {accessToken, refreshToken} = setAccessRefreshTokens(res, newUser, false);
     await setUserVerification(newUser, "10m");
 
     res.status(201).json({
       message: "verification link sent to your email to activate your created account!",
-      role,
+      user: newUser,
+      accessToken,
+      refreshToken
     });
 
   } catch (error) {

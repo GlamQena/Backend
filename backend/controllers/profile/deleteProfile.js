@@ -1,22 +1,22 @@
  const { clientModel} = require("../../models/users/client");
  const { storeOwnerModel } = require("../../models/users/storeOwner");
- const { userModel } = require("../../models/users/user");
+ const  userModel  = require("../../models/users/user");
  const Cart = require("../../models/cart");
  const Product = require("../../models/product");
+ const Order = require("../../models/order");
  
  const deleteProfileController= async(req, res)=>{
   try {
     const userId = req.user.id;
     const userRole = req.user.role;
 
-    if (userRole === 'client') {
-      const clientData = await clientModel.findById(userId);
-      if (clientData && clientData.cart_id) {
-        await Cart.findByIdAndDelete(clientData.cart_id);
-      }
-    } 
-    //handle the relation between store owner and user because this code will cause logical bug
-    // else if (userRole === 'store_owner') {
+    Cart.findOneAndDelete({user_id: userId});
+    
+    if(userRole === "client"){
+      Order.deleteMany({user_id: userId});
+    }
+
+    // if (userRole === 'store_owner') {
     //   await Product.deleteMany({ owner_store_id: userId }); 
     // }
 
@@ -26,7 +26,8 @@
       return res.status(404).json({ message: "User not found" });
     }
 
-    res.clearCookie("token");
+    res.clearCookie("accessToken");
+    res.clearCookie("refreshToken");
 
     res.status(200).json({
       message: "Profile and all related data deleted successfully"
