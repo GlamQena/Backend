@@ -5,28 +5,19 @@ const ClientSchema = new mongoose.Schema({
   skinType: {
     type: String,
     enum: {
-      values: ["oily", "dry", "combination", "sensitive", "normal"],
+      values: ['جافة', 'دهنية', 'مختلطة', 'حساسة', 'عادية'],
     },
-    default: "normal",
+    default: "عادية",
     trim: true,
     lowercase: true,
   },
 
   skinConcerns: {
     type: [String],
-    enum: [
-      "acne",
-      "aging",
-      "dryness",
-      "redness",
-      "dark_circles",
-      "oiliness",
-      "blackheads",
-      "whiteheads",
-    ],
+    enum: ['حب الشباب', 'تجاعيد', 'جفاف', 'تصبغات', 'هالات سوداء'],
     validate: {
       validator: function (concerns) {
-        return concerns.length <= 5;
+        return concerns.length <= 3;
       },
       error: "can't choose more than 5 skin concerns!",
     },

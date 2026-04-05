@@ -1,10 +1,10 @@
-const { literal } = require("zod");
 const userModel = require("../../models/users/user");
 const {changePasswordSchema}= require("../../validations/auth");
 const bcrypt= require("bcrypt");
 
 const changePasswordController = async (req, res) => {
     try{
+        console.log(req.body);
         const { email, currentPassword, newPassword, confirmNewPassword } = req.body;
 
         if(!email || !currentPassword || !newPassword || !confirmNewPassword)

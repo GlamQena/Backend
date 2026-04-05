@@ -56,7 +56,7 @@ app.use(
       httpOnly: true, //httpOnly cookie means its related to the requests itself and can't be accessed by javaScript
       maxAge: 7 * 24 * 60 * 60 * 1000,
       secure: process.env.NODE_ENV === "production",
-      sameSite: "strict",
+      sameSite: "lax",
     },
   }),
 );

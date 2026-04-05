@@ -20,13 +20,13 @@ const commonProfileFields= zod.object({
 }).extend(commonOptionalFields.shape);
 
 const clientProfile= zod.object({
-    skinType: optionalSchemaHandler(zod.enum(["oily", "dry", "combination", "sensitive", "normal"], {message: "Skin type must be oily, dry, combination, sensitive, or normal"})).default("normal"),
+    skinType: optionalSchemaHandler(zod.enum(['جافة', 'دهنية', 'مختلطة', 'حساسة', 'عادية'], {message: "Skin type must be oily, dry, combination, sensitive, or normal"})).default("normal"),
     skinConcerns: zod.preprocess((val)=>{
         if(!val || (Array.isArray(val) && val.length===0)) 
             return undefined
         return val
     }, 
-    optionalEnumArrayHandler(["acne", "aging", "dryness", "redness", "dark_circles", "oiliness", "blackheads", "whiteheads"], 5).default([])
+    optionalEnumArrayHandler(['حب الشباب', 'تجاعيد', 'جفاف', 'تصبغات', 'هالات سوداء'], 3).default([])
     ),
 
 }).extend(commonProfileFields.shape);

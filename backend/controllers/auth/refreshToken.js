@@ -5,7 +5,12 @@ const {adminModel}= require("../../models/users/admin");
 const {setAccessToken}= require("../../utils/acc_ref_tokens");
 
 const refreshAccessTokenController= async(req, res)=>{
-    const refreshToken= req.cookies.refreshToken;
+    let refreshToken;
+    const headerAuth=req.headers.authorization || req.headers.Authorization;
+    if( headerAuth && headerAuth.startsWith("Bearer"))
+        refreshToken= headerAuth.split(" ")[1];
+    else
+        refreshToken= req.cookies.refreshToken;
 
     if(!refreshToken)
         return res.status(401).json({message:"expired refresh token!"});
@@ -32,11 +37,14 @@ const refreshAccessTokenController= async(req, res)=>{
             loggedUser= await adminModel.findOne({_id: user_id}).lean();
             break;
         default:
-            res.status(401).json({message:"doesn't supported role!"});
+            return res.status(401).json({message:"doesn't supported role!"});
     }
 
-    setAccessToken(res, loggedUser);
-    res.status(200).json({message: "access token refreshed successfully", user: loggedUser});
+    if(!loggedUser)
+        return res.status(401).json({message: "user not found"});
+
+    const accessToken= setAccessToken(res, loggedUser);
+    res.status(200).json({message: "access token refreshed successfully", user: loggedUser, accessToken});
 }
 
 module.exports= refreshAccessTokenController;

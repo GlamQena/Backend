@@ -36,15 +36,13 @@ const loginController= async (req, res)=>{
             userData = await storeOwnerModel.findOne({ _id: user._id }).select("-password").lean();
         }
 
-        setAccessRefreshTokens(res, user, rememberMe);
-        
-        if(userData.password){
-            delete userData.password;
-        }
+        const {accessToken, refreshToken}= setAccessRefreshTokens(res, user, rememberMe);
 
         res.status(200).json({
             message: "successful login...",
             user: userData,
+            accessToken,
+            refreshToken,
         });
         
     } catch (error){

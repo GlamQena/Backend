@@ -1,8 +1,15 @@
 const jwt= require("jsonwebtoken");
 
 const checkAuth= async(req, res, next)=>{
-    const token= req.headers.token? req.headers.token : req.cookies.accessToken;
-    //consider the token come as a header prop from postman or with Authorization from frontend 'Bearer [token]'.
+    let token;
+    const headerAuth=req.headers.authorization || req.headers.Authorization
+    if( headerAuth && headerAuth.startsWith("Bearer"))
+        token= headerAuth.split(" ")[1];
+    else if(req.headers.token)
+        token= req.headers.token
+    else
+        token= req.cookies.accessToken;
+    //consider the token come as a header prop or cookie from postman or with Authorization from frontend 'Bearer [token]'.
 
     if(!token)
         return res.status(401).json({message: "you're not authorized, please login first!"});

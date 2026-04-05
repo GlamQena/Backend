@@ -61,8 +61,10 @@ try {
         updateQuery.$set[key]= validatedData[key];
     });
 
+    const currentUser= await model.findById(userId);
+
     let emailChanged= false;
-    if(validatedData.email !== req.user.email){
+    if(validatedData.email !== currentUser.email){
       updateQuery.$set["isEmailVerified"]= false;
       emailChanged= true;
     }
@@ -91,7 +93,7 @@ try {
       setUserVerification(updatedUser, "10m");
 
     res.status(200).json({
-      message: `Profile updated successfully${emailChanged && ", verification link sent to your email"}`,
+      message: `Profile updated successfully${emailChanged? ", verification link sent to your email": ""}`,
       data: updatedUser
     });
 
