@@ -3,8 +3,9 @@ const productModel = require("../../models/product");
 
 const removeProductFromCart = async (req, res) => {
   try {
+    const user_id = req.user?.id || null;
     const product_id = req.params.id;
-    const { user_id, session_id, owner_store_id, remove_all } = req.body;
+    const { session_id, owner_store_id, remove_all } = req.body;
     
 
     // Validate required fields
