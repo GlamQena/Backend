@@ -79,11 +79,11 @@ mongoose.connection.once("connected", async () => {
   console.log("server connected to mongodb successfully...");
   // await connect_redis();
 
-  app.listen(process.env.PORT, (err) => {
+  app.listen(process.env.BACKEND_PORT, (err) => {
     if (err) {
-      console.error(`error listening on port: ${process.env.PORT}!`);
+      console.error(`error listening on port: ${process.env.BACKEND_PORT}!`);
     } else {
-      console.log(`express server listening on port-> ${process.env.PORT}...`);
+      console.log(`express server listening on port-> ${process.env.BACKEND_PORT}...`);
     }
   });
 });

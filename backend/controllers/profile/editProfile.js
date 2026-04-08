@@ -11,6 +11,8 @@ try {
     const userRole = req.user.role; 
     let updates = req.body;
 
+    console.log("profile updates => ", updates);
+
     // const forbiddenFields = [
     //   'password', 
     //   'role', 
@@ -94,7 +96,7 @@ try {
 
     res.status(200).json({
       message: `Profile updated successfully${emailChanged? ", verification link sent to your email": ""}`,
-      data: updatedUser
+      user: updatedUser
     });
 
   } catch (error) {
