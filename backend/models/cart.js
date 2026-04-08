@@ -7,6 +7,7 @@ const CartSchema = new mongoose.Schema(
       ref: "client",
       unique: true,
       index: true,
+      required:false
     },
 
     session_id: {
