@@ -30,8 +30,10 @@ async function sendEmail(options) {
 }
 
 async function sendEmailVerificationToUser(email, token) {
-    const url = `http://localhost:${process.env.FRONTEND_PORT}/auth/verify/${email}/${token}`;
-
+    const frontend_url= `http://localhost:${process.env.FRONTEND_PORT}/verify-email?email=${email}&token=${token}`;
+    const backend_url = `http://localhost:${process.env.BACKEND_PORT}/auth/verify/${email}/${token}`;
+    const url = frontend_url;
+    
     try {
         const templatePath = path.join(__dirname, "../templates/email.template.html");
 

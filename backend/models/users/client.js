@@ -16,10 +16,10 @@ const ClientSchema = new mongoose.Schema({
     type: [String],
     enum: ['حب الشباب', 'تجاعيد', 'جفاف', 'تصبغات', 'هالات سوداء'],
     validate: {
-      validator: function (concerns) {
+      validator: (concerns) => {
         return concerns.length <= 3;
       },
-      error: "can't choose more than 5 skin concerns!",
+      message: "can't choose more than 5 skin concerns!",
     },
     default: [],
   }, //for ai-based recommendations (future feature)
@@ -61,27 +61,10 @@ const ClientSchema = new mongoose.Schema({
   }, //list of products interest the client but can't afford them or out-of-stock
 
   totalSpent: {
-    type: {
-      amount: {
-        type: Number,
-        default: 0,
-        min: 0,
-      },
-
-      lastUpdated: {
-        type: Date,
-        default: Date.now,
-      }, //track the date of the last order paid to suggest leave a review on it
-
-      history: [
-        {
-          amount: Number,
-          orderId: { type: mongoose.Schema.Types.ObjectId, ref: "order" },
-          date: { type: Date, default: Date.now },
-        },
-      ], //show in the storeOwner dashboard in the interactive clients list
-    },
-  }, //the costs client afford its lifeTime with our website
+    type: Number,
+    default: 0,
+    min: 0,
+  }, //the costs client afford his lifeTime with our platform
 
   totalOrders: {
     type: Number,

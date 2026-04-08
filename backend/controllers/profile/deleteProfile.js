@@ -4,6 +4,8 @@
  const Cart = require("../../models/cart");
  const Product = require("../../models/product");
  const Order = require("../../models/order");
+ const fs = require("fs");
+ const path = require("path");
  
  const deleteProfileController= async(req, res)=>{
   try {
@@ -26,6 +28,10 @@
       return res.status(404).json({ message: "User not found" });
     }
 
+    const avatarPath= path.join(__dirname, "../../", deletedUser.image);
+    if(fs.existsSync(avatarPath))
+      fs.unlinkSync(avatarPath);
+    
     res.clearCookie("accessToken");
     res.clearCookie("refreshToken");
 
