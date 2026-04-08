@@ -4,7 +4,7 @@ const productModel = require("../../models/product");
 const getCartProducts = async (req, res) => {
   try {
     const user_id = req.user?.id || null;
-    const {  session_id } = req.body;
+    const { session_id } = req.body;
 
     // Validate either user_id or session_id is provided
     if (!user_id && !session_id) {
@@ -14,16 +14,43 @@ const getCartProducts = async (req, res) => {
       });
     }
 
-    // Find cart with minimal populated data (only products and store info)
-    let cart = await cartModel
-      .findOne({
-        $or: [
-          { user_id: user_id },
-          { session_id: session_id }
-        ]
-      })
-      .populate('products.owner_store_id', 'store_name store_phone store_email store_address store_description')
-      .populate('products.products.prod_id', 'name price stock images description weight dimensions skinType ingredients');
+    // Find carts separately for merging
+    let userCart = null;
+    let sessionCart = null;
+    
+    if (user_id) {
+      userCart = await cartModel.findOne({ user_id: user_id });
+    }
+    
+    if (session_id) {
+      sessionCart = await cartModel.findOne({ session_id: session_id });
+    }
+
+    let cart = null;
+    let wasMerged = false;
+
+    // Handle merging logic when both carts exist
+    if (userCart && sessionCart && userCart._id.toString() !== sessionCart._id.toString()) {
+      // Merge session cart into user cart
+      cart = await mergeCartsForGet(userCart, sessionCart);
+      
+      // Delete the session cart after merging
+      await cartModel.findByIdAndDelete(sessionCart._id);
+      wasMerged = true;
+      
+    } else if (userCart) {
+      // Only user cart exists
+      cart = userCart;
+    } else if (sessionCart) {
+      // Only session cart exists
+      cart = sessionCart;
+      
+      // If user is logged in, associate the session cart with the user
+      if (user_id && !cart.user_id) {
+        cart.user_id = user_id;
+        await cart.save();
+      }
+    }
 
     // If no cart exists, return empty cart
     if (!cart) {
@@ -41,6 +68,12 @@ const getCartProducts = async (req, res) => {
         }
       });
     }
+
+    // Populate cart data after potential merging
+    cart = await cartModel
+      .findById(cart._id)
+      .populate('products.owner_store_id', 'store_name store_phone store_email store_address store_description')
+      .populate('products.products.prod_id', 'name price stock images description weight dimensions skinType ingredients');
 
     // Process cart products with real-time stock information
     let processedStores = [];
@@ -177,7 +210,8 @@ const getCartProducts = async (req, res) => {
       total_stores: processedStores.length,
       has_stock_issues: stockIssues.length > 0,
       stock_issues_count: stockIssues.length,
-      is_cart_empty: totalItems === 0
+      is_cart_empty: totalItems === 0,
+      was_merged: wasMerged
     };
 
     // Auto-update cart if prices changed (optional)
@@ -202,7 +236,7 @@ const getCartProducts = async (req, res) => {
       cartSummary.auto_updated = true;
     }
 
-    return res.status(200).json({
+    const responseData = {
       success: true,
       message: stockIssues.length > 0 ? "Cart retrieved with stock warnings" : "Cart retrieved successfully",
       data: {
@@ -210,7 +244,18 @@ const getCartProducts = async (req, res) => {
         summary: cartSummary,
         ...(stockIssues.length > 0 && { stock_issues: stockIssues })
       }
-    });
+    };
+
+    // Add merge info if carts were merged
+    if (wasMerged) {
+      responseData.message = "Carts merged successfully. " + responseData.message;
+      responseData.data.merge_info = {
+        merged: true,
+        previous_session_cleared: true
+      };
+    }
+
+    return res.status(200).json(responseData);
 
   } catch (error) {
     console.error("Error in getCartProducts:", error);
@@ -220,6 +265,79 @@ const getCartProducts = async (req, res) => {
       error: error.message
     });
   }
+};
+
+// Helper function to merge two carts for get operation
+const mergeCartsForGet = async (userCart, sessionCart) => {
+  // Merge products from session cart into user cart
+  for (const sessionStore of sessionCart.products) {
+    // Find if the store already exists in user cart
+    const userStoreIndex = userCart.products.findIndex(
+      (store) => store.owner_store_id.toString() === sessionStore.owner_store_id.toString()
+    );
+
+    if (userStoreIndex === -1) {
+      // Store doesn't exist in user cart, add the entire store
+      userCart.products.push(sessionStore);
+    } else {
+      // Store exists, merge products
+      for (const sessionProduct of sessionStore.products) {
+        const userProductIndex = userCart.products[userStoreIndex].products.findIndex(
+          (p) => p.prod_id.toString() === sessionProduct.prod_id.toString()
+        );
+
+        if (userProductIndex === -1) {
+          // Product doesn't exist, add it
+          userCart.products[userStoreIndex].products.push(sessionProduct);
+        } else {
+          // Product exists, merge quantities
+          const currentQuantity = userCart.products[userStoreIndex].products[userProductIndex].quantity;
+          const additionalQuantity = sessionProduct.quantity;
+          const totalQuantity = currentQuantity + additionalQuantity;
+          
+          // Fetch product to check stock limits
+          const dbProduct = await productModel.findById(sessionProduct.prod_id);
+          
+          // Check if total quantity exceeds stock
+          if (dbProduct && totalQuantity > dbProduct.stock) {
+            // If exceeds stock, cap at maximum available stock
+            const maxAddable = dbProduct.stock - currentQuantity;
+            if (maxAddable > 0) {
+              userCart.products[userStoreIndex].products[userProductIndex].quantity = dbProduct.stock;
+              userCart.products[userStoreIndex].products[userProductIndex].subtotal_price = 
+                userCart.products[userStoreIndex].products[userProductIndex].price * dbProduct.stock;
+            }
+            // Log warning (optional)
+            console.warn(`Stock limit reached for product ${sessionProduct.prod_id}. Capped at ${dbProduct.stock}`);
+          } else {
+            // Normal merge
+            userCart.products[userStoreIndex].products[userProductIndex].quantity = totalQuantity;
+            userCart.products[userStoreIndex].products[userProductIndex].subtotal_price = 
+              userCart.products[userStoreIndex].products[userProductIndex].price * totalQuantity;
+          }
+        }
+      }
+      
+      // Recalculate store subtotal after merging
+      userCart.products[userStoreIndex].store_subtotal = userCart.products[userStoreIndex].products.reduce(
+        (sum, prod) => sum + prod.subtotal_price, 0
+      );
+    }
+  }
+  
+  // Recalculate total cart price
+  userCart.total_price = userCart.products.reduce(
+    (sum, store) => sum + store.store_subtotal, 0
+  );
+  
+  // Ensure user_id is set and session_id is cleared
+  userCart.user_id = userCart.user_id;
+  userCart.session_id = null;
+  
+  // Save the merged cart
+  await userCart.save();
+  
+  return userCart;
 };
 
 module.exports = getCartProducts;
