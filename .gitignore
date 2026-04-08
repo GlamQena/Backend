@@ -1,3 +1,14 @@
+#drawio schema
+Glam2ena_schema.drawio
+.$Glam2ena_schema.drawio.bkp
+
+Technical Document.docx
+~$chnical Document.docx
+
+Glam2ena_SR.docx
+~$am2ena_SR.docx
+Glam2ena product roadmap.docx
+
 # Logs
 logs
 *.log
@@ -67,8 +78,8 @@ web_modules/
 
 # dotenv environment variable files
 .env
-.env.*
-!.env.example
+# .env.*
+# !.env.example
 
 # parcel-bundler cache (https://parceljs.org/)
 .cache
