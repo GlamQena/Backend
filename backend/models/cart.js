@@ -1,4 +1,4 @@
-const mongoose= require("mongoose");
+const mongoose = require("mongoose");
 
 const CartSchema = new mongoose.Schema(
   {
@@ -7,6 +7,7 @@ const CartSchema = new mongoose.Schema(
       ref: "client",
       unique: true,
       index: true,
+      required:false
     },
 
     session_id: {
@@ -18,13 +19,13 @@ const CartSchema = new mongoose.Schema(
     products: {
       type: [
         {
-          owner_store_id:{
+          owner_store_id: {
             type: mongoose.Schema.Types.ObjectId,
             ref: "store_owner",
             index: true,
           },
 
-          products:[
+          products: [
             {
               prod_id: {
                 type: mongoose.Schema.Types.ObjectId,
@@ -74,28 +75,30 @@ const CartSchema = new mongoose.Schema(
   },
 );
 
-CartSchema.pre("save", function(next){
-  try{
-    this.total_price=0;
+CartSchema.pre("save", function(next) {
+  try {
+    this.total_price = 0;
 
-    if(products && products.length>0){
-      this.products.forEach((store=>{
-        store.store_subtotal=0;
+    // Fixed: Added 'this.' before products
+    if (this.products && this.products.length > 0) {
+      // Fixed: Proper arrow function syntax
+      this.products.forEach((store) => {
+        store.store_subtotal = 0;
 
-        store.products.forEach((prod)=>{
-          prod.subtotal_price= prod.price * prod.quantity;
-          store.store_subtotal+= prod.subtotal_price;
+        store.products.forEach((prod) => {
+          prod.subtotal_price = prod.price * prod.quantity;
+          store.store_subtotal += prod.subtotal_price;
         });
 
-        this.total_price+=store.store_subtotal;
-      }));
+        this.total_price += store.store_subtotal;
+      });
     }
 
     next();
-  }catch(error){
+  } catch (error) {
     next(error);
   }
 });
 
-const cartModel = mongoose.model("cart",CartSchema);
-module.exports= cartModel;
+const cartModel = mongoose.model("cart", CartSchema);
+module.exports = cartModel;
