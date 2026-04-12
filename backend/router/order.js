@@ -7,7 +7,7 @@ const checkAuth = require("../middleware/checkAuth");
 
 const router = express.Router();
 
-router.use(checkAuth);
+router.use(checkAuth());
 router.post("/", placeOrderController);
 router.get("/history", getOrderHistoryController);
 router.post("/:id/payment", paymentCheckoutController);

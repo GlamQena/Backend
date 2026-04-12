@@ -5,14 +5,12 @@ const CartSchema = new mongoose.Schema(
     user_id: {
       type: mongoose.Schema.Types.ObjectId,
       ref: "client",
-      unique: true,
       index: true,
-      required:false
+      required:false,
     },
 
     session_id: {
       type: String,
-      unique: true,
       index: true,
     },
 

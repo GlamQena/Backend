@@ -9,7 +9,7 @@ const uploadImageController = require("../controllers/profile/uploadImage.js");
 
 const router= express.Router();
 
-router.use(checkAuth);
+router.use(checkAuth());
 router.get("/", getUserProfileController);
 router.put("/edit", upload.fields([
     {name: "notifications", maxCount: 3}, 

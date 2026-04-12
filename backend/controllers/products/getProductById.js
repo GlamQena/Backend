@@ -6,7 +6,7 @@ const getProductById= async(req, res)=> {
 
     // جلب تفاصيل المنتج الواحد
     const product = await Product.findById(productId)
-      .select('name description price images average_rating stock');
+      .select('owner_store_id name description price images average_rating stock');
 
     if (!product) {
       return res.status(404).json({

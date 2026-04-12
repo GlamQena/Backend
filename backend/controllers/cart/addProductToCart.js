@@ -3,7 +3,7 @@ const productModel = require("../../models/product");
 
 const addProductToCart = async (req, res) => {
   try {
-    const user_id = req.user?.id || null;
+    const user_id = req.user?.id || undefined; 
     const { session_id, product } = req.body;
 
     // Validate required fields
@@ -89,11 +89,17 @@ const addProductToCart = async (req, res) => {
       }
     } else {
       // No cart exists, create new one
-      cart = new cartModel({
-        user_id: user_id || null,
-        session_id: session_id || null,
-        products: [],
-      });
+      if(user_id)
+        cart = new cartModel({
+          user_id,
+          products: [],
+        });
+
+      else if(session_id)
+        cart = new cartModel({
+          session_id,
+          products: [],
+        });
     }
 
     // Find if store already exists in cart
