@@ -5,7 +5,7 @@ const checkAuth = require("../middleware/checkAuth");
 
 const router = express.Router();
 
-router.use(checkAuth);
+router.use(checkAuth(true));
 router.get("/", getStoresController);
 router.get("/:id", getStoreProducts);
 

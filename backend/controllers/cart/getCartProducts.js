@@ -4,7 +4,7 @@ const productModel = require("../../models/product");
 const getCartProducts = async (req, res) => {
   try {
     const user_id = req.user?.id || null;
-    const { session_id } = req.body;
+    const { session_id } = req.query;
 
     // Validate either user_id or session_id is provided
     if (!user_id && !session_id) {

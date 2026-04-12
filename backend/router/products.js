@@ -9,8 +9,10 @@ const deleteProductController = require("../controllers/products/deleteProduct.j
 
 const router = express.Router();
 
-router.use(checkAuth);
+router.use(checkAuth(true));
 router.get("/:id", getProductById);
+
+router.use(checkAuth());
 router.post("/", upload.array("images", 7), addNewProductController,);
 router.delete("/:id", deleteProductController);
 router.post("/:id/rating", rateProductController);
