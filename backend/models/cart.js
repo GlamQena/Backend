@@ -5,12 +5,13 @@ const CartSchema = new mongoose.Schema(
     user_id: {
       type: mongoose.Schema.Types.ObjectId,
       ref: "client",
-      required: false,
+      index: true,
+      required:false,
     },
 
     session_id: {
       type: String,
-      required: false,
+      index: true,
     },
 
     products: {
@@ -69,35 +70,16 @@ const CartSchema = new mongoose.Schema(
   {
     timestamps: true,
     versionKey: false,
-  }
-);
-
-// Define indexes properly - remove duplicate definitions
-// For user_id: allow multiple nulls but only one non-null value
-CartSchema.index(
-  { user_id: 1 },
-  { 
-    unique: true, 
-    sparse: true,
-    partialFilterExpression: { user_id: { $exists: true, $ne: null } }
-  }
-);
-
-// For session_id: allow multiple nulls but only one non-null value
-CartSchema.index(
-  { session_id: 1 },
-  { 
-    unique: true, 
-    sparse: true,
-    partialFilterExpression: { session_id: { $exists: true, $ne: null } }
-  }
+  },
 );
 
 CartSchema.pre("save", function(next) {
   try {
     this.total_price = 0;
 
+    // Fixed: Added 'this.' before products
     if (this.products && this.products.length > 0) {
+      // Fixed: Proper arrow function syntax
       this.products.forEach((store) => {
         store.store_subtotal = 0;
 
