@@ -1,5 +1,5 @@
 const { getPrimaryCart, removeFromCart } = require("../../utils/cartMergeHelper");
-
+const cartModel = require("../../models/cart")
 const removeProductFromCart = async (req, res) => {
   try {
     const user_id = req.user?.id || null;
