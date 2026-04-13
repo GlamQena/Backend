@@ -5,13 +5,16 @@ const CartSchema = new mongoose.Schema(
     user_id: {
       type: mongoose.Schema.Types.ObjectId,
       ref: "client",
-      index: true,
-      required:false,
+      required: false,
+      default: null,
+      // Remove individual index from here
     },
 
     session_id: {
       type: String,
-      index: true,
+      required: false,
+      default: null,
+      // Remove individual index from here
     },
 
     products: {
@@ -20,7 +23,6 @@ const CartSchema = new mongoose.Schema(
           owner_store_id: {
             type: mongoose.Schema.Types.ObjectId,
             ref: "store_owner",
-            index: true,
           },
 
           products: [
@@ -28,7 +30,6 @@ const CartSchema = new mongoose.Schema(
               prod_id: {
                 type: mongoose.Schema.Types.ObjectId,
                 ref: "product",
-                index: true,
               },
               name: {
                 type: String,
@@ -73,13 +74,31 @@ const CartSchema = new mongoose.Schema(
   },
 );
 
-CartSchema.pre("save", function(next) {
+// Create indexes AFTER schema definition
+// This allows multiple carts with user_id = null
+CartSchema.index(
+  { user_id: 1 },
+  {
+    unique: true,
+    sparse: true,
+    partialFilterExpression: { user_id: { $ne: null } },
+  },
+);
+
+CartSchema.index(
+  { session_id: 1 },
+  {
+    unique: true,
+    sparse: true,
+    partialFilterExpression: { session_id: { $ne: null } },
+  },
+);
+
+CartSchema.pre("save", function (next) {
   try {
     this.total_price = 0;
 
-    // Fixed: Added 'this.' before products
     if (this.products && this.products.length > 0) {
-      // Fixed: Proper arrow function syntax
       this.products.forEach((store) => {
         store.store_subtotal = 0;
 
