@@ -1,10 +1,10 @@
 const productModel = require("../../models/product");
-const cartModel = require("../../models/cart")
+const cartModel = require("../../models/cart");
 const { getPrimaryCart, addToCart } = require("../../utils/cartMergeHelper");
 
 const addProductToCart = async (req, res) => {
   try {
-    const user_id = req.user?.id || undefined;
+    const user_id = req.user?.id || null;
     const { session_id, product_id, quantity = 1 } = req.body;
 
     // Validate required fields
@@ -22,7 +22,7 @@ const addProductToCart = async (req, res) => {
       });
     }
 
-    // Get product from database (this gives us owner_store_id automatically)
+    // Get product from database
     const product = await productModel.findById(product_id);
     if (!product) {
       return res.status(404).json({
@@ -31,13 +31,28 @@ const addProductToCart = async (req, res) => {
       });
     }
 
-    // Get or create cart (handles merging automatically)
-    const { cart, wasMerged } = await getPrimaryCart(user_id, session_id, true);
+    // Get cart with retry logic
+    let cart = null;
+    let retries = 3;
+    
+    while (retries > 0 && !cart) {
+      const result = await getPrimaryCart(user_id, session_id, true);
+      cart = result.cart;
+      
+      if (!cart && result.error) {
+        console.log(`Attempt ${4 - retries} failed:`, result.error);
+        retries--;
+        if (retries > 0) await new Promise(resolve => setTimeout(resolve, 100));
+      } else {
+        break;
+      }
+    }
     
     if (!cart) {
       return res.status(500).json({
         success: false,
         message: "Failed to create or retrieve cart",
+        debug: { user_id, session_id }
       });
     }
 
@@ -61,10 +76,9 @@ const addProductToCart = async (req, res) => {
 
     return res.status(200).json({
       success: true,
-      message: wasMerged ? "Carts merged and product added" : "Product added to cart",
+      message: "Product added to cart",
       data: {
         cart: populatedCart,
-        wasMerged,
       },
     });
   } catch (error) {

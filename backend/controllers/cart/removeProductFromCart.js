@@ -1,5 +1,6 @@
 const { getPrimaryCart, removeFromCart } = require("../../utils/cartMergeHelper");
-const cartModel = require("../../models/cart")
+const cartModel = require("../../models/cart");
+
 const removeProductFromCart = async (req, res) => {
   try {
     const user_id = req.user?.id || null;
@@ -21,8 +22,8 @@ const removeProductFromCart = async (req, res) => {
       });
     }
 
-    // Get cart (handles merging automatically)
-    const { cart, wasMerged } = await getPrimaryCart(user_id, session_id, false);
+    // Get cart - NO MERGING HERE
+    const { cart } = await getPrimaryCart(user_id, session_id, false);
 
     if (!cart) {
       return res.status(404).json({
@@ -31,7 +32,7 @@ const removeProductFromCart = async (req, res) => {
       });
     }
 
-    // We need to find which store this product belongs to
+    // Find which store this product belongs to
     let foundStoreId = null;
     for (const store of cart.products) {
       const productExists = store.products.some(p => p.prod_id.toString() === product_id);
@@ -74,7 +75,6 @@ const removeProductFromCart = async (req, res) => {
         : `Quantity decreased by 1 for "${result.productName}"`,
       data: {
         cart_id: cart._id,
-        was_merged: wasMerged,
         removed_product: {
           product_id,
           product_name: result.productName,

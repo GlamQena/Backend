@@ -15,8 +15,8 @@ const getCartProducts = async (req, res) => {
       });
     }
 
-    // Get the primary cart (handles merging automatically)
-    const { cart, wasMerged } = await getPrimaryCart(user_id, session_id, false);
+    // Get the cart - NO MERGING HERE
+    const { cart } = await getPrimaryCart(user_id, session_id, false);
 
     // If no cart exists, return empty cart
     if (!cart) {
@@ -54,14 +54,11 @@ const getCartProducts = async (req, res) => {
       let storeSubtotal = 0;
       let storeHasStockIssues = false;
 
-      // Get store info
       const storeInfo = store.owner_store_id;
       
-      // Process each product in store
       for (const cartProduct of store.products) {
         totalItems += cartProduct.quantity;
         
-        // Get product data (already populated)
         const productData_from_db = cartProduct.prod_id;
         
         let productData = {
@@ -104,7 +101,7 @@ const getCartProducts = async (req, res) => {
           storeHasStockIssues = true;
         }
         
-        // Check if price changed and update
+        // Check if price changed
         if (productData_from_db.price !== cartProduct.price) {
           productData.price_changed = true;
           productData.old_price = cartProduct.price;
@@ -121,7 +118,6 @@ const getCartProducts = async (req, res) => {
         storeProducts.push(productData);
       }
 
-      // Only add store if it has products
       if (storeProducts.length > 0) {
         processedStores.push({
           store_id: storeInfo?._id || store.owner_store_id,
@@ -138,7 +134,6 @@ const getCartProducts = async (req, res) => {
     if (needsUpdate) {
       cart.total_price = totalPrice;
       
-      // Update store subtotals and product subtotals
       for (let i = 0; i < cart.products.length; i++) {
         let newStoreSubtotal = 0;
         for (let j = 0; j < cart.products[i].products.length; j++) {
@@ -156,7 +151,6 @@ const getCartProducts = async (req, res) => {
       await cart.save();
     }
 
-    // Prepare cart summary
     const cartSummary = {
       total_items: totalItems,
       total_price: totalPrice,
@@ -164,7 +158,6 @@ const getCartProducts = async (req, res) => {
       has_stock_issues: stockIssues.length > 0,
       stock_issues_count: stockIssues.length,
       is_cart_empty: totalItems === 0,
-      was_merged: wasMerged,
       ...(needsUpdate && { auto_updated: true })
     };
 
@@ -177,15 +170,6 @@ const getCartProducts = async (req, res) => {
         ...(stockIssues.length > 0 && { stock_issues: stockIssues })
       }
     };
-
-    // Add merge info if carts were merged
-    if (wasMerged) {
-      responseData.message = "Carts merged successfully. " + responseData.message;
-      responseData.data.merge_info = {
-        merged: true,
-        previous_session_cleared: true
-      };
-    }
 
     return res.status(200).json(responseData);
 

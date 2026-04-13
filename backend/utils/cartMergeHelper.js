@@ -1,44 +1,121 @@
-// utils/cartMergeHelper.js
 const cartModel = require("../models/cart");
 const productModel = require("../models/product");
 
 /**
- * Get the primary cart (handles merging automatically)
+ * Just returns the appropriate cart based on user_id OR session_id
  */
 const getPrimaryCart = async (user_id, session_id, createIfNotFound = false) => {
-  let userCart = null;
-  let sessionCart = null;
-  
-  if (user_id) userCart = await cartModel.findOne({ user_id });
-  if (session_id) sessionCart = await cartModel.findOne({ session_id });
-  
   let cart = null;
-  let wasMerged = false;
   
-  // Both carts exist - merge them
-  if (userCart && sessionCart && userCart._id.toString() !== sessionCart._id.toString()) {
-    cart = await mergeCarts(userCart, sessionCart);
-    await cartModel.findByIdAndDelete(sessionCart._id);
-    wasMerged = true;
-  } 
-  // Only one cart exists
-  else if (userCart) {
-    cart = userCart;
-  } else if (sessionCart) {
-    cart = sessionCart;
-    if (user_id && !cart.user_id) {
-      cart.user_id = user_id;
-      await cart.save();
+  try {
+    // Priority: user cart > session cart
+    if (user_id) {
+      cart = await cartModel.findOne({ user_id });
     }
-  } 
-  // Create new cart if needed
-  else if (createIfNotFound) {
-    if (user_id) cart = new cartModel({ user_id, products: [] });
-    else if (session_id) cart = new cartModel({ session_id, products: [] });
-    if (cart) await cart.save();
+    
+    if (!cart && session_id) {
+      cart = await cartModel.findOne({ session_id });
+    }
+    
+    // Create new cart if needed
+    if (!cart && createIfNotFound) {
+      let newCart = null;
+      
+      if (user_id) {
+        newCart = new cartModel({ 
+          user_id: user_id, 
+          session_id: null,
+          products: [],
+          total_price: 0 
+        });
+      } else if (session_id) {
+        newCart = new cartModel({ 
+          user_id: null,
+          session_id: session_id, 
+          products: [],
+          total_price: 0 
+        });
+      } else {
+        throw new Error("Either user_id or session_id is required");
+      }
+      
+      // Save with error handling for duplicate keys
+      try {
+        cart = await newCart.save();
+        console.log(`Created new cart for ${user_id ? 'user: ' + user_id : 'session: ' + session_id}`);
+      } catch (saveError) {
+        // Handle duplicate key error (race condition)
+        if (saveError.code === 11000) {
+          console.log("Duplicate key, fetching existing cart...");
+          // Fetch the existing cart
+          if (user_id) {
+            cart = await cartModel.findOne({ user_id });
+          } else if (session_id) {
+            cart = await cartModel.findOne({ session_id });
+          }
+          
+          if (!cart) {
+            throw new Error("Failed to retrieve cart after duplicate error");
+          }
+        } else {
+          throw saveError;
+        }
+      }
+    }
+    
+    return { cart, wasMerged: false };
+    
+  } catch (error) {
+    console.error("Error in getPrimaryCart:", error);
+    return { cart: null, wasMerged: false, error: error.message };
   }
-  
-  return { cart, wasMerged };
+};
+
+/**
+ * Merge guest cart with user cart - ONLY CALL THIS DURING LOGIN/REGISTER
+ */
+const mergeGuestCartWithUserCart = async (userId, sessionId) => {
+  if (!userId || !sessionId) {
+    return { success: false, message: "Both userId and sessionId are required" };
+  }
+
+  try {
+    // Find both carts
+    const userCart = await cartModel.findOne({ user_id: userId });
+    const sessionCart = await cartModel.findOne({ session_id: sessionId });
+
+    // If no session cart exists, nothing to merge
+    if (!sessionCart) {
+      return { success: true, merged: false, message: "No guest cart to merge" };
+    }
+
+    // If user has no cart, just assign the session cart to the user
+    if (!userCart) {
+      sessionCart.user_id = userId;
+      sessionCart.session_id = null;
+      await sessionCart.save();
+      return { 
+        success: true, 
+        merged: true, 
+        message: "Guest cart assigned to user",
+        cart: sessionCart
+      };
+    }
+
+    // Both carts exist - merge them
+    const mergedCart = await mergeCarts(userCart, sessionCart);
+    await cartModel.findByIdAndDelete(sessionCart._id);
+    
+    return { 
+      success: true, 
+      merged: true, 
+      message: "Carts merged successfully",
+      cart: mergedCart
+    };
+  } catch (error) {
+    console.error("Error merging carts:", error);
+    return { success: false, message: error.message };
+  }
 };
 
 /**
@@ -51,21 +128,26 @@ const mergeCarts = async (userCart, sessionCart) => {
     );
 
     if (userStoreIndex === -1) {
+      // Add entire store from session cart
       userCart.products.push(sessionStore);
     } else {
+      // Merge products within existing store
       for (const sessionProduct of sessionStore.products) {
         const userProductIndex = userCart.products[userStoreIndex].products.findIndex(
           p => p.prod_id.toString() === sessionProduct.prod_id.toString()
         );
 
         if (userProductIndex === -1) {
+          // Add new product to existing store
           userCart.products[userStoreIndex].products.push(sessionProduct);
         } else {
-          // Merge quantities
-          userCart.products[userStoreIndex].products[userProductIndex].quantity += sessionProduct.quantity;
-          userCart.products[userStoreIndex].products[userProductIndex].subtotal_price = 
-            userCart.products[userStoreIndex].products[userProductIndex].price * 
-            userCart.products[userStoreIndex].products[userProductIndex].quantity;
+          // Merge quantities (but don't exceed stock limits)
+          const existingProduct = userCart.products[userStoreIndex].products[userProductIndex];
+          const newQuantity = existingProduct.quantity + sessionProduct.quantity;
+          
+          // Check stock limit (max 99 per product)
+          existingProduct.quantity = Math.min(newQuantity, 99);
+          existingProduct.subtotal_price = existingProduct.price * existingProduct.quantity;
         }
       }
       
@@ -76,8 +158,9 @@ const mergeCarts = async (userCart, sessionCart) => {
     }
   }
   
+  // Recalculate total price
   userCart.total_price = userCart.products.reduce((sum, store) => sum + store.store_subtotal, 0);
-  userCart.session_id = null;
+  userCart.session_id = null; // Clear session_id from user cart
   await userCart.save();
   
   return userCart;
@@ -238,4 +321,10 @@ const removeFromCart = async (cart, productId, owner_store_id, removeAll = false
   };
 };
 
-module.exports = { getPrimaryCart, addToCart, removeFromCart, getProductWithStock };
+module.exports = { 
+  getPrimaryCart, 
+  addToCart, 
+  removeFromCart, 
+  getProductWithStock,
+  mergeGuestCartWithUserCart // Only for login/register
+};
