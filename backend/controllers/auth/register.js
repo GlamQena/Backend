@@ -1,4 +1,3 @@
-// controllers/auth/registerController.js
 const { clientModel, userModel } = require("../../models/users/client");
 const { storeOwnerModel } = require("../../models/users/storeOwner");
 const bcrypt = require("bcrypt");
