@@ -1,4 +1,5 @@
 const productModel = require("../../models/product");
+const cartModel = require("../../models/cart")
 const { getPrimaryCart, addToCart } = require("../../utils/cartMergeHelper");
 
 const addProductToCart = async (req, res) => {
