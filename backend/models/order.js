@@ -77,7 +77,8 @@ const OrderSchema = new mongoose.Schema(
 
     delivery_cost: {
       type: Number,
-      required: true,
+      // required: true,
+      default: 50,
       min: 0,
     }, //bosta estimated_delivery_cost + platform commission
 
@@ -87,11 +88,11 @@ const OrderSchema = new mongoose.Schema(
       min: 0,
     }, //products_price + delivery_cost
 
-    bosta: {
-      trackingNumber: String, 
-      trackingUrl: String,        // Bosta's tracking page
-      status: String,             // Synced from Bosta
-    },
+    // bosta: {
+    //   trackingNumber: String, 
+    //   trackingUrl: String,        // Bosta's tracking page
+    //   status: String,             // Synced from Bosta
+    // },
 
     payment:{
       method: {
@@ -145,7 +146,8 @@ const OrderSchema = new mongoose.Schema(
           delivery: {
             type: Number,
             min: 0,
-            required: true,
+            // required: true,
+            default: 10,
           }, //20% commission    25% * bosta_estimated_cost
         },
 
@@ -164,11 +166,11 @@ const OrderSchema = new mongoose.Schema(
           }
         ],
 
-        bosta_delivery_cost: {
-          type: Number,
-          min: 0,
-          required: true,
-        }, //calculated by the bosta estimated_delivery_cost api
+        // bosta_delivery_cost: {
+        //   type: Number,
+        //   min: 0,
+        //   required: true,
+        // }, //calculated by the bosta estimated_delivery_cost api
       },
 
       required: true,
@@ -200,8 +202,8 @@ OrderSchema.pre("save", function(next) {
     }));
 
     this.profit_breakdown.platform_revenue.products= (COMMISSION_RATES.PRODUCT_COMMISSION * this.subtotal_price).toFixed(2);
-    this.profit_breakdown.platform_revenue.delivery= ((1/COMMISSION_RATES.DELIVERY_PAYOUT) * COMMISSION_RATES.DELIVERY_COMMISSION * this.profit_breakdown.bosta_delivery_cost).toFixed(2);
-    this.delivery_cost= this.profit_breakdown.bosta_delivery_cost + this.profit_breakdown.platform_revenue.delivery;
+    // this.profit_breakdown.platform_revenue.delivery= ((1/COMMISSION_RATES.DELIVERY_PAYOUT) * COMMISSION_RATES.DELIVERY_COMMISSION * this.profit_breakdown.bosta_delivery_cost).toFixed(2);
+    // this.delivery_cost= this.profit_breakdown.bosta_delivery_cost + this.profit_breakdown.platform_revenue.delivery;
     this.total_price= this.subtotal_price + this.delivery_cost;
 
     next();
