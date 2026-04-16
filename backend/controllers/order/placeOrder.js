@@ -5,23 +5,20 @@ const Product = require("../../models/Product");
 const placeOrderController= async(req, res)=> {
   try {
     const userId = req.user.id;
-    const { address, phone , paymentMethod } = req.body;
-
-    if (!address || !phone || !paymentMethod) {
-      return res.status(400).json({ message: "Missing required fields" });
-    }
-
-    //جلب السلة 
-    const cart = await Cart.findOne({ user: userId }).populate("items.product");
     
-    if (!cart || cart.items.length === 0) {
+    //جلب السلة 
+    const cart = await Cart.findOne({ client_id: userId  });
+    
+    if (!cart || cart.products.length === 0) {
       return res.status(400).json({ message: "Cart is empty" });
     }
   
     let totalPrice = 0;
+    let orderProducts = [];
+    let totalQuantity = 0;
 
-    for (const item of cart.items) {
-       const product = item.product;
+    for (const item of cart.products) {
+       const product = await Product.findById(item.prod_id);
 
        if (!product) {
            return res.status(400).json({ message: "Product not found in cart" });
@@ -31,37 +28,43 @@ const placeOrderController= async(req, res)=> {
            return res.status(400).json({message: `Not enough stock for ${product.name}`});
         }
 
-        totalPrice += product.price * item.quantity;
+       const subtotal = product.price * item.quantity;
+
+       orderProducts.push({
+           prod_id: product._id,
+           quantity: item.quantity,
+           subtotal_price: subtotal, 
+      });
+
+      totalPrice += subtotal;
+      totalQuantity += item.quantity;
 
     }
 
-     // Create order items
-    const orderItems = cart.items.map(item => ({
-        product: item.product._id,
-        quantity: item.quantity,
-        price: item.product.price
-    }));
+
+  
+    const deliveryFee = 50;
+    totalPrice += deliveryFee;
 
     // Create order
     const order = await Order.create({
-        user: userId,
-        items: orderItems,
-        totalPrice,
-        paymentMethod,
-        status: 'pending',
-        address,
-        phone,
+      user_id: userId,
+      Products: orderProducts,
+      total_quantity: totalQuantity,
+      total_price: totalPrice,
+      status: "pending",
     });
 
    // تقليل المخزون 
-   for (const item of cart.items) {
-        const product = item.product;
-        product.stock -= item.quantity;
-        await product.save();
+   for (const item of cart.products) {
+        await Product.findByIdAndUpdate(item.prod_id, {
+           $inc: { stock: -item.quantity },
+        });
     }
 
     // تفريغ السلة
-    cart.items = [];
+    cart.products = [];
+    cart.total_price = 0;
     await cart.save();
 
 
