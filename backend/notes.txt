@@ -8,10 +8,16 @@
 
                      test payment
 - card number: 5123456789012346,  cvv: 123,  ex: 12/30,  name: Test User
-* install ngrok package to use for exposing the local url to paymob processed callback webhook.
+- wallet number: 01010101010 (a vodafone cash test number registered in paymob system), MPIN & OTP: 123456
+
+* install ngrok package to use for exposing the local url to paymob processed callback webhook to receive http requests in ngrok terminal.
   - 'npm i -g ngrok'
   - 'ngrok config add-authtoken [ngrok-platform-authtoken]'
-  - 'ngrok http 3000'
+  - 'ngrok http [BACKEND_PORT]'
+
+- set the paymob developers integration (for card and wallet payments):
+  'Transaction response callback' to the front end page route to redirect to it on payment process completion 
+  'Transaction processed callback' to the webhook backend controller route.
 
                           git
 * merge to github main branch: 

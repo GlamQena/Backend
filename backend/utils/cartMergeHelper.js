@@ -47,6 +47,10 @@ const getPrimaryCart = async (user_id, session_id, createIfNotFound = false) => 
         // Handle duplicate key error (race condition)
         if (saveError.code === 11000) {
           console.log("Duplicate key, fetching existing cart...");
+
+           // Add a small delay to ensure the other operation completes
+          // await new Promise(resolve => setTimeout(resolve, 50));
+
           // Fetch the existing cart
           if (user_id) {
             cart = await cartModel.findOne({ user_id });

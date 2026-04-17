@@ -98,7 +98,7 @@ const OrderSchema = new mongoose.Schema(
       method: {
         type: String,
         enum: ["card", "cash", "wallet"],
-        required: true,
+        default: "card",
       },
 
       status: {
@@ -111,7 +111,9 @@ const OrderSchema = new mongoose.Schema(
         type: Date,
       },
 
-      paymob_transaction_id: String,
+      paymob_transaction_id: String, //for wallet payment
+
+      paymob_order_id: String,
     },
 
     status: {
@@ -182,8 +184,15 @@ const OrderSchema = new mongoose.Schema(
   },
 );
 
-OrderSchema.pre("save", function(next) {
+OrderSchema.pre("validate", function(next) {
   try{
+    if (!this.profit_breakdown) {
+      this.profit_breakdown = {
+        platform_revenue: { products: 0, delivery: 10 },
+        stores_payout: []
+      };
+    }
+    
     this.subtotal_price=0;
 
     this.products.forEach((store=>{
@@ -194,9 +203,12 @@ OrderSchema.pre("save", function(next) {
         store.store_subtotal+= prod.subtotal_price;
       });
 
+      const amount = (COMMISSION_RATES.STORE_PAYOUT * store.store_subtotal).toFixed(2);;
       const store_payout= this.profit_breakdown.stores_payout.find(s=> s.owner_store_id==store.owner_store_id);
-        if(store_payout)
-          store_payout.amount = (COMMISSION_RATES.STORE_PAYOUT * store.store_subtotal).toFixed(2);
+      if(store_payout)
+        store_payout.amount = amount;
+      else
+        this.profit_breakdown.stores_payout.push({owner_store_id: store.owner_store_id, amount});
 
       this.subtotal_price+=store.store_subtotal;
     }));

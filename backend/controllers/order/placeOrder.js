@@ -1,44 +1,62 @@
-const Cart = require("../../models/Cart");
-const Order = require("../../models/Order");
-const Product = require("../../models/Product");
+const Cart = require("../../models/cart");
+const Order = require("../../models/order");
+const Product = require("../../models/product");
 
 const placeOrderController= async(req, res)=> {
   try {
     const userId = req.user.id;
     
     //جلب السلة 
-    const cart = await Cart.findOne({ client_id: userId  });
-    
+    const cart = await Cart.findOne({ user_id: userId  }).populate({path: "products.owner_store_id", select: "_id store_name"});
+
+    console.log("cart => ",cart, "userId => ", userId);
+
     if (!cart || cart.products.length === 0) {
       return res.status(400).json({ message: "Cart is empty" });
     }
   
     let totalPrice = 0;
+    let store_subtotal = 0;
     let orderProducts = [];
     let totalQuantity = 0;
 
-    for (const item of cart.products) {
-       const product = await Product.findById(item.prod_id);
+    for (const storeProds of cart.products) {
+      let {_id, store_name}= storeProds.owner_store_id;
 
-       if (!product) {
-           return res.status(400).json({ message: "Product not found in cart" });
-      }
+      const storeProducts= [];
 
-       if (product.stock < item.quantity) {
-           return res.status(400).json({message: `Not enough stock for ${product.name}`});
+      for(let prod of storeProds.products){
+        const product = await Product.findOne({_id: prod.prod_id, owner_store_id: _id});
+
+        if (!product) {
+            console.log(`cart product ${prod.name} for store ${store_name} not found`);
+            return res.status(400).json({ message: `A cart product not found` });
         }
 
-       const subtotal = product.price * item.quantity;
+        if (product.stock < prod.quantity) {
+            return res.status(400).json({message: `Not enough stock for ${product.name}`});
+          }
 
-       orderProducts.push({
-           prod_id: product._id,
-           quantity: item.quantity,
-           subtotal_price: subtotal, 
+        const subtotal = product.price * prod.quantity;
+        storeProducts.push({
+            prod_id: product._id,
+            name: product.name,
+            price: product.price,
+            quantity: prod.quantity,
+            subtotal_price: subtotal, 
+        });
+
+        store_subtotal += subtotal;
+        totalQuantity += prod.quantity;
+      }
+
+      orderProducts.push({
+        owner_store_id:_id,
+        products: storeProducts,
+        store_subtotal
       });
 
-      totalPrice += subtotal;
-      totalQuantity += item.quantity;
-
+      totalPrice += store_subtotal;
     }
 
 
@@ -49,14 +67,16 @@ const placeOrderController= async(req, res)=> {
     // Create order
     const order = await Order.create({
       user_id: userId,
-      Products: orderProducts,
+      products: orderProducts,
       total_quantity: totalQuantity,
+      subtotal_price: totalPrice-50,
       total_price: totalPrice,
       status: "pending",
     });
 
    // تقليل المخزون 
-   for (const item of cart.products) {
+   for (const storeProds of cart.products) {
+    for(const item of storeProds.products)
         await Product.findByIdAndUpdate(item.prod_id, {
            $inc: { stock: -item.quantity },
         });
