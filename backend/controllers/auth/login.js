@@ -29,7 +29,7 @@ const loginController = async (req, res) => {
     let cartMergeResult = null;
     if (session_id) {
       cartMergeResult = await mergeGuestCartWithUserCart(user._id, session_id);
-    //  console.log("Cart merge result during login:", cartMergeResult);
+     console.log("Cart merge result during login:", cartMergeResult);
     
     }
     //====MERGE CART ONLY DURING LOGIN if session_id is provided===//

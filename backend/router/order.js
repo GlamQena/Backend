@@ -7,10 +7,12 @@ const checkAuth = require("../middleware/checkAuth");
 
 const router = express.Router();
 
+ //no checkAuth middleware to allow for paymob http requests 
+router.post("/completion", checkPaymentCompletion);
+
 router.use(checkAuth());
 router.post("/", placeOrderController);
 router.get("/history", getOrderHistoryController);
 router.post("/:id/payment", paymentCheckoutController);
-router.post("/completion", checkPaymentCompletion);
 
 module.exports = router;
