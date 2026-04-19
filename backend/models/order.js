@@ -103,8 +103,14 @@ const OrderSchema = new mongoose.Schema(
 
       status: {
         type: String,
-        enum: ["pending", "refunded", "failed", "completed", "processing"],
-        default: "pending",
+        enum: [
+                "قيد الانتظار", //pending to enter cad or wallet details for paymob payment or for the cash to be collected on delivery
+                "تم الاسترداد",  //when the client cancel the order after payment completion adn the order wasn't delivered yet or the order return is accepted
+                "فشل",
+                "مكتمل",
+                "قيد المعالجة" //processing on paymob
+        ],
+        default: "قيد الانتظار",
       },
 
       completedAt: {
@@ -119,13 +125,13 @@ const OrderSchema = new mongoose.Schema(
     status: {
       type: String,
       enum: [
-        "pending",
-        "preparing", //picked up (shipped from the store owner)
-        "out-to-deliver", //in_transit or out_for_delivery
-        "cancelled", //failed or returned
-        "delivered",
+              "قيد الانتظار",    // pending
+              "جاري التجهيز",   // preparing (picked up from store owner)
+              "قيد التوصيل",    // out-to-deliver (in_transit or out_for_delivery)
+              "ملغي",           // cancelled (failed or returned)
+              "تم التوصيل"      // delivered
       ],
-      default: "pending",
+      default: "قيد الانتظار",
       index: true,
     },
 
