@@ -16,6 +16,7 @@ import { ThemeProvider } from "./components/ThemeProvider";
 import VerificationCheck from "./pages/Verification/Check";
 import Profile from "./pages/Profile/Profile";
 import { closeTabHandler, logout } from "./services/authService";
+import MyOrders from "./pages/MyOrders/MyOrders";
 
 function App() {
   return (
@@ -29,6 +30,7 @@ function App() {
             <Route path="/contact" element={<Contact />} />
             <Route path="/store/products" element={<StoreProducts />} />
             <Route path="/cart" element={<Cart />} />
+            <Route path="/my-orders" element={<MyOrders />} />
 
             {/* صفحات الحساب والدخول */}
             <Route path="/login" element={<Login />} />
