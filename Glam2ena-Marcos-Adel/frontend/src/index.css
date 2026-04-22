@@ -1,0 +1,100 @@
+@import url('https://fonts.googleapis.com/css2?family=Tajawal:wght@400;500;600;700&display=swap');
+
+*{
+  margin:0;
+  padding:0;
+  box-sizing: border-box;
+}
+
+body {
+  font-family: "Tajawal", sans-serif;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+  background-color: var(--خلفية-الصفحة);
+  width:100%;
+  min-height: 100vh;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 20px;
+}
+
+/* ===== Scrollbar Styling ===== */
+::-webkit-scrollbar {
+    width: 8px;
+}
+
+::-webkit-scrollbar-track {
+    background: var(--خلفية-الصفحة);
+    border-radius: 10px;
+}
+
+::-webkit-scrollbar-thumb {
+    background: var(--بنفسجي);
+    border-radius: 10px;
+}
+
+::-webkit-scrollbar-thumb:hover {
+    background: var(--وردي);
+}
+
+#root{
+  width: 100%;
+  min-height: 100vh;
+}
+
+code {
+  font-family: source-code-pro, Menlo, Monaco, Consolas, 'Courier New',
+    monospace;
+}
+
+/* form submit error and success messages */
+.error-message, .success-message {
+  padding: 12px 16px;
+  border-radius: var(--راديوس-الحقل);
+  margin-bottom: 20px;
+  text-align: center;
+  font-size: 14px;
+}
+
+.error-message{
+  background: var(--أحمر-خافت);
+  border: 1px solid var(--أحمر-خطأ);
+  color: var(--أحمر-خطأ);
+}
+
+.success-message {
+  background: var(--أخضر-خافت);
+  border: 1px solid var(--أخضر-نجاح);
+  color: var(--أخضر-نجاح);
+}
+
+/* Fields with errors */
+.form-group input.error,
+.form-group select.error {
+  border-color: var(--أحمر-خطأ) !important;
+  background-color: var(--أحمر-خافت) !important;
+}
+
+/* fields related messages*/
+.field-error {
+  color: var(--أحمر-خطأ);
+  font-size: 13px;
+  margin-top: 5px;
+  text-align: right;
+  display: block;
+}
+
+.field-hint {
+  color: var(--نص-خافت);
+  font-size: 12px;
+  margin-top: 5px;
+  display: block;
+  opacity: 0.8;
+}
+
+.required-star {
+  color: var(--أحمر-خطأ);
+  margin-right: 4px;
+  font-size: 16px;
+}
