@@ -34,18 +34,18 @@ const ReviewSchema = new mongoose.Schema(
       type: String,
     },
 
-    images : {
-      type: [String],
-      validate:{
-        validator: (v)=> {
-          if(v.length===0)
-            return true;  //pass if no images provided making it optional
-          return v>=1 && v<=7;
-        },
-        message: (props)=> "you must provide at least 3 images for the product but don't exceed 7"
-      },
-      default: []
-    },
+    // images : {
+    //   type: [String],
+    //   validate:{
+    //     validator: (v)=> {
+    //       if(v.length===0)
+    //         return true;  //pass if no images provided making it optional
+    //       return v>=1 && v<=7;
+    //     },
+    //     message: (props)=> "you must provide at least 3 images for the product but don't exceed 7"
+    //   },
+    //   default: []
+    // },
 
     // replies:
     // [{

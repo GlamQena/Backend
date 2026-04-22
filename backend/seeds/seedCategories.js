@@ -23,14 +23,66 @@ require("dotenv").config();
 //   { name: "Brushes", description: "Essential tools for the precise application of various makeup products." }
 // ];
 
+let categories = [
+  {
+    _id: "69e387b312d268b6bb3b69db",
+    name: "العناية بالبشرة",
+    icon: "🧴",
+    description: "Products for cleansing, moisturizing, treating, and protecting your skin. Includes cleansers, serums, moisturizers, sunscreens, and masks.",
+    isActive: true
+  },
+  {
+    _id: "69e387b312d268b6bb3b69dc",
+    name: "المكياج",
+    icon: "💄",
+    description: "Cosmetics for enhancing beauty including foundation, lipstick, mascara, eyeshadow, blush, concealer, and eyeliner.",
+    isActive: true
+  },
+  {
+    _id: "69e387b312d268b6bb3b69dd",
+    name: "الأدوات",
+    icon: "🪞",
+    description: "Brushes, sponges, curlers, tweezers, and other accessories for flawless makeup and skincare application.",
+    isActive: true
+  },
+  {
+    _id: "69e387b312d268b6bb3b69de",
+    name: "العناية بالجسم",
+    icon: "🧼",
+    description: "Lotions, scrubs, oils, shower gels, and hand creams for nourishing and caring for your body skin.",
+    isActive: true
+  },
+  {
+    _id: "69e387b312d268b6bb3b69df",
+    name: "العناية بالشعر",
+    icon: "💇‍♀️",
+    description: "Shampoos, conditioners, hair masks, serums, and treatments for healthy, beautiful hair.",
+    isActive: true
+  },
+  {
+    _id: "69e387b312d268b6bb3b69e0",
+    name: "العناية بالرجال",
+    icon: "🧔‍♂️",
+    description: "Razors, shaving creams, beard oils, deodorants, and skincare products designed for men.",
+    isActive: true
+  },
+  {
+    _id: "69e387b312d268b6bb3b69e1",
+    name: "أخرى",
+    icon: "📦",
+    description: "Makeup bags, mirrors, gift sets, cleansing accessories, and other beauty-related products.",
+    isActive: true
+  }
+];
+
 const seedDB = async () => {
   try {
     await mongoose.connect(process.env.MONGO_URI);
     console.log("Connected to MongoDB for seeding...");
     
     await Category.deleteMany({});
-    
-    const categories= JSON.parse(fs.readFileSync("./sources/categories.json", "utf-8"));
+    fs.writeFileSync("./sources/categories.json", JSON.stringify(categories), "utf-8");
+    categories= JSON.parse(fs.readFileSync("./sources/categories.json", "utf-8"));
     await Category.insertMany(categories);
     
     console.log("Categories seeded successfully");

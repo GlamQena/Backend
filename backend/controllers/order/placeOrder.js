@@ -71,7 +71,7 @@ const placeOrderController= async(req, res)=> {
       total_quantity: totalQuantity,
       subtotal_price: totalPrice-50,
       total_price: totalPrice,
-      status: "pending",
+      status: "قيد الانتظار",
     });
 
    // تقليل المخزون 

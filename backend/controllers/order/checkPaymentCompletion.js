@@ -12,8 +12,8 @@ const checkPaymentCompletion= async(req, res)=>{
     if(!success){
         console.error("payment checkout failed!");
 
-        foundOrder.status= "cancelled";
-        foundOrder.payment.status= "failed";
+        foundOrder.status= "ملغي";
+        foundOrder.payment.status= "فشل";
         await foundOrder.save();
 
         res.status(400).end("failed");
@@ -21,7 +21,7 @@ const checkPaymentCompletion= async(req, res)=>{
     else{
         console.log("payment completed successfully for order ", order.id);
 
-        foundOrder.payment.status= "completed";
+        foundOrder.payment.status= "مكتمل";
         foundOrder.payment.completedAt= new Date();
         await foundOrder.save();
 
