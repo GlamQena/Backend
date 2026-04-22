@@ -1,0 +1,112 @@
+@import url('https://fonts.googleapis.com/css2?family=Tajawal:wght@400;500;700&display=swap');
+
+.container  {
+  max-width: var(--عرض-البطاقة);
+  width: 100%;
+  transition: all 0.4s ease;
+  direction: rtl;
+  background: var(--خلفية-البطاقة);
+  border-radius: 0 0 28px 28px;
+  color: var(--نص-رئيسي);
+  overflow: hidden;
+  margin: var(--مارجن-البطاقة);
+}
+
+.login-header { 
+  background: var(--خلفية-البطاقة);
+  padding: 30px 25px;
+  color: white;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+
+.login-header h2 {
+  font-size: 28px;
+  font-weight: 700;
+  margin-bottom: 8px;
+  color: var(--نص-رئيسي);
+}
+
+.login-header p {
+  font-size: 16px;
+  opacity: 0.9;
+  color: var(--نص-خافت);
+}
+
+.login-card {
+  backdrop-filter: blur(10px);
+  padding: 35px 30px;
+  border: 1px solid var(--حد-خافت);
+  background: var(--خلفية-البطاقة); 
+  box-shadow: var(--ظل-البطاقة);
+  border-radius:   var(--راديوس-البطاقة);
+}
+
+.tabs-container {
+  background: var(--خلفية-2);
+  border-radius: 15px;
+  padding: 5px;
+  display: flex;
+  margin-bottom: 30px;
+}
+
+.tab-btn {
+  flex: 1;
+  padding: 10px;
+  border: none;
+  background: transparent;
+  cursor: pointer;
+  border-radius: 12px;
+  font-weight: bold;
+  transition: 0.3s;
+  color: var(--نص-خافت);
+}
+
+.tab-btn.active {
+  background: var(--تدرج-الأزرار);
+  color: var(--نص-رئيسي);
+}
+
+.form-group {
+  text-align: right;
+  margin-bottom: 20px;
+}
+
+.form-group label {
+  display: block;
+  margin-bottom: 8px;
+  font-size: 14px;
+}
+
+.form-group input {
+  width: 100%;
+  padding: 12px 15px;
+  border-radius: var(--راديوس-الحقل);
+  border: 1px solid var(--حد-خافت);
+  background: var(--خلفية-2);
+  outline: none;
+  color: var(--نص-رئيسي);
+}
+
+.form-group input:focus {
+  border-color: var(--حد-تركيز);
+  background: var(--خلفية-3);
+  box-shadow: var(--ظل-تركيز-الحقل);
+}
+
+.form-options {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  font-size: 13px;
+  margin-bottom: 25px;
+}
+
+.forgot-password {
+  color: var(--بنفسجي);
+  text-decoration: none;
+  font-weight: bold;
+}
+
+ /* ..... */
