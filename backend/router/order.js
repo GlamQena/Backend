@@ -5,6 +5,7 @@ const paymentCheckoutController = require("../controllers/order/paymentCheckout"
 const placeOrderController = require("../controllers/order/placeOrder");
 const setOrderStatusController = require("../controllers/order/setOrderStatus");
 const checkAuth = require("../middleware/checkAuth");
+const checkRole = require("../middleware/checkRole");
 
 const router = express.Router();
 
@@ -12,6 +13,8 @@ const router = express.Router();
 router.post("/completion", checkPaymentCompletion);
 
 router.use(checkAuth());
+// router.use(checkRole("client"));
+
 router.post("/", placeOrderController);
 router.get("/history", getOrderHistoryController);
 router.post("/:id/payment", paymentCheckoutController);

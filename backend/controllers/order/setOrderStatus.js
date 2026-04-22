@@ -5,9 +5,13 @@ const setOrderStatusController = async(req, res) => {
     try{
         const status = req.query.status;
         const order_id = req.params.id;
+        const userRole= req.user.role;
 
         if(!status)
             return res.status(400).json({message: "you must provide the status value"});
+
+        if(userRole === "client" && status !== "ملغي")
+            return res.json({message: "you're not allowed to change the order to another status than cancelled"});
 
         const foundOrder= await Order.findById(order_id);
 
