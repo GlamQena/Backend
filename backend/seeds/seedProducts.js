@@ -1,5 +1,6 @@
 const mongoose = require("mongoose");
 const Product = require("../models/product"); 
+const {storeOwnerModel} = require("../../models/users/storeOwner");
 require("dotenv").config();
 const fs = require("fs");
 const path = require("path");
@@ -329,7 +330,9 @@ const SeedDB = async () => {
     fs.writeFileSync(path.join(__dirname, "../sources/products.json"), JSON.stringify(seedData), "utf-8");
     seedData= fs.readFileSync(path.join(__dirname, "../sources/products.json"), "utf-8");
     seedData= JSON.parse(seedData.replace(/"\{id\}"/g, `"${owner_store_id}"`));
-    await Product.insertMany(seedData);
+    const products= await Product.insertMany(seedData);
+    await storeOwnerModel.findByIdAndUpdate(owner_store_id, {$inc:{total_products: products.length}}, {new: true});
+
     console.log(" All products seeded successfully!");
     process.exit();
   } catch (err) {

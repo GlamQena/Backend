@@ -3,7 +3,11 @@ const z= require("zod");
 const optionalSchemaHandler = (schema) =>
     z.preprocess((val) => {
         // Handle undefined, null, empty string, and empty objects
-        if (!val || (typeof val === "string" && val.trim() === "")) {
+
+        if(val === undefined || val === null)
+            return undefined;
+        
+        if (typeof val === "string" && val.trim() === "") {
             return undefined;
         }
         
