@@ -94,26 +94,21 @@ CartSchema.index(
   },
 );
 
-CartSchema.pre("save", function (next) {
+CartSchema.pre("save", async function () {
   try {
     this.total_price = 0;
-
     if (this.products && this.products.length > 0) {
       this.products.forEach((store) => {
         store.store_subtotal = 0;
-
         store.products.forEach((prod) => {
           prod.subtotal_price = prod.price * prod.quantity;
           store.store_subtotal += prod.subtotal_price;
         });
-
         this.total_price += store.store_subtotal;
       });
     }
-
-    next();
   } catch (error) {
-    next(error);
+    throw error; // ← async functions use throw instead of next(error)
   }
 });
 
