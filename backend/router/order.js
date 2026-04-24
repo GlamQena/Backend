@@ -6,6 +6,7 @@ const placeOrderController = require("../controllers/order/placeOrder");
 const setOrderStatusController = require("../controllers/order/setOrderStatus");
 const checkAuth = require("../middleware/checkAuth");
 const checkRole = require("../middleware/checkRole");
+const getOrderDetails = require("../controllers/order/getOrderDetails");
 
 const router = express.Router();
 
@@ -19,5 +20,6 @@ router.post("/", placeOrderController);
 router.get("/history", getOrderHistoryController);
 router.post("/:id/payment", paymentCheckoutController);
 router.patch("/:id/status", setOrderStatusController);
+router.get("/:orderId", getOrderDetails)
 
 module.exports = router;
