@@ -55,43 +55,34 @@ const paymentCheckoutController = async (req, res) => {
       used_integration_id,
     );
 
-    let foundUser= await clientModel.findById(userId);
-    let updatedUser;
-
-    if (!foundUser.billingDataSaved){
-      updatedUser= await clientModel.findByIdAndUpdate(userId, {$set:{
-        firstName: billing_data.first_name,
-        lastName: billing_data.last_name,
-        email: billing_data.email,
-        phone: billing_data.phone_number,
-        address: {
-          city: billing_data.city,
-          street: billing_data.street,
-        },
-        additionalBillingData: {
-          country: billing_data.country,
-          building: billing_data.building,
-          floor: billing_data.floor,
-          apartment: billing_data.apartment,
-        },
-        billingDataSaved: true,
-      }}, {new: true});
-    }
+    let updatedUser= await clientModel.findByIdAndUpdate(userId, {$set:{
+      firstName: billing_data.first_name,
+      lastName: billing_data.last_name,
+      email: billing_data.email,
+      phone: billing_data.phone_number,
+      address: {
+        city: billing_data.city,
+        street: billing_data.street,
+      },
+      additionalBillingData: {
+        country: billing_data.country,
+        building: billing_data.building,
+        floor: billing_data.floor,
+        apartment: billing_data.apartment,
+      },
+      // billingDataSaved: true,
+    }}, {new: true});
 
     order.payment.method = payment_method;
     order.payment.status= "قيد المعالجة";
     order.payment.paymob_order_id= order_id;
     await order.save();
 
-    let res_object;
-    const to= updatedUser? updatedUser.email: foundUser.email;
+    const to= updatedUser.email;
     //TODO => if cash redirect to the frontend order history page
     if(payment_method === "card"){
       await sendMail(to, `https://accept.paymob.com/api/acceptance/iframes/${paymob_iframe_id}?payment_token=${paymentToken}`);
-      res_object= {message: "payment url sent to you're email"};
-      if(updatedUser)
-        res_object.savedBilling= updatedUser
-      return res.status(200).json(res_object);
+      return res.status(200).json({message: "payment url sent to you're email", savedBilling: updatedUser});
     }
     else if(payment_method === "wallet"){
 
@@ -103,12 +94,7 @@ const paymentCheckoutController = async (req, res) => {
         await order.save();
 
         await sendMail(to, walletPaymentResult.redirect_url);
-        
-        res_object= {...walletPaymentResult, message: "Email sent to you with the payment redirect url"};
-        if(updatedUser)
-          res_object.savedBilling= updatedUser;
-
-        return res.status(200).json(res_object);
+        return res.status(200).json({...walletPaymentResult, message: "Email sent to you with the payment redirect url",  savedBilling: updatedUser});
       }catch(error){
         
         if(error.iframe_redirect_url)
