@@ -16,20 +16,20 @@ const placeOrderController= async(req, res)=> {
     }
   
     let totalPrice = 0;
-    let store_subtotal = 0;
     let orderProducts = [];
     let totalQuantity = 0;
 
     for (const storeProds of cart.products) {
       let {_id, store_name}= storeProds.owner_store_id;
-
+      let store_subtotal = 0;
       const storeProducts= [];
 
+        console.log("storeProducts from cart => ", storeProds);
       for(let prod of storeProds.products){
         const product = await Product.findOne({_id: prod.prod_id, owner_store_id: _id});
 
         if (!product) {
-            console.log(`cart product ${prod.name} for store ${store_name} not found`);
+            console.log(`cart product ${prod.name} for store "${store_name}" not found`);
             return res.status(400).json({ message: `A cart product not found` });
         }
 

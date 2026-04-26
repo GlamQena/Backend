@@ -13,7 +13,7 @@ const checkAuth= (allowGuests=false)=> {
         token= req.cookies.accessToken;
     //consider the token come as a header prop or cookie from postman or with Authorization from frontend 'Bearer [token]'.
 
-    if(!token){
+    if(!token || token==="null" || token === "undefined"){
         if(!allowGuests)
             return res.status(401).json({message: "you're not authorized, please login first!"});
         return next();
