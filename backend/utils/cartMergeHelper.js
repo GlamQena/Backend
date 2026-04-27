@@ -189,7 +189,7 @@ const getProductWithStock = async (productId, requestedQuantity = 1, currentQuan
   if (totalAfterAdd > product.stock) {
     return { 
       valid: false, 
-      message: `Only ${product.stock - currentQuantity} more available`,
+      message: `Only ${product.stock - currentQuantity} items more available to add`,
       maxAddable: product.stock - currentQuantity
     };
   }
@@ -219,11 +219,11 @@ const addToCart = async (cart, product, quantity) => {
   let productIndex = -1;
   let currentQuantity = 0;
   
-  if (storeIndex !== -1) {
+  if (storeIndex !== -1) { //if the cart already have products for the target storeOwner
     productIndex = cart.products[storeIndex].products.findIndex(
       p => p.prod_id.toString() === prod_id.toString()
     );
-    if (productIndex !== -1) {
+    if (productIndex !== -1) { //if the product already added to the cart before
       currentQuantity = cart.products[storeIndex].products[productIndex].quantity;
     }
   }
