@@ -15,6 +15,7 @@ const productsRouter= require("./router/products.js");
 const storesRouter= require("./router/stores.js");
 const categoriesRouter= require("./router/categories.js");
 const cartRouter= require("./router/cart.js");
+const usersRouter= require("./router/users.js");
 
 require("dotenv").config({ path: path.join(__dirname, "./env") });
 
@@ -68,6 +69,7 @@ app.use("/categories", categoriesRouter);
 app.use("/products", productsRouter);
 app.use("/order", orderRouter);
 app.use("/cart", cartRouter);
+app.use("/users", usersRouter);
 
 
 //mongodb connection
