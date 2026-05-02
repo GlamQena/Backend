@@ -104,8 +104,8 @@ const OrderSchema = new mongoose.Schema(
       status: {
         type: String,
         enum: [
-                "قيد الانتظار", //pending to enter cad or wallet details for paymob payment or for the cash to be collected on delivery
-                "تم الاسترداد",  //when the client cancel the order after payment completion adn the order wasn't delivered yet or the order return is accepted
+                "قيد الانتظار", //pending to enter card or wallet details for paymob payment or for the cash to be collected on delivery
+                "تم الاسترداد",  //when the client cancel the order after payment completion and the order wasn't delivered yet or the order return is accepted
                 "فشل",
                 "مكتمل",
                 "قيد المعالجة" //processing on paymob

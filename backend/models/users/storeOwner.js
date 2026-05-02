@@ -88,26 +88,6 @@ const storeOwnerSchema = new mongoose.Schema({
     },
   },
 
-  products:{
-    type: [
-      {
-        product_id:{
-          type: mongoose.Schema.Types.ObjectId,
-          ref: "product",
-        },
-        
-        addeddAt: Date,
-
-        isActive: {
-          type: Boolean,
-          default: true,
-        }
-      }
-    ],
-
-    default: [],
-  },
-
   total_products: {
     type: Number,
     default: 0,
@@ -134,16 +114,7 @@ const storeOwnerSchema = new mongoose.Schema({
     type: Boolean,
     default: false,
   }, //by the admin
-
-  interactive_clients: {
-    type: [
-      {
-        type: mongoose.Schema.Types.ObjectId,
-        ref: "client",
-      },
-    ],
-    default: [],
-  }
+  
 });
 
 const storeOwnerModel = userModel.discriminator(

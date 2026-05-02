@@ -1,6 +1,7 @@
 const Cart = require("../../models/cart");
 const Order = require("../../models/order");
 const Product = require("../../models/product");
+const { storeOwnerModel } = require("../../models/users/storeOwner");
 
 const placeOrderController= async(req, res)=> {
   try {
@@ -74,12 +75,17 @@ const placeOrderController= async(req, res)=> {
       status: "قيد الانتظار",
     });
 
-   // تقليل المخزون 
-   for (const storeProds of cart.products) {
-    for(const item of storeProds.products)
+   // تقليل المخزون وزيادة عدد الاوردرات التى شارك فيها المتجر
+    for (const storeProds of cart.products) {
+      for(const item of storeProds.products)
         await Product.findByIdAndUpdate(item.prod_id, {
-           $inc: { stock: -item.quantity },
+          $inc: { stock: -item.quantity },
         });
+      
+      await storeOwnerModel.findByIdAndUpdate(
+        storeProds.owner_store_id._id, 
+        {$inc: {total_orders: +1}},
+      );
     }
 
     // تفريغ السلة

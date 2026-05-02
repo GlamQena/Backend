@@ -4,8 +4,9 @@ const getOrderHistoryController = require("../controllers/order/getOrderHistory"
 const paymentCheckoutController = require("../controllers/order/paymentCheckout");
 const placeOrderController = require("../controllers/order/placeOrder");
 const setOrderStatusController = require("../controllers/order/setOrderStatus");
-const getOrderDetails = require("../controllers/order/getOrderDetails");
+const getOrderDetailsController = require("../controllers/order/getOrderDetails");
 const getOrdersByOwnerStoreId = require("../controllers/order/getOrdersByOwnerStoreId");
+const cancelOrderController = require("../controllers/order/cancelOrder");
 
 const checkAuth = require("../middleware/checkAuth");
 const checkRole = require("../middleware/checkRole");
@@ -15,13 +16,21 @@ const router = express.Router();
 router.post("/completion", checkPaymentCompletion);
 
 router.use(checkAuth());
-// router.use(checkRole("client"));
 
+router.patch("/:id/status", setOrderStatusController);
+
+router.use(checkRole("client"));
 router.post("/", placeOrderController);
 router.get("/history", getOrderHistoryController);
-router.get("/",getOrdersByOwnerStoreId) // for owner store
 router.post("/:id/payment", paymentCheckoutController);
-router.patch("/:id/status", setOrderStatusController);
-router.get("/:orderId", getOrderDetails)
+
+router.use(checkRole(["client", "store_owner"]));
+router.get("/:id", getOrderDetailsController) //for both storeOwner and client
+
+router.use(checkRole("store_owner"));
+router.get("/", getOrdersByOwnerStoreId) // for owner store
+
+router.use(checkRole(["client", "admin"]));
+router.patch("/:id/cancel", cancelOrderController);
 
 module.exports = router;
