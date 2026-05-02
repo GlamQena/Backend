@@ -91,11 +91,19 @@ const ProductSchema = new mongoose.Schema(
       default: 0,
     },
   
-    review_IDs: {
-      type: [mongoose.Schema.Types.ObjectId],
-      ref: "review",
-      default: [],
+    // review_IDs: {
+    //   type: [mongoose.Schema.Types.ObjectId],
+    //   ref: "review",
+    //   default: [],
+    // },
+
+    addeddAt: Date,
+
+    isActive: {
+      type: Boolean,
+      default: true,
     },
+
   },
 
   {
