@@ -12,7 +12,7 @@
 
 * install ngrok package to use for exposing the local url to paymob processed callback webhook to receive http requests in ngrok terminal.
   - 'npm i -g ngrok'
-  - 'ngrok config add-authtoken [ngrok-platform-authtoken]'
+  - 'ngrok config add-authtoken [ngrok-platform-authtoken]'  **authtoken => 3AcBaVtaXp6H0kBF60fmrWOiNOB_5eEaAfySvCi7mVJhR5mPE
   - 'ngrok http [BACKEND_PORT]'
 
 - set the paymob developers integration (for card and wallet payments):
