@@ -47,7 +47,7 @@ const registerController = async (req, res) => {
       username,
       email,
       password: hashedPassword,
-      phoneNumber: otherData.phone || null,
+      phoneNumber: otherData.phoneNumber || null,
       birthdate: otherData.birthdate || null,
       gender: otherData.gender || null,
       address: otherData.address || null,
