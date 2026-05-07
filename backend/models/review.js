@@ -25,60 +25,20 @@ const ReviewSchema = new mongoose.Schema(
 
     rate: {
       type: Number,
-      min: 0,
+      min: 1,
       max: 5,
       required: true,
     },
 
     comment: {
       type: String,
+      default: "",
     },
-
-    // images : {
-    //   type: [String],
-    //   validate:{
-    //     validator: (v)=> {
-    //       if(v.length===0)
-    //         return true;  //pass if no images provided making it optional
-    //       return v>=1 && v<=7;
-    //     },
-    //     message: (props)=> "you must provide at least 3 images for the product but don't exceed 7"
-    //   },
-    //   default: []
-    // },
-
-    // replies:
-    // [{
-    //   user_id:{
-    //     type:mongoose.Schema.Types.ObjectId,
-    //     ref:"user"
-    //   },
-
-    //   user_role:{
-    //       type: String,
-    //       index: true,
-    //       enum: ["user", "client", "store_owner", "admin"],
-    //       default: "user",
-    //   },
-
-    //   comment:{
-    //     type:String
-    //   },
-
-    //   createdAt:{
-    //     type:Date
-    //   }
-    // }],
-
-    isApproved: {
-      type: Boolean,
-      default: false,
-    }, //by the product storeOwner
 
     isActive: {
       type: Boolean,
       default: true,
-    },
+    },  //can be deactivated by the admin if he found the review isn't fair or from annoying client 
   },
   {
     timestamps: true,

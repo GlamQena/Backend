@@ -15,7 +15,7 @@ const getOrdersByOwnerStoreId = async (req, res) => {
     // Find all orders that contain products from this specific store
     const orders = await Order.find({
       "products.owner_store_id": storeId,
-    }).lean();
+    }).populate("user_id", "firstName lastName email phoneNumber address").lean();
 
     if (!orders || orders.length === 0) {
       return res.status(404).json({
@@ -39,7 +39,6 @@ const getOrdersByOwnerStoreId = async (req, res) => {
           order_id: order._id,
           order_status: order.status,
           order_date: order.createdAt,
-          delivery_status: order.status,
           payment_method: order.payment?.method,
           payment_status: order.payment?.status,
 
@@ -55,7 +54,14 @@ const getOrdersByOwnerStoreId = async (req, res) => {
           store_subtotal: storeData.store_subtotal,
 
           // Customer information
-          customer_id: order.user_id,
+          customer: {
+          id: order.user_id?._id || order.user_id,
+          name: order.user_id?.firstName 
+            ? `${order.user_id.firstName} ${order.user_id.lastName || ''}` 
+            : "",
+          email: order.user_id?.email,
+          phone: order.user_id?.phoneNumber,
+        },
 
           // Store's payout amount from profit breakdown
           store_payout:

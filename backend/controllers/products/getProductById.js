@@ -7,7 +7,6 @@ const getProductById= async(req, res)=> {
 
     // جلب تفاصيل المنتج الواحد
     const product = await Product.findById(productId)
-      .populate("review_IDs")
       .select('owner_store_id name description price images hasReviewed average_rating total_rates stock');
 
     if (!product) {
@@ -17,13 +16,16 @@ const getProductById= async(req, res)=> {
       });
     }
 
-    if(product.review_IDs.length > 0)
-      await product.populate({path: "review_IDs.client_id", select: "firstName lastName"});
+    const productReviews= await reviewModel.find({product_id: productId})
+    .populate("client_id", "firstName lastName");
     
     res.status(200).json({
       success: true,
       results: 1,
-      data: product
+      data: {
+        product,
+        reviews: productReviews
+      }
     });
 
   } catch (error) {
