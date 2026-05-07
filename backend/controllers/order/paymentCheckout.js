@@ -59,7 +59,7 @@ const paymentCheckoutController = async (req, res) => {
       firstName: billing_data.first_name,
       lastName: billing_data.last_name,
       email: billing_data.email,
-      phone: billing_data.phone_number,
+      phoneNumber: billing_data.phone_number,
       address: {
         city: billing_data.city,
         street: billing_data.street,

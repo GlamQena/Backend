@@ -17,7 +17,7 @@ const deleteProduct= async(req, res)=> {
       });
     }
 
-    const deletedProduct= await Product.findByIdAndDelete(productId, {new: true});
+    const deletedProduct= await Product.findByIdAndDelete(productId, {new: true});  //if caused logical problems while accessing later make it inactive instead
     deletedProduct.images.forEach(img => {
         const fullPath= path.join(__dirname, "../..", img);
         if(fs.existsSync(fullPath))

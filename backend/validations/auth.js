@@ -79,7 +79,7 @@ const commonOptionalFields = z.object({
             street: z.string().trim().max(100, { message: "street must be at most 100 characters" })
         })
     ),
-    phone: optionalSchemaHandler(
+    phoneNumber: optionalSchemaHandler(
         z.string().trim().regex(/^01[0125]{1}[0-9]{8}$/, { 
             message: "invalid egyptian phone (must start with 012, 010, 011 or 015 then 8 digits)" 
         })
