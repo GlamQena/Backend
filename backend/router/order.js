@@ -7,6 +7,7 @@ const setOrderStatusController = require("../controllers/order/setOrderStatus");
 const getOrderDetailsController = require("../controllers/order/getOrderDetails");
 const getOrdersByOwnerStoreId = require("../controllers/order/getOrdersByOwnerStoreId");
 const cancelOrderController = require("../controllers/order/cancelOrder");
+const reOrderRequest = require("../controllers/order/reOrderRequest");
 
 const checkAuth = require("../middleware/checkAuth");
 const checkRole = require("../middleware/checkRole");
@@ -23,6 +24,7 @@ router.use(checkRole("client"));
 router.post("/", placeOrderController);
 router.get("/history", getOrderHistoryController);
 router.post("/:id/payment", paymentCheckoutController);
+router.post("/:id/reorder",checkRole("client"), reOrderRequest);
 
 router.use(checkRole(["client", "store_owner"]));
 router.get("/:id", getOrderDetailsController) //for both storeOwner and client
