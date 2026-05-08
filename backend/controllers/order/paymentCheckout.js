@@ -73,14 +73,26 @@ const paymentCheckoutController = async (req, res) => {
       // billingDataSaved: true,
     }}, {new: true});
 
+    if(parsedBillingData.email !== updatedUser.email){
+      updatedUser.isEmailVerified = false;
+    }
+
+    if(parsedBillingData.phoneNumber !== updatedUser.phoneNumber){
+      updatedUser.isPhoneVerified = false;
+    }
+
+    await updatedUser.save();
+
     order.payment.method = payment_method;
     order.payment.status= "قيد المعالجة";
     order.payment.paymob_order_id= order_id;
     await order.save();
 
     const to= updatedUser.email;
-    //TODO => if cash redirect to the frontend order history page
-    if(payment_method === "card"){
+    if(payment_method === "cash"){
+      return res.status(200).json({message: "billing data saved successfully"});
+    }
+    else if(payment_method === "card"){
       await sendMail(to, `https://accept.paymob.com/api/acceptance/iframes/${paymob_iframe_id}?payment_token=${paymentToken}`);
       return res.status(200).json({message: "payment url sent to you're email", savedBilling: updatedUser});
     }
