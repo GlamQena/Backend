@@ -1,5 +1,6 @@
 const orderModel = require("../../models/order");
 
+
 const checkPaymentCompletion= async(req, res)=>{
     const {success, order}= req.body.obj;
     console.log("req body-> ", req.body);
@@ -21,6 +22,8 @@ const checkPaymentCompletion= async(req, res)=>{
     else{
         console.log("payment completed successfully for order ", order.id);
 
+        await clientModel.findByIdAndUpdate(foundOrder.user_id, {isEmailVerified: true});
+        
         foundOrder.payment.status= "مكتمل";
         foundOrder.payment.completedAt= new Date();
         await foundOrder.save();
