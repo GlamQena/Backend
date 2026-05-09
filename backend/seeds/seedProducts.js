@@ -1,5 +1,6 @@
 const mongoose = require("mongoose");
 const Product = require("../models/product"); 
+const categoryModel = require("../models/category");
 const {storeOwnerModel} = require("../models/users/storeOwner");
 
 const path = require("path");
@@ -19,8 +20,6 @@ let seedData = [
     stock: 20,
     images: [
       "uploads/Dermacy toner.avif",
-      "uploads/Dermacy toner - Copy.avif",
-      "uploads/Dermacy toner - Copy (2).avif",
     ],
     skinType: "normal",
     weight: 0.15,
@@ -37,8 +36,6 @@ let seedData = [
     stock: 15,
     images: [
       "uploads/Kolagra whitening toner.avif",
-      "uploads/Kolagra whitening toner - Copy.avif",
-      "uploads/Kolagra whitening toner - Copy (2).avif",
     ],
     skinType: "normal",
     weight: 0.25,
@@ -53,8 +50,6 @@ let seedData = [
     stock: 12,
     images: [
       "uploads/Kolagra anti-shine toner.avif",
-      "uploads/Kolagra anti-shine toner - Copy.avif",
-      "uploads/Kolagra anti-shine toner - Copy (2).avif",
     ],
     skinType: "oily",
     weight: 0.25,
@@ -70,8 +65,6 @@ let seedData = [
     stock: 10,
     images: [
       "uploads/aligone facial toner.avif",
-      "uploads/aligone facial toner - Copy.avif",
-      "uploads/aligone facial toner - Copy (2).avif",
     ],
   },
   {
@@ -85,8 +78,6 @@ let seedData = [
     stock: 8,
     images: [
       "uploads/tersus glycolic toner.avif",
-      "uploads/tersus glycolic toner - Copy.avif",
-      "uploads/tersus glycolic toner - Copy (2).avif",
     ],
   },
   {
@@ -100,8 +91,6 @@ let seedData = [
     stock: 25,
     images: [
       "uploads/moist-1 toner.avif",
-      "uploads/moist-1 toner - Copy.avif",
-      "uploads/moist-1 toner - Copy (2).avif",
     ],
   },
   {
@@ -115,8 +104,6 @@ let seedData = [
     stock: 20,
     images: [
       "uploads/jamira toner.avif",
-      "uploads/jamira toner - Copy.avif",
-      "uploads/jamira toner - Copy (2).avif",
     ],
   },
   {
@@ -416,8 +403,6 @@ let seedData = [
     stock: 100,
     ingredients: ["Aloe Vera Extract", "Cetyl Alcohol", "Panthenol"],
     images: [
-      "https://f.nooncdn.com/p/pzsku/Z15C5E3BF9511B62C9158Z/45/_/1698776792/9e49fb96-f030-48e9-acc3-ce8d1b7d4ea2.jpg?width=800l",
-      "https://f.nooncdn.com/p/pzsku/Z15C5E3BF9511B62C9158Z/45/_/1698776792/9e49fb96-f030-48e9-acc3-ce8d1b7d4ea2.jpg?width=800",
       "https://f.nooncdn.com/p/pzsku/Z15C5E3BF9511B62C9158Z/45/_/1698776792/9e49fb96-f030-48e9-acc3-ce8d1b7d4ea2.jpg?width=800",
     ],
     weight: 0.3,
@@ -434,8 +419,8 @@ let seedData = [
     ingredients: ["Procapil", "Keratin", "Shea Butter"],
     images: [
       "https://f.nooncdn.com/p/pzsku/ZE3AC361696972FB6D808Z/45/1765448777/d543988b-594b-4d26-bb36-0c33df2869e6.jpg?width=800",
-      "https://f.nooncdn.com/p/pzsku/ZE3AC361696972FB6D808Z/45/1765448777/d543988b-594b-4d26-bb36-0c33df2869e6.jpg?width=800",
-      "https://f.nooncdn.com/p/98bdbbde18de505bb963525c844c04b6|pzsku/ZE3AC361696972FB6D808Z/45/1770558063/3d7dc7e3-6c2f-4a46-800c-a17a2640ff1f.jpg?width=800",
+      "https://f.nooncdn.com/p/pzsku/Z26C3566C4E99EECEE179Z/45/_/1777283084/3d8245c2-5a2f-4827-aed6-6b3db5252d7f.jpg?width=800",
+      "https://f.nooncdn.com/p/pzsku/Z26C3566C4E99EECEE179Z/45/_/1777283085/d0f2886b-11ee-49fc-9a6c-d367feb560cc.jpg?width=800",
     ],
     weight: 0.4,
     dimensions: { length: 10, width: 10, height: 8 },
@@ -470,7 +455,6 @@ let seedData = [
     images: [
       "https://f.nooncdn.com/p/pzsku/Z177BC1DE52862E6E84A1Z/45/_/1773493995/fa0e8ef7-6cd7-4dc8-88dd-3611fc033e8c.jpg?width=800",
       "https://f.nooncdn.com/p/pzsku/Z177BC1DE52862E6E84A1Z/45/_/1773493995/4158969e-9a0e-442a-bc22-f9a158e6423c.jpg?width=800",
-      "https://f.nooncdn.com/p/pzsku/Z177BC1DE52862E6E84A1Z/45/_/1773493995/4158969e-9a0e-442a-bc22-f9a158e6423c.jpg?width=800",
     ],
     weight: 0.25,
     dimensions: { length: 16, width: 5, height: 4 },
@@ -486,7 +470,6 @@ let seedData = [
     stock: 90,
     ingredients: ["Hydrolyzed Wheat Protein", "Cyclomethicone", "Dimethiconol"],
     images: [
-      "https://f.nooncdn.com/p/pzsku/Z74EFF139F208877313DFZ/45/_/1775709338/3dc543c1-996c-4eaf-a40b-240c972f36b8.jpg?width=800",
       "https://f.nooncdn.com/p/pzsku/Z74EFF139F208877313DFZ/45/_/1775709338/3dc543c1-996c-4eaf-a40b-240c972f36b8.jpg?width=800",
       "https://f.nooncdn.com/p/pzsku/Z74EFF139F208877313DFZ/45/_/1775709338/ae8cb36b-70b1-4253-b97d-c9a77ee59f08.jpg?width=800",
     ],
@@ -505,9 +488,9 @@ let seedData = [
     stock: 80,
     ingredients: ["Aqua", "Alcohol Denat.", "Glycerin", "Distarch Phosphate"],
     images: [
+      "https://f.nooncdn.com/p/pnsku/N19516297A/45/_/1767607351/af6e84a0-a561-4467-98d9-a1a12b37c2ce.jpg?width=800",
       "https://f.nooncdn.com/p/pnsku/N19516297A/45/_/1732554835/7e3c05f1-bfd9-465a-ab0a-a0ee77ed91aa.jpg?width=800",
-      "https://f.nooncdn.com/p/pnsku/N19516297A/45/_/1732554835/7e3c05f1-bfd9-465a-ab0a-a0ee77ed91aa.jpg?width=800",
-      "https://f.nooncdn.com/p/pnsku/N19516297A/45/_/1732554835/7e3c05f1-bfd9-465a-ab0a-a0ee77ed91aa.jpg?width=800",
+      "https://f.nooncdn.com/p/pnsku/N19516297A/45/_/1732554836/6cfa34c9-f8c0-40e4-9a9d-ef908a6f2df2.jpg?width=800",
     ],
     weight: 0.2,
     dimensions: { length: 8, width: 5, height: 12 },
@@ -525,7 +508,6 @@ let seedData = [
     images: [
       "https://f.nooncdn.com/p/pnsku/N11292849A/45/_/1775549942/3a5c07ed-1ac0-4a9d-8276-955f195d9130.jpg?width=800",
       "https://f.nooncdn.com/p/pnsku/N11292849A/45/_/1737984907/431b67f8-3c7e-4e5c-80ce-cb4b5d986a4a.jpg?width=800",
-      "https://f.nooncdn.com/p/pnsku/N11292849A/45/_/1737984906/a4d1a05f-6e31-4126-9460-065cba778f47.jpg?width=800",
     ],
     weight: 0.25,
     dimensions: { length: 5, width: 5, height: 18 },
@@ -546,8 +528,8 @@ let seedData = [
     ],
     images: [
       "https://f.nooncdn.com/p/pnsku/N39790177A/45/_/1767607812/c7e66898-f9e5-4ce4-8734-d4eb8f1a5230.jpg?width=800",
-      "https://f.nooncdn.com/p/pnsku/N39790177A/45/_/1715694273/19cba5d3-a904-4420-8714-435e207284c8.jpg?width=800",
-      "https://f.nooncdn.com/p/pnsku/N39790177A/45/_/1715694273/19cba5d3-a904-4420-8714-435e207284c8.jpg?width=800",
+      "https://f.nooncdn.com/p/pnsku/N15767861A/45/_/1766585081/4156b4cc-fc54-4094-b51a-fdf354472cd2.jpg?width=800",
+      "https://f.nooncdn.com/p/pnsku/N15767861A/45/_/1766585081/cad3fbd5-0063-4a2b-a996-ee421b8d40e6.jpg?width=800",
     ],
     weight: 0.1,
     dimensions: { length: 4, width: 4, height: 10 },
@@ -586,8 +568,8 @@ let seedData = [
     ingredients: ["Ethyl Alcohol", "Fragrance", "Propylene Glycol"],
     images: [
       "https://f.nooncdn.com/p/v1568114684/N29713927A_1.jpg?width=800",
-      "https://f.nooncdn.com/p/v1568114684/N29713927A_1.jpg?width=800",
-      "https://f.nooncdn.com/p/v1568114684/N29713927A_1.jpg?width=800",
+      "https://f.nooncdn.com/p/pzsku/Z3A64CB0A72B840735FABZ/45/_/1738064404/f047b61f-73f0-4e4c-8a7f-eb30a46b9fc1.jpg?width=800",
+      "https://f.nooncdn.com/p/pzsku/Z93E0F7028EB0E48B8466Z/45/1744178475/a77161ce-b412-459e-8af3-08a29ce8842d.jpg?width=800",
     ],
     weight: 0.15,
     dimensions: { length: 5, width: 5, height: 15 },
@@ -603,8 +585,6 @@ let seedData = [
     stock: 50,
     images: [
       "https://f.nooncdn.com/p/pzsku/Z026C0ADD5EE618467CD8Z/45/_/1776947100/9f493ea4-0898-4d2b-86d4-e33f8b545524.jpg?width=800",
-      "https://f.nooncdn.com/p/pzsku/Z026C0ADD5EE618467CD8Z/45/_/1776947100/9f493ea4-0898-4d2b-86d4-e33f8b545524.jpg?width=800",
-      "https://f.nooncdn.com/p/pzsku/Z026C0ADD5EE618467CD8Z/45/_/1776947100/9f493ea4-0898-4d2b-86d4-e33f8b545524.jpg?width=800",
     ],
     skinType: "normal",
   },
@@ -616,9 +596,9 @@ let seedData = [
     price: 275.0,
     stock: 3,
     images: [
-      "https://f.nooncdn.com/p/v1611233325/N12172728A_1.jpg?width=800",
-      "https://f.nooncdn.com/p/v1611233325/N12172728A_1.jpg?width=800",
-      "https://f.nooncdn.com/p/v1611233325/N12172728A_1.jpg?width=800",
+      "https://f.nooncdn.com/p/pnsku/N23903751A/45/_/1767607791/49643f93-bfda-4632-95db-96ca0d201b7d.jpg?width=800",
+      "https://f.nooncdn.com/p/pnsku/N23903751A/45/_/1764236008/65da4bdc-f8cd-4eda-b9d6-d12526dc6f63.jpg?width=800",
+      "https://f.nooncdn.com/p/pnsku/N23903751A/45/_/1764236005/9c87f170-f8db-4589-bd86-1bcf45af4d50.jpg?width=800",
     ],
     skinType: "normal",
   },
@@ -646,7 +626,7 @@ let seedData = [
     images: [
       "https://f.nooncdn.com/p/pzsku/Z70B9E37366252A5004E7Z/45/1760265205/c5b25312-d28e-4c4c-833c-1d4e7ffaebe5.jpg?width=800",
       "https://f.nooncdn.com/p/pzsku/Z70B9E37366252A5004E7Z/45/1760265205/a8458bd8-6d44-4f6c-8323-7857ea4f5218.jpg?width=800",
-      "https://f.nooncdn.com/p/pzsku/Z70B9E37366252A5004E7Z/45/1760265205/a8458bd8-6d44-4f6c-8323-7857ea4f5218.jpg?width=800",
+      "https://f.nooncdn.com/p/pzsku/ZF7A524F117A7F873B038Z/45/_/1771779472/55404c2f-c625-4a5b-89fc-0b024cdfa1a5.jpg?width=800",
     ],
     skinType: "normal",
   },
@@ -731,14 +711,14 @@ let seedData = [
     stock: 150,
     images: [
       "https://f.nooncdn.com/p/pzsku/ZBF192057E201B8935D2CZ/45/_/1733135680/b7ed00ad-5e77-412b-a835-a2107f50b300.jpg?width=800",
-      "https://f.nooncdn.com/p/pzsku/ZBF192057E201B8935D2CZ/45/_/1733135680/b7ed00ad-5e77-412b-a835-a2107f50b300.jpg?width=800",
-      "https://f.nooncdn.com/p/pzsku/ZBF192057E201B8935D2CZ/45/_/1733135680/b7ed00ad-5e77-412b-a835-a2107f50b300.jpg?width=800",
+      "https://f.nooncdn.com/p/pzsku/ZBF192057E201B8935D2CZ/45/_/1733135726/90afbf5c-6464-469e-80ab-6d4ad46e8cc9.jpg?width=800",
+      "https://f.nooncdn.com/p/pzsku/ZBF192057E201B8935D2CZ/45/_/1733135700/7077522b-b6f3-4cc1-aa6a-973ecc893d0c.jpg?width=800",
     ],
     skinType: "normal",
   },
 ];
 
-const owner_store_id = "69dc0902a9e872aaaf635a41"; //consider as ObjectId not string despite these quotes
+const owner_store_id = "69eaff7c9683c37b9a2131f5"; //consider as ObjectId not string despite these quotes
 // makeup For you (abear) => 69d0ddd76d08a00080101c4a
 // Semon's Market (semon) => 69dc0902a9e872aaaf635a41
 // Marcos Store           => 69e9085493835e8e70d675ea
@@ -756,6 +736,29 @@ const SeedDB = async () => {
     seedData= JSON.parse(seedData.replace(/"\{id\}"/g, `"${owner_store_id}"`));
     const products= await Product.insertMany(seedData);
     await storeOwnerModel.findByIdAndUpdate(owner_store_id, {$inc:{total_products: products.length}}, {new: true});
+
+     // Aggregate products by category to update category totalProducts
+    const categoryCounts = {};
+    for (const product of products) {
+      const categoryId = product.category_id.toString();
+      if (!categoryCounts[categoryId]) {
+        categoryCounts[categoryId] = 0;
+      }
+      categoryCounts[categoryId]++;
+    }
+
+    // Update each category with its product count
+    const categoryUpdatePromises = Object.entries(categoryCounts).map(
+      ([categoryId, count]) => {
+        return categoryModel.findByIdAndUpdate(
+          categoryId,
+          { $inc: { totalProducts: count } },  //without &inc if we want to reseed these initial products
+          { new: true }
+        );
+      }
+    );
+
+    await Promise.all(categoryUpdatePromises); //runs multiple database update operations in parallel and waits for all of them to complete before continuing
 
     console.log(" All products seeded successfully!");
     process.exit();

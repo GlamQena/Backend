@@ -1,34 +1,42 @@
 const orderModel = require("../../models/order");
-
+const { clientModel } = require("../../models/users/client");
 
 const checkPaymentCompletion= async(req, res)=>{
-    const {success, order}= req.body.obj;
-    console.log("req body-> ", req.body);
+    try{
+        const {obj, type} = req.body;
+        const {success, order}= obj;
+        console.log("payment completion req body-> ", req.body);
 
-    const foundOrder= await orderModel.findOne({"payment.paymob_order_id": order.id});
+        const foundOrder= await orderModel.findOne({"payment.paymob_order_id": order.id});
 
-    if(!foundOrder)
-        console.error(`order with paymob id ${order.id} not found`);
-    
-    if(!success){
-        console.error("payment checkout failed!");
-
-        foundOrder.status= "ملغي";
-        foundOrder.payment.status= "فشل";
-        await foundOrder.save();
-
-        res.status(400).end("failed");
-    }
-    else{
-        console.log("payment completed successfully for order ", order.id);
-
-        await clientModel.findByIdAndUpdate(foundOrder.user_id, {isEmailVerified: true});
+        if(!foundOrder)
+            console.error(`order with paymob id ${order.id} not found`);
         
-        foundOrder.payment.status= "مكتمل";
-        foundOrder.payment.completedAt= new Date();
-        await foundOrder.save();
+        if(!success){
+            console.error("payment checkout failed!");
 
-        res.status(200).end("OK");
+            foundOrder.status= "ملغي";
+            foundOrder.payment.status= "فشل";
+            await foundOrder.save();
+
+            res.status(200).end("failed");  //payob expects status 200 even for failure
+        }
+        else{
+            console.log("payment completed successfully for order ", order.id);
+
+            await clientModel.findByIdAndUpdate(foundOrder.user_id, {isEmailVerified: true});
+            
+            foundOrder.payment.status= "مكتمل";
+            if(type === "TRANSACTION")
+                foundOrder.payment.paymob_transaction_id = obj.id;
+            foundOrder.payment.completedAt= new Date();
+            await foundOrder.save();
+
+            res.status(200).end("OK");
+        }
+    }catch(error){
+        console.error(error);
+        res.status(200).end("failed");
     }
 }
 

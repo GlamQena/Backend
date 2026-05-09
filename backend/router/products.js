@@ -1,5 +1,5 @@
 const express = require("express");
-const upload = require("../utils/upload.js");
+const {upload, checkDuplicateAndSave} = require("../utils/upload.js");
 
 const getProductById = require("../controllers/products/getProductById");
 const rateProductController = require("../controllers/products/rateProduct");
@@ -19,13 +19,11 @@ router.get("/:id", getProductById);
 
 router.use(checkAuth());
 
-// router.use(checkRole("store_owner"));
-router.post("/", upload.array("images", 7), addNewProductController);
+router.post("/:id/rating", checkRole("client"), rateProductController);
+
+router.use(checkRole("store_owner"));
+router.post("/", upload.array("images", 7), checkDuplicateAndSave, addNewProductController);
 router.delete("/:id", deleteProductController);
-
-router.put("/:id", upload.array("images", 7),editProductById)
-
-// router.use(checkRole("client"));
-router.post("/:id/rating", rateProductController);
+router.put("/:id", upload.array("images", 7), checkDuplicateAndSave, editProductById)
 
 module.exports = router;

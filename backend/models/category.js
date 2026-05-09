@@ -40,6 +40,12 @@ const CategorySchema = new mongoose.Schema(
       maxlength: 500,
     },
 
+    totalProducts: {
+      type: Number,
+      default: 0,
+      min: 0,
+    },
+
     isActive: {
       type: Boolean,
       default: true,

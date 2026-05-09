@@ -60,10 +60,10 @@ const editProductById = async (req, res) => {
 
     // Validate images array length if being updated
     if (validUpdates.images && validUpdates.images.length) {
-      if (validUpdates.images.length < 3 || validUpdates.images.length > 7) {
+      if (validUpdates.images.length < 1 || validUpdates.images.length > 7) {
         return res.status(400).json({
           success: false,
-          message: "You must provide at least 3 images but not more than 7",
+          message: "You must provide at least 1 image but not more than 7",
         });
       }
     }
