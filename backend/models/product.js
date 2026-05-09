@@ -44,8 +44,8 @@ const ProductSchema = new mongoose.Schema(
     images :{
       type: [String],
       validate:{
-        validator: (v)=> v.length>=3 && v.length<=7,
-        error: (data)=> "you must provide at least 3 images for the product but don't exceed 7"
+        validator: (v)=> v.length>=1 && v.length<=7,
+        error: (data)=> "you must provide at least 1 image for the product and don't exceed 7"
       }
     },
 

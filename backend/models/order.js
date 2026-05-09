@@ -117,7 +117,7 @@ const OrderSchema = new mongoose.Schema(
         type: Date,
       },
 
-      paymob_transaction_id: String, //for wallet payment
+      paymob_transaction_id: String, //for card and wallet payment
 
       paymob_order_id: String,
     },
@@ -126,7 +126,8 @@ const OrderSchema = new mongoose.Schema(
       type: String,
       enum: [
               "قيد الانتظار",    // pending
-              "جاري التجهيز",   // preparing (picked up from store owner)
+              "جاري التجهيز",   // preparing (by the store owner)
+              "جاهز للتوصيل",   // ready to deliver (the store owner finished preparing )
               "قيد التوصيل",    // out-to-deliver (in_transit or out_for_delivery)
               "ملغي",           // cancelled (failed or returned)
               "تم التوصيل"      // delivered

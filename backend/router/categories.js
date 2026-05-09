@@ -9,7 +9,7 @@ const router= express.Router();
 router.use(checkAuth());
 router.get("/", getCategoriesController);
 
-// router.use(checkRole("admin"));
+router.use(checkRole("admin"));
 router.post("/", addCategoryController);
 
 module.exports= router;

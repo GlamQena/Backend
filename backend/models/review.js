@@ -35,10 +35,10 @@ const ReviewSchema = new mongoose.Schema(
       default: "",
     },
 
-    isActive: {
-      type: Boolean,
-      default: true,
-    },  //can be deactivated by the admin if he found the review isn't fair or from annoying client 
+    // isActive: {
+    //   type: Boolean,
+    //   default: true,
+    // },  //can be deactivated by the admin if he found the review isn't fair or from annoying client 
   },
   {
     timestamps: true,
