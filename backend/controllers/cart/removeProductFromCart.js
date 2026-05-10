@@ -64,7 +64,6 @@ const removeProductFromCart = async (req, res) => {
     if (cart.products.length > 0) {
       updatedCart = await cartModel
         .findById(cart._id)
-        .populate("products.owner_store_id", "store_name")
         .populate("products.products.prod_id", "name price stock images");
     }
 
