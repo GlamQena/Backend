@@ -10,6 +10,7 @@ const cancelOrderController = require("../controllers/order/cancelOrder");
 
 const checkAuth = require("../middleware/checkAuth");
 const checkRole = require("../middleware/checkRole");
+const rateOrderProductController = require("../controllers/order/rateOrderProduct");
 const router = express.Router();
 
 //no checkAuth middleware to allow the paymob http requests
@@ -27,6 +28,7 @@ router.get("/", checkRole("store_owner"), getOrdersByOwnerStoreId);
 
 router.post("/", checkRole("client"), placeOrderController);
 router.post("/:id/payment", checkRole("client"), paymentCheckoutController);
+router.post("/:id/rating", checkRole("client"), rateOrderProductController);
 
 router.patch("/:id/status", setOrderStatusController);
 router.patch(
