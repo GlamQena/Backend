@@ -71,7 +71,6 @@ const addProductToCart = async (req, res) => {
     const populatedCart = await cartModel
       .findById(cart._id)
       .populate("user_id", "name email")
-      .populate("products.owner_store_id", "store_name")
       .populate("products.products.prod_id", "name price stock images");
 
     return res.status(200).json({
