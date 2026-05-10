@@ -2,7 +2,6 @@ const express = require("express");
 const {upload, checkDuplicateAndSave} = require("../utils/upload.js");
 
 const getProductById = require("../controllers/products/getProductById");
-const rateProductController = require("../controllers/products/rateProduct");
 const addNewProductController = require("../controllers/products/addNewProduct");
 const checkAuth = require("../middleware/checkAuth");
 const deleteProductController = require("../controllers/products/deleteProduct.js");
@@ -18,8 +17,6 @@ router.get("/special", getSpecialProducts);
 router.get("/:id", getProductById);
 
 router.use(checkAuth());
-
-router.post("/:id/rating", checkRole("client"), rateProductController);
 
 router.use(checkRole("store_owner"));
 router.post("/", upload.array("images", 7), checkDuplicateAndSave, addNewProductController);

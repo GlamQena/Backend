@@ -84,6 +84,7 @@ const checkDuplicateAndSave = async (req, res, next) => {
     req.files = req.files.map((file, index) => ({
       ...file,
       path: savedPaths[index],
+      buffer: undefined,
     }));
   } else if (isSingleFile) {
     // Handle single file for profile avatar
@@ -93,6 +94,7 @@ const checkDuplicateAndSave = async (req, res, next) => {
     req.file = {
       ...req.file,
       path: savedPath,
+      buffer: undefined,
     };
   }
   
