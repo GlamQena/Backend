@@ -9,23 +9,6 @@ const CategorySchema = new mongoose.Schema(
       index: true,
       unique: true,
       enum: 
-      // [
-      //   "Cleansers",
-      //   "Moisturizers",
-      //   "Serums",
-      //   "Sun Care",
-      //   "Masks",
-      //   "Toners",
-      //   "Concealer",
-      //   "Foundation",
-      //   "Lipstick",
-      //   "Blusher",
-      //   "Eyeshadow",
-      //   "Mascara",
-      //   "Eyeliner",
-      //   "Brushes",
-      //   "Others"
-      // ],
       ["العناية بالبشرة", "المكياج", "الأدوات", "العناية بالجسم", "العناية بالشعر", "العناية بالرجال", "أخرى"]
     },
 
@@ -38,6 +21,12 @@ const CategorySchema = new mongoose.Schema(
       type: String,
       trim: true,
       maxlength: 500,
+    },
+
+    totalProducts: {
+      type: Number,
+      default: 0,
+      min: 0,
     },
 
     isActive: {

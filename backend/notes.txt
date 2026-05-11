@@ -38,3 +38,7 @@
   ,but both can't handle the empty string coming from the front-end form so it must handled with preprocess function to return undefined 
 - handle all non-value cases (null, undefined, "", "   ") to return only undefined for the database document to be clean 
   (undefined fields without default value will be ignored in creation and can be handled to unset for updatinng).
+
+                   testing accounts
+- semon_owner  [semonowner1@gmail.com]  password:ownerSs123456   for storeOwner dashboard  (connected to my phone)
+- semon_admin  [semonadmin@gmail.com]  password:adminSs123456   for admin dashboard  (connected to myMother phone)

@@ -17,6 +17,7 @@ const setOrderStatusController = async(req, res) => {
         const statusZod= optionalEnumHandler([
                 "قيد الانتظار",
                 "جاري التجهيز",
+                "جاهز للتوصيل",
                 "قيد التوصيل",
                 "ملغي",
                 "تم التوصيل"
