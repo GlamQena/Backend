@@ -1,29 +1,4 @@
 const zod = require("zod");
-<<<<<<< HEAD
-
-const categorySchema=zod.object({
-    name: zod.string().trim().pipe(zod.enum(["Cleansers",
-        "Moisturizers",
-        "Serums",
-        "Sun Care",
-        "Masks",
-        "Toners",
-        "Concealer",
-        "Foundation",
-        "Lipstick",
-        "Blusher",
-        "Eyeshadow",
-        "Mascara",
-        "Eyeliner",
-        "Brushes",
-        "Others"], {message: "invalid category name"})),
-    description: zod.string().trim().max(500, "category description mustn't exceed 500 characters"),
-    isActive: zod.boolean().default(true),
-});
-
-//TODO => productSchema
-module.exports= {categorySchema};
-=======
 const { optionalEnumHandler } = require("./auth");
 
 const categoryEnum= ["العناية بالبشرة", "المكياج", "الأدوات", "العناية بالجسم", "العناية بالشعر", "العناية بالرجال", "أخرى"];
@@ -82,4 +57,3 @@ const productSchema = zod.object({
 });
 
 module.exports= {categorySchema, productSchema};
->>>>>>> origin/main
