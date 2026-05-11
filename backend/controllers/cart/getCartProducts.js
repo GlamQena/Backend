@@ -38,7 +38,6 @@ const getCartProducts = async (req, res) => {
     // Populate cart data with only needed fields
     const populatedCart = await cartModel
       .findById(cart._id)
-      .populate('products.owner_store_id', 'store_name')
       .populate('products.products.prod_id', 'owner_store_id name price stock images description');
 
     // Process cart products
@@ -81,7 +80,6 @@ const getCartProducts = async (req, res) => {
           stockIssues.push({
             product_id: productData_from_db._id,
             product_name: productData_from_db.name,
-            store_name: storeInfo?.store_name || "Unknown Store",
             issue: "out_of_stock",
             message: `${productData_from_db.name} is out of stock`
           });
@@ -92,7 +90,6 @@ const getCartProducts = async (req, res) => {
           stockIssues.push({
             product_id: productData_from_db._id,
             product_name: productData_from_db.name,
-            store_name: storeInfo?.store_name || "Unknown Store",
             issue: "insufficient_stock",
             requested: cartProduct.quantity,
             available: productData_from_db.stock,
@@ -121,7 +118,6 @@ const getCartProducts = async (req, res) => {
       if (storeProducts.length > 0) {
         processedStores.push({
           store_id: storeInfo?._id || store.owner_store_id,
-          store_name: storeInfo?.store_name || "Unknown Store",
           products: storeProducts,
           store_subtotal: storeSubtotal,
           has_stock_issues: storeHasStockIssues,

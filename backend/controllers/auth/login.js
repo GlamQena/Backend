@@ -7,6 +7,7 @@ const bcrypt = require("bcrypt");
 
 const loginController = async (req, res) => {
   try {
+    //TODO => handle admin and storeOwner firstmost login with activation code
     const { usernameOrEmail, password, rememberMe, session_id } = req.body;
 
     const validatedLoginSchema = loginSchema.safeParse({

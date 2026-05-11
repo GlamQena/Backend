@@ -25,6 +25,7 @@ const deleteProduct= async(req, res)=> {
     });
 
     await storeOwnerModel.findByIdAndUpdate(ownerStoreId, {$inc:{total_products: -1}});
+    await categoryModel.findByIdAndUpdate(deletedProduct.category_id, {$inc: {totalProducts: -1}});
 
     res.status(200).json({
      success: true,

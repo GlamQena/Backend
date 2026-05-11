@@ -86,7 +86,7 @@ const storeOwnerSchema = new mongoose.Schema({
         "البنك الزراعي المصري",
       ],
     },
-  },
+  }, //for later payout 
 
   total_products: {
     type: Number,
@@ -113,8 +113,18 @@ const storeOwnerSchema = new mongoose.Schema({
   is_approved: {
     type: Boolean,
     default: false,
-  }, //by the admin
-  
+  }, //by the admin for the registeration request
+
+  deletion_requested:{
+    type: Boolean,
+    default: "false",
+  },
+
+  deletion_status:{
+    type:String,
+    enum: ["pending", "approved", "rejected"],
+    default: "pending",
+  }
 });
 
 const storeOwnerModel = userModel.discriminator(

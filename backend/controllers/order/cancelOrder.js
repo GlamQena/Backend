@@ -27,6 +27,9 @@ const cancelOrderController = async(req, res) => {
         if(foundOrder.status === "تم التوصيل")
             return res.status(400).json({message: "Cannot cancel delivered order"});
 
+        if(foundOrder.status === "قيد التوصيل")
+            return res.status(400).json({message: "Cannot cancel order that's about to deliver"});
+
         // Check if user has permission to cancel this order
         if(userRole === "client" && foundOrder.user_id.toString() !== userId)
             return res.status(403).json({message: "You can only cancel your own orders"});
