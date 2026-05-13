@@ -15,6 +15,19 @@
   - 'ngrok config add-authtoken [ngrok-platform-authtoken]'  **authtoken => 3AcBaVtaXp6H0kBF60fmrWOiNOB_5eEaAfySvCi7mVJhR5mPE
   - 'ngrok http [BACKEND_PORT]'
 
+* solve ngrok access denied error message:
+  - # Remove the ngrok binary cache
+    >> Remove-Item -Path "$env:USERPROFILE\.ngrok" -Recurse -Force -ErrorAction SilentlyContinue
+    >> 
+    >> # Remove the npm ngrok package
+    >> Remove-Item -Path "$env:APPDATA\npm\node_modules\ngrok" -Recurse -Force -ErrorAction SilentlyContinue
+  - >> npm cache clean --force
+  - >> npm install -g ngrok
+  - #check ngrok.exe exist 
+    >> Get-ChildItem "$env:APPDATA\npm\node_modules\ngrok\bin"
+  - >>& "$env:APPDATA\npm\node_modules\ngrok\bin\ngrok.exe" config add-authtoken 3AcBaVtaXp6H0kBF60fmrWOiNOB_5eEaAfySvCi7mVJhR5mPE
+  - >>ngrok http 8080
+
 - set the paymob developers integration (for card and wallet payments):
   'Transaction response callback' to the front end page route to redirect to it on payment process completion 
   'Transaction processed callback' to the webhook backend controller route.

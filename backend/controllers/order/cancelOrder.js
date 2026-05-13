@@ -127,7 +127,7 @@ async function processRefund(order) {
         // Process refund through Paymob
         // Note: Paymob's refund API endpoint might vary - check their documentation
         const refundResponse = await axios.post(
-            "https://accept.paymob.com/api/acceptance/refunds",
+            "https://accept.paymob.com/api/acceptance/void_refund/refund",
             {
                 auth_token: authToken,
                 transaction_id: transactionId,

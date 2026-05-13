@@ -24,6 +24,7 @@ const getCartProducts = async (req, res) => {
         success: true,
         message: "Cart is empty",
         data: {
+          user_id,
           products: [],
           summary: {
             total_items: 0,
@@ -59,7 +60,12 @@ const getCartProducts = async (req, res) => {
         totalItems += cartProduct.quantity;
         
         const productData_from_db = cartProduct.prod_id;
-        
+
+        if (!productData_from_db || Object.keys(productData_from_db).length === 0) {
+          console.warn(`Product reference ${cartProduct.prod_id} not found in DB, skipping`);
+          continue;
+        }
+
         let productData = {
           product_id: productData_from_db._id,
           name: productData_from_db.name,
@@ -161,6 +167,7 @@ const getCartProducts = async (req, res) => {
       success: true,
       message: stockIssues.length > 0 ? "Cart retrieved with stock warnings" : "Cart retrieved successfully",
       data: {
+        user_id,
         products: processedStores,
         summary: cartSummary,
         ...(stockIssues.length > 0 && { stock_issues: stockIssues })

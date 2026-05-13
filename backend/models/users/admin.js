@@ -16,10 +16,8 @@ const AdminSchema = new mongoose.Schema({
   permission: {
     type: [String],
     enum: [
-      "manageUsers", //clients
-      "manageAdmins",
       "viewAnalytics",
-      "manageStores",
+      "manageUsers",
       "manageOrders",
       "manageCategories",
     ],
@@ -32,7 +30,6 @@ const AdminSchema = new mongoose.Schema({
     default: [
       "viewAnalytics",
       "manageUsers",
-      "manageCategories",
     ],
   },
 
