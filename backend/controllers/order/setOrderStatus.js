@@ -26,7 +26,8 @@ const setOrderStatusController = async(req, res) => {
         const parsedStatus= statusZod.safeParse(status);
         if(!parsedStatus.success)
             return res.status(400).json({message: `${parsedStatus.error.issues[0].message}`});
-
+ foundOrder.status = status;
+    await foundOrder.save();
         res.status(200).json({message: `order status updated to "${status}"`});
     }catch(error){
         res.status(500).json({message: "internal server error", error});

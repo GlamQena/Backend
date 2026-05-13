@@ -38,7 +38,8 @@ const getCartProducts = async (req, res) => {
     // Populate cart data with only needed fields
     const populatedCart = await cartModel
       .findById(cart._id)
-      .populate('products.products.prod_id', 'owner_store_id name price stock images description');
+      .populate("products.owner_store_id", "name")
+      .populate("products.products.prod_id", "owner_store_id name price stock images description");
 
     // Process cart products
     let processedStores = [];
@@ -54,12 +55,18 @@ const getCartProducts = async (req, res) => {
       let storeHasStockIssues = false;
 
       const storeInfo = store.owner_store_id;
-      
+
       for (const cartProduct of store.products) {
-        totalItems += cartProduct.quantity;
-        
         const productData_from_db = cartProduct.prod_id;
-        
+
+        // Skip if product was deleted from DB
+        if (!productData_from_db) {
+          console.warn(`Product reference ${cartProduct.prod_id} not found in DB, skipping`);
+          continue;
+        }
+
+        totalItems += cartProduct.quantity;
+
         let productData = {
           product_id: productData_from_db._id,
           name: productData_from_db.name,
@@ -97,7 +104,7 @@ const getCartProducts = async (req, res) => {
           });
           storeHasStockIssues = true;
         }
-        
+
         // Check if price changed
         if (productData_from_db.price !== cartProduct.price) {
           productData.price_changed = true;
@@ -118,6 +125,7 @@ const getCartProducts = async (req, res) => {
       if (storeProducts.length > 0) {
         processedStores.push({
           store_id: storeInfo?._id || store.owner_store_id,
+          store_name: storeInfo?.name || null,
           products: storeProducts,
           store_subtotal: storeSubtotal,
           has_stock_issues: storeHasStockIssues,
@@ -129,7 +137,7 @@ const getCartProducts = async (req, res) => {
     // Auto-update cart if prices changed
     if (needsUpdate) {
       cart.total_price = totalPrice;
-      
+
       for (let i = 0; i < cart.products.length; i++) {
         let newStoreSubtotal = 0;
         for (let j = 0; j < cart.products[i].products.length; j++) {
@@ -137,13 +145,14 @@ const getCartProducts = async (req, res) => {
           const dbProduct = await productModel.findById(productId);
           if (dbProduct && dbProduct.price !== cart.products[i].products[j].price) {
             cart.products[i].products[j].price = dbProduct.price;
-            cart.products[i].products[j].subtotal_price = dbProduct.price * cart.products[i].products[j].quantity;
+            cart.products[i].products[j].subtotal_price =
+              dbProduct.price * cart.products[i].products[j].quantity;
           }
           newStoreSubtotal += cart.products[i].products[j].subtotal_price;
         }
         cart.products[i].store_subtotal = newStoreSubtotal;
       }
-      
+
       await cart.save();
     }
 
@@ -159,7 +168,10 @@ const getCartProducts = async (req, res) => {
 
     const responseData = {
       success: true,
-      message: stockIssues.length > 0 ? "Cart retrieved with stock warnings" : "Cart retrieved successfully",
+      message:
+        stockIssues.length > 0
+          ? "Cart retrieved with stock warnings"
+          : "Cart retrieved successfully",
       data: {
         products: processedStores,
         summary: cartSummary,
