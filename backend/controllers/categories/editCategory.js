@@ -57,24 +57,7 @@ const editCategoryById = async (req, res) => {
         errors: errors,
       });
     }
-
-    // Handle duplicate key error
-    if (error.code === 11000) {
-      return res.status(400).json({
-        success: false,
-        message: "Category name already exists",
-      });
-    }
-
-    // Handle invalid ObjectId format
-    if (error.name === "CastError") {
-      return res.status(400).json({
-        success: false,
-        message: "Invalid category ID format",
-      });
-    }
-
-    // Generic server error
+    
     return res.status(500).json({
       success: false,
       message: "Internal server error",
