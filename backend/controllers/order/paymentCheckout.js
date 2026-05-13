@@ -93,27 +93,51 @@ const paymentCheckoutController = async (req, res) => {
       return res.status(200).json({message: "billing data saved successfully"});
     }
     else if(payment_method === "card"){
-      await sendMail(to, `https://accept.paymob.com/api/acceptance/iframes/${paymob_iframe_id}?payment_token=${paymentToken}`);
+      sendMail(to, `https://accept.paymob.com/api/acceptance/iframes/${paymob_iframe_id}?payment_token=${paymentToken}`);
       return res.status(200).json({message: "payment url sent to you're email", savedBilling: updatedUser});
     }
-    else if(payment_method === "wallet"){
-
-      try{
-        const walletPaymentResult= await processWalletPayment(paymentToken, billing_data.phone_number);
-        
-        order.payment.status= "قيد المعالجة";
-        order.payment.paymob_transaction_id= walletPaymentResult.transaction_id;
-        await order.save();
-
-        await sendMail(to, walletPaymentResult.redirect_url);
-        return res.status(200).json({...walletPaymentResult, message: "Email sent to you with the payment redirect url",  savedBilling: updatedUser});
-      }catch(error){
-        
-        if(error.iframe_redirect_url)
-          await sendMail(to, error.iframe_redirect_url);
-        return res.status(400).json({error: error.message, iframe_redirect_url: error.iframe_redirect_url});
+    
+    else if(payment_method === "wallet") {
+      try {
+          // ✅ Call the proper processWalletPayment function
+          const walletPaymentResult = await processWalletPayment(paymentToken, billing_data.phone_number);
+          
+          order.payment.method = "wallet";
+          order.payment.status = "قيد المعالجة";
+          order.payment.paymob_order_id = order_id;
+          order.payment.paymob_transaction_id = walletPaymentResult.transaction_id;
+          await order.save();
+          
+          const to = updatedUser.email;
+          
+          // Send the Paymob redirect URL to user's email (optional)
+          sendMail(to, walletPaymentResult.redirect_url);
+          
+          // Return the redirect_url so frontend can navigate to Paymob's wallet page
+          return res.status(200).json({
+              success: true,
+              redirect_url: walletPaymentResult.redirect_url,  // This is Paymob's wallet page
+              transaction_id: walletPaymentResult.transaction_id,
+              message: "Redirecting to wallet payment page",
+              savedBilling: updatedUser
+          });
+          
+      } catch(error) {
+          console.error("Wallet payment error:", error);
+          
+          // If there's an iframe redirect URL (for decline page), send it
+          if(error.iframe_redirect_url) {
+              sendMail(to, error.iframe_redirect_url);
+          }
+          
+          return res.status(400).json({
+              success: false,
+              message: error.message,
+              iframe_redirect_url: error.iframe_redirect_url
+          });
       }
-    }
+   }
+
   } catch (err) {
     console.error({message: `error chekout the payment`, error: err});
     return res.status(500).json({ 
@@ -123,14 +147,14 @@ const paymentCheckoutController = async (req, res) => {
   }
 };
 
-const sendMail= async (to, text)=>{
+const sendMail= (to, text)=>{
   const mailOptions = {
     from: process.env.EMAIL,
     to: to,
     subject: "payment information",
     text,
   };
-  await sendEmail(mailOptions);
+  sendEmail(mailOptions);
 }
 
 async function getAuthToken() {
@@ -190,51 +214,45 @@ async function getPaymentKey(
   }
 }
 
+// CORRECT: processWalletPayment implementation
 async function processWalletPayment(paymentToken, phoneNumber) {
   try {
-    console.log(`📱 Processing wallet payment for phone: ${phoneNumber}`);
+    // Format phone number with country code (e.g., 201234567890)
+    let formattedPhone = phoneNumber;
+    if (!phoneNumber.startsWith("20")) {
+      formattedPhone = "20" + phoneNumber.replace(/^0/, "");
+    }
     
+    // 1. Call the specific 'pay' endpoint for wallet
     const response = await axios.post(
-        "https://accept.paymob.com/api/acceptance/payments/pay",
-        {
-            source: {
-                identifier: phoneNumber,  // The wallet number
-                subtype: "WALLET"          // Specify it's a wallet payment
-            },
-            payment_token: paymentToken
-        }
+      "https://accept.paymob.com/api/acceptance/payments/pay", // This is the correct endpoint
+      {
+        source: {
+          identifier: formattedPhone, // The wallet mobile number
+          subtype: "WALLET"           // IMPORTANT: Specify it's a wallet
+        },
+        payment_token: paymentToken    // The token you already generated
+      }
     );
     
-    // console.log("wallet response data => ", response.data );
-
-    if (response.data.error_occured) {
-        
-        const error = new Error(response.data.message || "Wallet payment failed");
-        error.iframe_redirect_url = response.data.iframe_redirection_url;
-        throw error; //new Error() constructor must take a string parameter not object, but it enable add additional properties after instantiating.
+    // 2. The API returns a redirect_url to the wallet authentication page
+    //    This URL points to Paymob, NOT your frontend orders page
+    const redirectUrl = response.data.redirect_url;
+    
+    if (!redirectUrl) {
+      throw new Error("No redirect_url received from Paymob for wallet payment");
     }
     
-    console.log("✅ Wallet payment response:", {
-        redirect_url: response.data.redirect_url,
-        transaction_id: response.data.id,
-        iframe_redirect_url : response.data.iframe_redirection_url,
-    });
-    
+    // 3. Return this URL. Your frontend MUST navigate to it.
     return {
-        success: true,
-        redirect_url: response.data.redirect_url, // This takes user to OTP page
-        transaction_id: response.data.id
-    }; //in case error occured redirect_url will be empty string, while the iframe_redirect_url will redirect to decline page.
+      success: true,
+      redirect_url: redirectUrl,
+      transaction_id: response.data.id
+    };
     
   } catch (err) {
-    console.error("Wallet payment error:", err);
-    
-    // Preserve any Paymob-specific properties
-    const error = new Error(err.message || "Error processing wallet payment");
-    if (err.iframe_redirect_url) {
-        error.iframe_redirect_url = err.iframe_redirect_url;
-    }
-    throw error;
+    console.error("Paymob Wallet Error:", err.response?.data || err.message);
+    throw new Error("Failed to initiate wallet payment. Please check the phone number.");
   }
 }
 

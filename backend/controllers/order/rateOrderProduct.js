@@ -28,17 +28,17 @@ const rateOrderProductController= async(req, res)=> {
         if(!order)
             return res.status(404).json({message: "the order of the product to be rated not found"});
 
-        if(order.user_id !== clientId)
+        if(order.user_id.toString() !== clientId.toString())
             return res.status(400).json({message: "you can only rate a product of order to you"});
 
         if(order.status !== "تم التوصيل")
             return res.status(400).json({message: "the order must be delivered to rate its product"});
 
-        let storeOrderProducts= order.products.find((storeProds) => storeProds.owner_store_id === foundProduct.owner_store_id)
+        let storeOrderProducts= order.products.find((storeProds) => storeProds.owner_store_id.toString() === foundProduct.owner_store_id.toString())
         if (!storeOrderProducts)
             return res.status(400).json({ message: "product not found in this order" });
 
-        const orderProductExists = storeOrderProducts.products.find((prod) => prod.prod_id === productId);
+        const orderProductExists = storeOrderProducts.products.find((prod) => prod.prod_id.toString() === productId.toString());
         if(!orderProductExists)
             return res.status(400).json({message: "product not found in this order"});
 
@@ -66,6 +66,7 @@ const rateOrderProductController= async(req, res)=> {
         const productStats= await reviewModel.aggregate([
             {$match: {product_id: productId}},
             {$group:{
+                _id: null,
                 avg:{$avg: "$rate"},
                 count: {$sum: 1}
             }}

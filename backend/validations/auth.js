@@ -71,6 +71,12 @@ const passwordField= z.string({required_error: "password is required"}).trim()
 
 const confirmPasswordField= z.string().nonempty({message: "confirm password mustn't be empty!"});
 
+const phoneNumberField= optionalSchemaHandler(
+        z.string().trim().regex(/^01[0125]{1}[0-9]{8}$/, { 
+            message: "invalid egyptian phone (must start with 012, 010, 011 or 015 then 8 digits)" 
+        })
+    );
+
 const commonOptionalFields = z.object({
     address: optionalSchemaHandler(
         z.object({
@@ -79,11 +85,7 @@ const commonOptionalFields = z.object({
             street: z.string().trim().max(100, { message: "street must be at most 100 characters" })
         })
     ),
-    phoneNumber: optionalSchemaHandler(
-        z.string().trim().regex(/^01[0125]{1}[0-9]{8}$/, { 
-            message: "invalid egyptian phone (must start with 012, 010, 011 or 015 then 8 digits)" 
-        })
-    ),
+    phoneNumber: phoneNumberField,
     birthdate: optionalDateHandler,
     gender: optionalEnumHandler(["male", "female"]),
 });
@@ -127,4 +129,4 @@ const resetPasswordSchema= newConfirmPasswords;
 const changePasswordSchema= z.object({currentPassword: passwordField})
 .extend(newConfirmPasswords.shape);
 
-module.exports= {loginSchema, registerSchema, resetPasswordSchema, changePasswordSchema, storeOwnerSpecificRegister, emailField, commonOptionalFields, optionalSchemaHandler, optionalEnumHandler};
+module.exports= {loginSchema, registerSchema, resetPasswordSchema, changePasswordSchema, storeOwnerSpecificRegister, usernameField, emailField, passwordField, phoneNumberField, commonOptionalFields, optionalSchemaHandler, optionalEnumHandler};

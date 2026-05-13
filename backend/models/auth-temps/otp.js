@@ -11,7 +11,7 @@ const OTPSchema = new mongoose.Schema(
 
     for:{
         type:String,
-        enum: ["verifyPhone", "resetPassword"],
+        enum: ["resetPassword", "activateAccount"],
         required: true,
         default: null,
         index: true,
@@ -27,6 +27,7 @@ const OTPSchema = new mongoose.Schema(
 
     isActive: {
       type: Boolean,
+      default: true,
     },
 
     otpExpiry: {
@@ -53,6 +54,8 @@ const OTPSchema = new mongoose.Schema(
   },
   { timestamps: true, versionKey: false },
 );
+
+OTPSchema.index({ userId: 1, for:1}, {unique: true});
 
 const otpModel = mongoose.model("otp", OTPSchema);
 module.exports = otpModel;
