@@ -19,7 +19,6 @@ const router = express.Router();
 
 //no checkAuth middleware to allow the paymob http requests
 router.post("/completion", checkPaymentCompletion);
-
 router.use(checkAuth());
 
 router.get("/history", checkRole("client"), getClientOrdersController);
@@ -32,7 +31,7 @@ router.get("/", checkRole("store_owner"), getOrdersByOwnerStoreId);
 
 router.post("/", checkRole("client"), placeOrderController);
 router.post("/:id/payment", checkRole("client"), paymentCheckoutController);
-router.post("/:id/reorder", checkRole("client"), reOrderRequest);
+router.post("/:id/reorder",checkRole("client"), reOrderRequest);
 router.post("/:id/rating", checkRole("client"), rateOrderProductController);
 
 router.patch("/:id/status", setOrderStatusController);
