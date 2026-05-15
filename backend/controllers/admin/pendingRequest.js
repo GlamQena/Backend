@@ -72,7 +72,7 @@ const pendingRequest = async (req, res) => {
         });
       }
 
-      if(userToPending.createdBy!==requestingAdminId){
+      if(userToPending.createdBy.toString()!==requestingAdminId){
           return res.status(403).json({
           success: false,
           message: "You do not create this admin. Cannot set admin deletion to pending.",
@@ -105,7 +105,7 @@ const pendingRequest = async (req, res) => {
     }
 
     // Prepare response message
-      responseMessage = `Deletion request for ${userRole} has been reverted from approved back to pending status successfully.`;
+      let responseMessage = `Deletion request for ${userRole} has been reverted from approved back to pending status successfully.`;
   
     // Remove sensitive data from response
     const userResponse = updatedUser.toObject ? updatedUser.toObject() : updatedUser;

@@ -110,7 +110,7 @@ const approveRequestDeletion = async (req, res) => {
             "You do not have manageAdmins permission. Cannot approve admin deletion.",
         });
       }
-      if (userToApprove.createdBy !== requestingAdminId) {
+      if (userToApprove.createdBy.toString() !== requestingAdminId) {
         return res.status(403).json({
           success: false,
           message:

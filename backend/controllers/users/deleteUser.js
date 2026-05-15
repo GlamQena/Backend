@@ -85,7 +85,7 @@ const deleteUserController = async (req, res) => {
           message: `You cannot delete this admin because his deletion_status ${deletedUser.deletion_status}`,
         });
       }
-      if (deletedUser.createdBy !== requestingUserId) {
+      if (deletedUser.createdBy.toString() !== requestingUserId) {
         return res.status(403).json({
           message: `You cannot delete this admin because not created by you`,
         });

@@ -107,16 +107,6 @@ const requestForDeletion = async (req, res) => {
             "Cannot request deletion. You are the last admin account. Please create another admin before requesting deletion.",
         });
       }
-
-      // Check if this admin has created other admins
-      const createdAdmins = await adminModel.find({ createdBy: userId });
-      if (createdAdmins.length > 0) {
-        return res.status(400).json({
-          success: false,
-          message: `Cannot request deletion. You have created ${createdAdmins.length} other admin(s). Please ensure they are transferred or deleted first.`,
-          createdAdminsCount: createdAdmins.length,
-        });
-      }
     }
 
     // Update user document with deletion request
