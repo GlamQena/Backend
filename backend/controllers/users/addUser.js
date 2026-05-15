@@ -48,6 +48,12 @@ const addUser = async (req, res) => {
     }
 
     // Check if username or email already exists
+    if (!userData.email||!userData.username) {
+      return res.status(400).json({
+        success: false,
+        message: "email and username are required",
+      });
+    }
     const existingUser = await userModel.findOne({
       $or: [
         { username: userData.username?.toLowerCase() },
