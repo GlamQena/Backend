@@ -1,5 +1,5 @@
 const axios = require("axios");
-const { sendEmail } = require("../../utils/mailSender");
+const { sendEmailMessage } = require("../../utils/mailSender");
 const path = require("path");
 const orderModel = require("../../models/order");
 const { clientModel } = require("../../models/users/client");
@@ -28,6 +28,13 @@ const paymentCheckoutController = async (req, res) => {
       return res.status(404).json({ message: "Order not found" });
     }
 
+    if(order.payment.status === "قيد المعالجة")
+      return res.status(400).json({message: "Payment redirect url already sent to your email"});
+    //TODO => store paymob_redirect_expires_at prop in order payment to check in case of status processing and send again if expired.
+    else if(order.payment.status === "مكتمل")
+      return res.status(400).json({message: "Payment already completed"});
+    //else if payment status failed or pending continue to checkout the payment
+
     const order_prods=[];
     let total_amount_cents=0;
 
@@ -44,6 +51,8 @@ const paymentCheckoutController = async (req, res) => {
       }
     }
 
+    total_amount_cents+= order.delivery_cost * 100;
+    
     const authToken = await getAuthToken();
     const used_integration_id= payment_method === "card" ? paymob_card_integration_id : paymob_wallet_integration_id;
     const order_id = await registerOrder(authToken, total_amount_cents, order_prods);
@@ -94,7 +103,7 @@ const paymentCheckoutController = async (req, res) => {
     }
     else if(payment_method === "card"){
       sendMail(to, `https://accept.paymob.com/api/acceptance/iframes/${paymob_iframe_id}?payment_token=${paymentToken}`);
-      return res.status(200).json({message: "payment url sent to you're email", savedBilling: updatedUser});
+      return res.status(200).json({message: "payment url sent to you're email", redirect_url: `https://accept.paymob.com/api/acceptance/iframes/${paymob_iframe_id}?payment_token=${paymentToken}`, savedBilling: updatedUser});
     }
     
     else if(payment_method === "wallet") {
@@ -154,7 +163,7 @@ const sendMail= (to, text)=>{
     subject: "payment information",
     text,
   };
-  sendEmail(mailOptions);
+  sendEmailMessage(mailOptions);
 }
 
 async function getAuthToken() {

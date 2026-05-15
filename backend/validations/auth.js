@@ -80,9 +80,9 @@ const phoneNumberField= optionalSchemaHandler(
 const commonOptionalFields = z.object({
     address: optionalSchemaHandler(
         z.object({
-            city: z.string().trim().max(50, { message: "city must be at most 50 characters" }),
-            district: z.string().trim().max(50, { message: "district must be at most 50 characters" }),
-            street: z.string().trim().max(100, { message: "street must be at most 100 characters" })
+            city: z.string().trim().max(50, { message: "city must be at most 50 characters" }).optional().default(""),
+            district: z.string().trim().max(50, { message: "district must be at most 50 characters" }).optional().default(""),
+            street: z.string().trim().max(100, { message: "street must be at most 100 characters" }).optional().default("")
         })
     ),
     phoneNumber: phoneNumberField,

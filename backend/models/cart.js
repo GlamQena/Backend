@@ -31,10 +31,10 @@ const CartSchema = new mongoose.Schema(
                 type: mongoose.Schema.Types.ObjectId,
                 ref: "product",
               },
-              // name: {
-              //   type: String,
-              //   trim: true,
-              // },
+              name: {
+                type: String,
+                trim: true,
+              },
               price: {
                 type: Number,
                 min: 0,

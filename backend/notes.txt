@@ -25,6 +25,8 @@
   - >> npm install -g ngrok
   - #check ngrok.exe exist 
     >> Get-ChildItem "$env:APPDATA\npm\node_modules\ngrok\bin"
+    
+  *the basic two steps:
   - >>& "$env:APPDATA\npm\node_modules\ngrok\bin\ngrok.exe" config add-authtoken 3AcBaVtaXp6H0kBF60fmrWOiNOB_5eEaAfySvCi7mVJhR5mPE
   - >>ngrok http 8080
 

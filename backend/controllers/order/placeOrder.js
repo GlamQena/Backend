@@ -2,8 +2,9 @@ const Cart = require("../../models/cart");
 const Order = require("../../models/order");
 const Product = require("../../models/product");
 const mongoose = require("mongoose");
+const { clientModel } = require("../../models/users/client");
 
-const placeOrderController= async(req, res)=> {
+const placeOrderController = async (req, res) => {
   try {
     const userId = req.user.id;
     let userIdObj = null;
@@ -30,20 +31,19 @@ const placeOrderController= async(req, res)=> {
     if (!cart || cart.products.length === 0) {
       return res.status(400).json({ message: "Cart is empty" });
     }
-  
+
     let totalPrice = 0;
-    let store_subtotal = 0;
     let orderProducts = [];
     let totalQuantity = 0;
 
     for (const storeProds of cart.products) {
-      let _id= storeProds.owner_store_id;
+      let store_subtotal = 0;
+      const storeProducts = [];
 
-      const storeProducts= [];
+      for (let prod of storeProds.products) {
+        const product = await Product.findById(prod.prod_id);
 
-      for(let prod of storeProds.products){
-        const product = await Product.findOne({_id: prod.prod_id, owner_store_id: _id});
-
+        // ✅ Product deleted from DB — clean cart and inform user
         if (!product) {
           for (const store of cart.products) {
             store.products = store.products.filter(
@@ -60,16 +60,18 @@ const placeOrderController= async(req, res)=> {
         }
 
         if (product.stock < prod.quantity) {
-            return res.status(400).json({message: `Not enough stock for ${product.name}`});
-          }
+          return res.status(400).json({
+            message: `Not enough stock for ${product.name}`
+          });
+        }
 
         const subtotal = product.price * prod.quantity;
         storeProducts.push({
-            prod_id: product._id,
-            name: product.name,
-            price: product.price,
-            quantity: prod.quantity,
-            subtotal_price: subtotal, 
+          prod_id: product._id,
+          name: product.name,
+          price: product.price,
+          quantity: prod.quantity,
+          subtotal_price: subtotal,
         });
 
         store_subtotal += subtotal;
@@ -77,7 +79,7 @@ const placeOrderController= async(req, res)=> {
       }
 
       orderProducts.push({
-        owner_store_id:_id,
+        owner_store_id: storeProds.owner_store_id,
         products: storeProducts,
         store_subtotal
       });
@@ -85,8 +87,6 @@ const placeOrderController= async(req, res)=> {
       totalPrice += store_subtotal;
     }
 
-
-  
     const deliveryFee = 50;
     totalPrice += deliveryFee;
 
@@ -95,34 +95,36 @@ const placeOrderController= async(req, res)=> {
       user_id: userId,
       products: orderProducts,
       total_quantity: totalQuantity,
-      subtotal_price: totalPrice-50,
+      subtotal_price: totalPrice - deliveryFee,
       total_price: totalPrice,
       status: "قيد الانتظار",
     });
 
-   // تقليل المخزون 
-   for (const storeProds of cart.products) {
-    for(const item of storeProds.products)
+    // Decrease stock
+    for (const storeProds of cart.products) {
+      for (const item of storeProds.products) {
         await Product.findByIdAndUpdate(item.prod_id, {
-           $inc: { stock: -item.quantity },
+          $inc: { stock: -item.quantity },
         });
+      }
     }
 
-    // تفريغ السلة
+    await clientModel.findByIdAndUpdate(userId, {$inc: {totalOrders: +1}});
+    
+    // Clear cart
     cart.products = [];
     cart.total_price = 0;
     await cart.save();
 
-
     return res.status(201).json({
-        message: "Order placed successfully",
-        order
+      message: "Order placed successfully",
+      order
     });
 
-    } catch (error) {
+  } catch (error) {
     console.error(error);
     res.status(500).json({ message: "Server error" });
   }
 };
 
-module.exports= placeOrderController;
+module.exports = placeOrderController;
