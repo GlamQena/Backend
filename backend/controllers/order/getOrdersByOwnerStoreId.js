@@ -15,7 +15,7 @@ const getOrdersByOwnerStoreId = async (req, res) => {
     // Find all orders that contain products from this specific store
     const orders = await Order.find({
       "products.owner_store_id": storeId,
-    }).populate("user_id", "firstName lastName email phoneNumber address").lean();
+    }).populate("user_id", "firstName lastName username email phoneNumber address").lean();
 
     if (!orders || orders.length === 0) {
       return res.status(404).json({
@@ -54,15 +54,21 @@ const getOrdersByOwnerStoreId = async (req, res) => {
           store_subtotal: storeData.store_subtotal,
 
           // Customer information
-          customer: {
-          id: order.user_id?._id || order.user_id,
-          name: order.user_id?.firstName 
-            ? `${order.user_id.firstName} ${order.user_id.lastName || ''}` 
-            : "",
-          email: order.user_id?.email,
-          phone: order.user_id?.phoneNumber,
-        },
-
+        customer: {
+            id: order.user_id?._id || order.user_id,
+            name: order.user_id?.firstName 
+              ? `${order.user_id.firstName} ${order.user_id.lastName || ''}`.trim()
+              : order.user_id?.username || "",
+            email: order.user_id?.email,
+            phone: order.user_id?.phoneNumber,
+            address: order.user_id?.address
+              ? [
+                  order.user_id.address.street,
+                  order.user_id.address.district,
+                  order.user_id.address.city,
+                ].filter(Boolean).join("، ") //.filter(Boolean) remove any falsy or empty value from the list befor concatenate with arabic comma
+              : "",
+          },
           // Store's payout amount from profit breakdown
           store_payout:
             order.profit_breakdown?.stores_payout?.find(

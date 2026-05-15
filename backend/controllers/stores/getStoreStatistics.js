@@ -6,7 +6,7 @@ const getStoreStatistics = async (req, res) => {
   try {
     const storeId = req.params.id;
 
-    const store = await Store.findById(storeId);
+    const store = await storeOwnerModel.findById(storeId).select("-deletion_requested -deletion_status");
 
     if (!store) {
       return res.status(404).json({ message: "Store not found" });

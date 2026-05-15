@@ -15,7 +15,7 @@ const getOrderDetailsController = async (req, res) => {
       .populate({
         path: "products.products.prod_id", 
         model: "product", 
-        select: "images",
+        select: "images hasReviewed",
       })
       .lean();
 

@@ -29,6 +29,26 @@ async function sendEmail(options) {
     }
 }
 
+async function sendEmailMessage(options) {
+    try {
+        const {to, subject, text} = options;
+        const templatePath = path.join(__dirname, "../templates/emailmsg.template.html");
+        let emailMsgTemp = await fs.readFile(templatePath, "utf-8");
+
+        emailMsgTemp= emailMsgTemp.replace("{subject}", subject);
+        emailMsgTemp= emailMsgTemp.replace("{message}", text);
+
+        await sendEmail({ 
+            to, 
+            subject, 
+            html: emailMsgTemp 
+        });
+        
+    } catch (err) {
+        console.log("Error reading template or sending email:", err);
+    }
+}
+
 async function sendEmailVerificationToUser(email, token) {
     const frontend_url= `http://localhost:${process.env.FRONTEND_PORT}/verify-email?email=${email}&token=${token}`;
     const backend_url = `http://localhost:${process.env.BACKEND_PORT}/auth/verify/${email}/${token}`;
@@ -64,7 +84,7 @@ async function setUserVerification(user, ex) {
             email: user.email,
             role: user.role,
     }
-    const emailToken =  jwt.sign(payload, process.env.JWT_SECRET, {expiresIn:ex|| "8h"});
+    const emailToken =  jwt.sign(payload, process.env.JWT_SECRET, {expiresIn:ex|| "10m"});
     
     await sendEmailVerificationToUser(user.email, emailToken);
 }
@@ -72,5 +92,6 @@ async function setUserVerification(user, ex) {
 module.exports = {
     setUserVerification,
     sendEmailVerificationToUser,
-    sendEmail
+    sendEmail,
+    sendEmailMessage
 };
