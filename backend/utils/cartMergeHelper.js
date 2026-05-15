@@ -1,5 +1,6 @@
 const cartModel = require("../models/cart");
 const productModel = require("../models/product");
+const mongoose = require("mongoose");
 
 /**
  * Just returns the appropriate cart based on user_id OR session_id
@@ -8,13 +9,26 @@ const getPrimaryCart = async (user_id, session_id, createIfNotFound = false) => 
   let cart = null;
   
   try {
-    // Priority: user cart > session cart
+    let userIdObj = null;
     if (user_id) {
-      cart = await cartModel.findOne({ user_id });
+      try {
+        userIdObj = typeof user_id === 'string' 
+          ? new mongoose.Types.ObjectId(user_id) 
+          : user_id;
+      } catch (err) {
+        console.error("Invalid user_id format:", user_id);
+      }
+    }
+
+    // Priority: user cart > session cart
+    if (userIdObj) {
+      cart = await cartModel.findOne({ user_id: userIdObj });
+      console.log(`fetched cart for user_id ${userIdObj}=>`, cart);
     }
     
     if (!cart && session_id) {
       cart = await cartModel.findOne({ session_id });
+      console.log("fetched cart for session_id =>", cart);
     }
     
     // Create new cart if needed

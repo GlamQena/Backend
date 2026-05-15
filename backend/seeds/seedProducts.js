@@ -255,11 +255,15 @@ let seedData = [
     skinType: "عادية",
   },
   {
-    owner_store_id: "{id}",
-    category_id: "69e387b312d268b6bb3b69db",
+    name: "Ordinor Even Tone Serum",
+    description:
+      "Ultra-lightweight whitening serum support with marine-derived water reservoirs.",
+    brand: "ordinor",
+
     name: "Ordinor سيروم توحيد لون البشرة",
     price: 410,
     description: "سيروم تبييض خفيف الوزن للغاية يدعم بخزانات مائية بحرية.",
+
     stock: 10,
     images: [
       "uploads/ordinor-serum1.avif",

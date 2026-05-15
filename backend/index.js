@@ -57,6 +57,8 @@ app.use(
       maxAge: 7 * 24 * 60 * 60 * 1000,
       secure: process.env.NODE_ENV === "production",
       sameSite: "lax",
+      domain: process.env.NODE_ENV === "development" ? undefined : "", //TODO => handle production domain later
+      path: "/",
     },
   }),
 );
