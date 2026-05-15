@@ -117,7 +117,7 @@ const storeOwnerSchema = new mongoose.Schema({
 
   deletion_requested:{
     type: Boolean,
-    default: "false",
+    default: false,
   },
 
   deletion_status:{
