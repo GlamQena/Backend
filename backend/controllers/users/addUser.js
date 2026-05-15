@@ -9,7 +9,6 @@ const addUser = async (req, res) => {
   try {
     const { role, ...userData } = req.body;
 
-    // Check admin permissions based on role
     const admin = await adminModel.findById(req.user.id);
     const adminPermissions = admin.permission || [];
 
@@ -48,7 +47,7 @@ const addUser = async (req, res) => {
     }
 
     // Check if username or email already exists
-    if (!userData.email||!userData.username) {
+    if (!userData.email || !userData.username) {
       return res.status(400).json({
         success: false,
         message: "email and username are required",
@@ -114,14 +113,19 @@ const addUser = async (req, res) => {
           ...userData,
           password: hashedPassword,
           role: "store_owner",
-          is_approved: false, // New stores need admin approval
+          is_approved: false, 
         });
         break;
 
       case "admin":
-        // Validate admin-specific fields
+        // Validate admin Permissions
+        if (!userData.permission) {
+          return res.status(400).json({
+            success: false,
+            message: "permission is required",
+          });
+        }
         if (
-          !userData.permission ||
           !Array.isArray(userData.permission) ||
           userData.permission.length < 3
         ) {
@@ -135,7 +139,7 @@ const addUser = async (req, res) => {
           ...userData,
           password: hashedPassword,
           role: "admin",
-          createdBy: req.user._id, // Track which admin created this admin
+          createdBy: req.user.id, 
           permission: userData.permission,
         });
         break;

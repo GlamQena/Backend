@@ -6,7 +6,7 @@ const AdminSchema = new mongoose.Schema({
   createdBy: {
     type: mongoose.Schema.ObjectId,
     ref: "admin",
-    required: false,
+    required: true,
   },
 
   lastActivity: {
