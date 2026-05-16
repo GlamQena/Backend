@@ -71,19 +71,21 @@ const passwordField= z.string({required_error: "password is required"}).trim()
 
 const confirmPasswordField= z.string().nonempty({message: "confirm password mustn't be empty!"});
 
-const commonOptionalFields = z.object({
-    address: optionalSchemaHandler(
-        z.object({
-            city: z.string().trim().max(50, { message: "city must be at most 50 characters" }),
-            district: z.string().trim().max(50, { message: "district must be at most 50 characters" }),
-            street: z.string().trim().max(100, { message: "street must be at most 100 characters" })
-        })
-    ),
-    phoneNumber: optionalSchemaHandler(
+const phoneNumberField= optionalSchemaHandler(
         z.string().trim().regex(/^01[0125]{1}[0-9]{8}$/, { 
             message: "invalid egyptian phone (must start with 012, 010, 011 or 015 then 8 digits)" 
         })
+    );
+
+const commonOptionalFields = z.object({
+    address: optionalSchemaHandler(
+        z.object({
+            city: z.string().trim().max(50, { message: "city must be at most 50 characters" }).optional().default(""),
+            district: z.string().trim().max(50, { message: "district must be at most 50 characters" }).optional().default(""),
+            street: z.string().trim().max(100, { message: "street must be at most 100 characters" }).optional().default("")
+        })
     ),
+    phoneNumber: phoneNumberField,
     birthdate: optionalDateHandler,
     gender: optionalEnumHandler(["male", "female"]),
 });
@@ -127,4 +129,4 @@ const resetPasswordSchema= newConfirmPasswords;
 const changePasswordSchema= z.object({currentPassword: passwordField})
 .extend(newConfirmPasswords.shape);
 
-module.exports= {loginSchema, registerSchema, resetPasswordSchema, changePasswordSchema, storeOwnerSpecificRegister, emailField, commonOptionalFields, optionalSchemaHandler, optionalEnumHandler};
+module.exports= {loginSchema, registerSchema, resetPasswordSchema, changePasswordSchema, storeOwnerSpecificRegister, usernameField, emailField, passwordField, phoneNumberField, commonOptionalFields, optionalSchemaHandler, optionalEnumHandler};

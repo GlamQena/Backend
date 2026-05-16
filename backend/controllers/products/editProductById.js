@@ -1,3 +1,4 @@
+const cartModel = require("../../models/cart");
 const Product = require("../../models/product");
 const { productSchema } = require("../../validations/products");
 
@@ -80,6 +81,30 @@ const editProductById = async (req, res) => {
         success: false,
         message: "Product not found",
       });
+    }
+
+    if(validUpdates.name || validUpdates.price){
+      let productCarts= await cartModel.find({"products.owner_store_id": owner_store_id, "products.products.prod_id": updatedProduct._id});
+      for(let cart of productCarts){
+        let cartModified = false;
+        for(let storeProds of cart.products){
+          if(storeProds.owner_store_id.toString() === owner_store_id)
+            storeProds.products.map(prod => {
+              if(prod.prod_id.toString() === updatedProduct._id.toString()){
+                if(validUpdates.name && prod.name !== validUpdates.name) {
+                  prod.name= updatedProduct.name;
+                  cartModified= true;
+                }
+                if(validUpdates.price && prod.price !== validUpdates.price) {
+                  prod.price= updatedProduct.price;
+                  cartModified= true;
+                }
+              }
+            });
+        }
+        if(cartModified)
+          await cart.save();
+      }
     }
 
     // Return success response
