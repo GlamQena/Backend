@@ -20,6 +20,8 @@ const AdminSchema = new mongoose.Schema({
       "manageUsers",
       "manageOrders",
       "manageCategories",
+      "manageStores",
+      "manageAdmins"
     ],
     validate: {
       validator: (v) => {
@@ -35,7 +37,7 @@ const AdminSchema = new mongoose.Schema({
 
   deletion_requested:{
     type: Boolean,
-    default: "false",
+    default: false,
   },
 
   deletion_status:{
