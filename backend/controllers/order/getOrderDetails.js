@@ -10,8 +10,8 @@ const getOrderDetailsController = async (req, res) => {
     const order = await Order.findById(orderId)
       .populate("user_id", "firstName lastName email phoneNumber address")
       .populate({
-        path: "products.owner_store_id",
-        select: "store_name",
+        path: "products.owner_store_id", 
+        select: "_id store_name",
       })
       .populate({
         path: "products.products.prod_id",
@@ -27,36 +27,13 @@ const getOrderDetailsController = async (req, res) => {
       });
     }
 
-    // ─────────────────────────────────────
-    // CLIENT ACCESS
-    // ─────────────────────────────────────
-    if (userRole === "client" && order.user_id?._id?.toString() !== userId) {
-      return res.status(403).json({
-        success: false,
-        message: "Unauthorized",
-      });
-    }
+    let data = order; //for client page
 
-    // default response for client/admin
-    let data = order;
-
-    // ─────────────────────────────────────
-    // STORE OWNER ACCESS
-    // ─────────────────────────────────────
-    if (userRole === "store_owner") {
-      if (!storeId) {
-        return res.status(400).json({
-          success: false,
-          message: "Store ID missing from token",
-        });
-      }
-
-      const storeData = order.products.find((store) => {
-        const currentStoreId =
-          store.owner_store_id?._id || store.owner_store_id;
-
-        return currentStoreId?.toString() === storeId.toString();
-      });
+    if(userRole === "store_owner"){
+    const storeData = order.products.find(
+  (store) =>
+    (store.owner_store_id?._id || store.owner_store_id)?.toString() === storeId?.toString()
+);
 
       if (!storeData) {
         return res.status(403).json({
@@ -76,27 +53,16 @@ const getOrderDetailsController = async (req, res) => {
 
         payment_status: order.payment?.status,
 
-        // store info
-        store: {
-          id: storeData.owner_store_id?._id || storeData.owner_store_id,
-
-          name: storeData.owner_store_id?.store_name || "",
-        },
-
-        // store products only
-        store_products: storeData.products.map((product) => ({
-          product_id: product.prod_id?._id || product.prod_id,
-
-          product_name: product.name,
-
-          quantity: product.quantity,
-
-          price_per_unit: product.price,
-
-          subtotal: product.subtotal_price,
-
-          images: product.prod_id?.images || [],
-        })),
+          // Store-specific product information
+          store_products: storeData.products.map((product) => ({
+            product_id: product.prod_id,
+            product_name: product.name,
+            quantity: product.quantity,
+           hasReviewed: product.prod_id?.hasReviewed || false,  // ✅
+  images: product.prod_id?.images || [],  
+            price_per_unit: product.price,
+            subtotal: product.subtotal_price,
+          })),
 
         store_subtotal: storeData.store_subtotal || 0,
 
