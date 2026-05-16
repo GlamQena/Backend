@@ -13,7 +13,7 @@ const storeOwnerSchema = new mongoose.Schema({
 
   store_phone: {
     type: String,
-    required: true,
+    required: false,
     unique: true,
     trim: true,
     index: true,
@@ -57,7 +57,7 @@ const storeOwnerSchema = new mongoose.Schema({
         required: true,
       },
     },
-    required: true,
+    required: false,
   },
 
   store_description: {
@@ -117,7 +117,7 @@ const storeOwnerSchema = new mongoose.Schema({
 
   deletion_requested:{
     type: Boolean,
-    default: "false",
+    default: false,
   },
 
   deletion_status:{

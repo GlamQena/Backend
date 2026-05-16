@@ -55,20 +55,20 @@ const getOrdersByOwnerStoreId = async (req, res) => {
 
           // Customer information
         customer: {
-  id: order.user_id?._id || order.user_id,
-  name: order.user_id?.firstName 
-    ? `${order.user_id.firstName} ${order.user_id.lastName || ''}`.trim()
-    : order.user_id?.username || "",
-  email: order.user_id?.email,
-  phone: order.user_id?.phoneNumber,
-  address: order.user_id?.address
-    ? [
-        order.user_id.address.street,
-        order.user_id.address.district,
-        order.user_id.address.city,
-      ].filter(Boolean).join("، ")
-    : "",
-},
+            id: order.user_id?._id || order.user_id,
+            name: order.user_id?.firstName 
+              ? `${order.user_id.firstName} ${order.user_id.lastName || ''}`.trim()
+              : order.user_id?.username || "",
+            email: order.user_id?.email,
+            phone: order.user_id?.phoneNumber,
+            address: order.user_id?.address
+              ? [
+                  order.user_id.address.street,
+                  order.user_id.address.district,
+                  order.user_id.address.city,
+                ].filter(Boolean).join("، ") //.filter(Boolean) remove any falsy or empty value from the list befor concatenate with arabic comma
+              : "",
+          },
           // Store's payout amount from profit breakdown
           store_payout:
             order.profit_breakdown?.stores_payout?.find(

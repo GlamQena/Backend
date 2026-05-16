@@ -8,10 +8,7 @@ const getOrderDetailsController = async (req, res) => {
     const storeId = req.user.store_id;
 
     const order = await Order.findById(orderId)
-      .populate(
-        "user_id",
-        "firstName lastName email phoneNumber address"
-      )
+      .populate("user_id", "firstName lastName email phoneNumber address")
       .populate({
         path: "products.owner_store_id",
         select: "store_name",
@@ -19,7 +16,7 @@ const getOrderDetailsController = async (req, res) => {
       .populate({
         path: "products.products.prod_id",
         model: "product",
-        select: "images",
+        select: "images hasReviewed",
       })
       .lean();
 
@@ -33,10 +30,7 @@ const getOrderDetailsController = async (req, res) => {
     // ─────────────────────────────────────
     // CLIENT ACCESS
     // ─────────────────────────────────────
-    if (
-      userRole === "client" &&
-      order.user_id?._id?.toString() !== userId
-    ) {
+    if (userRole === "client" && order.user_id?._id?.toString() !== userId) {
       return res.status(403).json({
         success: false,
         message: "Unauthorized",
@@ -67,8 +61,7 @@ const getOrderDetailsController = async (req, res) => {
       if (!storeData) {
         return res.status(403).json({
           success: false,
-          message:
-            "This order does not contain products from your store",
+          message: "This order does not contain products from your store",
         });
       }
 
@@ -85,9 +78,7 @@ const getOrderDetailsController = async (req, res) => {
 
         // store info
         store: {
-          id:
-            storeData.owner_store_id?._id ||
-            storeData.owner_store_id,
+          id: storeData.owner_store_id?._id || storeData.owner_store_id,
 
           name: storeData.owner_store_id?.store_name || "",
         },
@@ -130,12 +121,9 @@ const getOrderDetailsController = async (req, res) => {
         store_payout:
           order.profit_breakdown?.stores_payout?.find((payout) => {
             const payoutStoreId =
-              payout.owner_store_id?._id ||
-              payout.owner_store_id;
+              payout.owner_store_id?._id || payout.owner_store_id;
 
-            return (
-              payoutStoreId?.toString() === storeId.toString()
-            );
+            return payoutStoreId?.toString() === storeId.toString();
           })?.amount || 0,
 
         // delivery
@@ -155,7 +143,6 @@ const getOrderDetailsController = async (req, res) => {
       success: true,
       data,
     });
-
   } catch (error) {
     console.error("GET ORDER DETAILS ERROR:", error);
 

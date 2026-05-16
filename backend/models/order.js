@@ -193,12 +193,10 @@ const OrderSchema = new mongoose.Schema(
 
 OrderSchema.pre("validate", function(next) {
   try{
-    if (!this.profit_breakdown) {
-      this.profit_breakdown = {
-        platform_revenue: { products: 0, delivery: 10 },
-        stores_payout: []
-      };
-    }
+    this.profit_breakdown = {
+      platform_revenue: { products: 0, delivery: 10 },
+      stores_payout: []
+    }; //reset the profit breakdown before validating each order document to ensure no duplicates for later calls.
     
     this.subtotal_price=0;
 
@@ -210,12 +208,15 @@ OrderSchema.pre("validate", function(next) {
         store.store_subtotal+= prod.subtotal_price;
       });
 
-      const amount = (COMMISSION_RATES.STORE_PAYOUT * store.store_subtotal).toFixed(2);;
-      const store_payout= this.profit_breakdown.stores_payout.find(s=> s.owner_store_id==store.owner_store_id);
-      if(store_payout)
-        store_payout.amount = amount;
-      else
-        this.profit_breakdown.stores_payout.push({owner_store_id: store.owner_store_id, amount});
+      const amount = (COMMISSION_RATES.STORE_PAYOUT * store.store_subtotal).toFixed(2);
+      const store_id= (typeof store.owner_store_id === "object") ? store.owner_store_id._id : store.owner_store_id;
+
+      const found_store_payout= this.profit_breakdown.stores_payout.find(s=> s.owner_store_id.toString() === store_id.toString());
+      if(found_store_payout)
+        found_store_payout.amount = amount;
+      else{
+        this.profit_breakdown.stores_payout.push({owner_store_id: new mongoose.Types.ObjectId(store_id), amount});
+      }
 
       this.subtotal_price+=store.store_subtotal;
     }));

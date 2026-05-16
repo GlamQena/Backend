@@ -59,18 +59,32 @@ const rateOrderProductController = async (req, res) => {
       comment: comment.trim(),
     });
 
-    // ✅ Update store owner average rating correctly
     const totalRates = store_owner.total_rates;
     const rates_Sum = store_owner.average_rating * totalRates;
     store_owner.average_rating = (rates_Sum + rate) / (totalRates + 1);
     store_owner.total_rates++;
     await store_owner.save();
 
-    // ✅ Update product rating without aggregation
-    const allReviews = await reviewModel.find({ product_id: productId });
-    foundProduct.average_rating = allReviews.reduce((sum, r) => sum + r.rate, 0) / allReviews.length;
-    foundProduct.total_rates = allReviews.length;
-    await foundProduct.save();
+        const productStats= await reviewModel.aggregate([
+            {$match: {product_id: productId}},
+            {$group:{
+                _id: null,
+                avg:{$avg: "$rate"},
+                count: {$sum: 1}
+            }}
+        ]);
+
+        console.log("products stats result from review aggregation =>", productStats);
+
+        if(productStats.length > 0){
+            foundProduct.average_rating = productStats[0].avg;
+            foundProduct.total_rates = productStats[0].count;
+        }else{
+            foundProduct.average_rating = rate;
+            foundProduct.total_rates = 1;
+        }
+
+        await foundProduct.save();
 
     res.status(201).json({ message: "product rate saved successfully", savedReview });
 

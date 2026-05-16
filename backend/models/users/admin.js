@@ -16,12 +16,12 @@ const AdminSchema = new mongoose.Schema({
   permission: {
     type: [String],
     enum: [
-      "manageUsers", //clients
-      "manageAdmins",
       "viewAnalytics",
-      "manageStores",
+      "manageUsers", //clients
       "manageOrders",
       "manageCategories",
+      "manageStores",
+      "manageAdmins"
     ],
     validate: {
       validator: (v) => {
@@ -32,13 +32,12 @@ const AdminSchema = new mongoose.Schema({
     default: [
       "viewAnalytics",
       "manageUsers",
-      "manageCategories",
     ],
   },
 
   deletion_requested:{
     type: Boolean,
-    default: "false",
+    default: false,
   },
 
   deletion_status:{

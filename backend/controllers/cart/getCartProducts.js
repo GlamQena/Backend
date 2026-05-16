@@ -24,6 +24,7 @@ const getCartProducts = async (req, res) => {
         success: true,
         message: "Cart is empty",
         data: {
+          user_id,
           products: [],
           summary: {
             total_items: 0,
@@ -59,13 +60,10 @@ const getCartProducts = async (req, res) => {
       for (const cartProduct of store.products) {
         const productData_from_db = cartProduct.prod_id;
 
-        // Skip if product was deleted from DB
-        if (!productData_from_db) {
+        if (!productData_from_db || Object.keys(productData_from_db).length === 0) {
           console.warn(`Product reference ${cartProduct.prod_id} not found in DB, skipping`);
           continue;
         }
-
-        totalItems += cartProduct.quantity;
 
         let productData = {
           product_id: productData_from_db._id,
@@ -113,10 +111,12 @@ const getCartProducts = async (req, res) => {
           productData.subtotal = productData_from_db.price * cartProduct.quantity;
           storeSubtotal += productData_from_db.price * cartProduct.quantity;
           totalPrice += productData_from_db.price * cartProduct.quantity;
+          totalItems += cartProduct.quantity;
           needsUpdate = true;
         } else {
           storeSubtotal += cartProduct.subtotal_price;
           totalPrice += cartProduct.subtotal_price;
+          totalItems += cartProduct.quantity;
         }
 
         storeProducts.push(productData);
@@ -173,6 +173,7 @@ const getCartProducts = async (req, res) => {
           ? "Cart retrieved with stock warnings"
           : "Cart retrieved successfully",
       data: {
+        user_id,
         products: processedStores,
         summary: cartSummary,
         ...(stockIssues.length > 0 && { stock_issues: stockIssues })
