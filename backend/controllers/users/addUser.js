@@ -113,7 +113,13 @@ const addUser = async (req, res) => {
           ...userData,
           password: hashedPassword,
           role: "store_owner",
-          is_approved: false, 
+          is_approved: true,
+          store_phone:"01000000000",
+          store_address:{
+            city:"UnKnown",
+            district:"UnKnown",
+            street:"UnKnown"
+          }
         });
         break;
 
@@ -139,7 +145,7 @@ const addUser = async (req, res) => {
           ...userData,
           password: hashedPassword,
           role: "admin",
-          createdBy: req.user.id, 
+          createdBy: req.user.id,
           permission: userData.permission,
         });
         break;
@@ -168,10 +174,6 @@ const addUser = async (req, res) => {
 
     // Add role-specific response messages
     let message = `${role} created successfully. Login credentials have been sent to their email.`;
-    if (role === "store_owner") {
-      message =
-        "Store owner created successfully. Login credentials have been sent. They will need admin approval before they can start selling.";
-    }
 
     res.status(201).json({
       success: true,
@@ -210,137 +212,147 @@ async function sendWelcomeEmail(email, username, tempPassword, role) {
 
   const loginUrl = "http://localhost:3000/login";
 
-  const emailHtml = `
-    <!DOCTYPE html>
-    <html lang="en">
-    <head>
-      <meta charset="UTF-8">
-      <meta name="viewport" content="width=device-width, initial-scale=1.0">
-      <title>Welcome to Glam2ena</title>
-      <style>
-        body {
-          font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-          line-height: 1.6;
-          color: #333;
-          max-width: 600px;
-          margin: 0 auto;
-          padding: 20px;
-        }
-        .container {
-          background-color: #f9f9f9;
-          border-radius: 10px;
-          padding: 30px;
-          border: 1px solid #e0e0e0;
-        }
-        .header {
-          text-align: center;
-          border-bottom: 2px solid #4CAF50;
-          padding-bottom: 20px;
-          margin-bottom: 20px;
-        }
-        .header h1 {
-          color: #4CAF50;
-          margin: 0;
-        }
-        .content {
-          margin-bottom: 30px;
-        }
-        .credentials {
-          background-color: #fff;
-          border: 1px solid #ddd;
-          border-radius: 5px;
-          padding: 15px;
-          margin: 20px 0;
-          font-family: monospace;
-          font-size: 16px;
-        }
-        .credentials p {
-          margin: 5px 0;
-        }
-        .warning {
-          background-color: #fff3cd;
-          border-left: 4px solid #ffc107;
-          padding: 15px;
-          margin: 20px 0;
-          font-size: 14px;
-        }
-        .button {
-          display: inline-block;
-          background-color: #4CAF50;
-          color: white;
-          padding: 12px 24px;
-          text-decoration: none;
-          border-radius: 5px;
-          margin: 20px 0;
-          text-align: center;
-        }
-        .footer {
-          text-align: center;
-          font-size: 12px;
-          color: #777;
-          border-top: 1px solid #e0e0e0;
-          padding-top: 20px;
-          margin-top: 20px;
-        }
-        .role-badge {
-          display: inline-block;
-          background-color: #4CAF50;
-          color: white;
-          padding: 4px 12px;
-          border-radius: 20px;
-          font-size: 12px;
-          font-weight: bold;
-        }
-      </style>
-    </head>
-    <body>
-      <div class="container">
-        <div class="header">
-          <h1>Welcome to Glam2ena! 🎉</h1>
-          <p>Your account has been successfully created</p>
-        </div>
-        
-        <div class="content">
-          <p>Hello <strong>${username}</strong>,</p>
-          
-          <p>An administrator has created a <span class="role-badge">${roleDisplay[role]}</span> account for you on the Glam2ena platform.</p>
-          
-          <div class="credentials">
-            <p><strong>Your Login Credentials:</strong></p>
-            <p>📧 <strong>Email:</strong> ${email}</p>
-            <p>🔑 <strong>Temporary Password:</strong> ${tempPassword}</p>
-          </div>
-          
-          <div class="warning">
-            <strong>⚠️ Important Security Notice:</strong>
-            <p>This is a temporary password. For security reasons, you must change your password after your first login.</p>
-          </div>
-          
-          <div style="text-align: center;">
-            <a href="${loginUrl}" class="button">Go to Login Page</a>
-          </div>
-          
-          <p>After logging in, you can change your password from your account settings.</p>
-          
-          ${
-            role === "store_owner"
-              ? `
-            <div class="warning">
-              <strong>📢 Note for Store Owners:</strong>
-              <p>Your store account requires admin approval before you can start selling products. You will receive a notification once your store is approved.</p>
-            </div>
-          `
-              : ""
-          }
-        </div>
-        
-        <div class="footer">
-          <p>This is an automated message, please do not reply to this email.</p>
-          <p>© ${new Date().getFullYear()} Glam2ena. All rights reserved.</p>
-        </div>
+  const emailHtml = `<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Welcome to Glam2ena</title>
+  <style>
+    body {
+      font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+      line-height: 1.6;
+      color: #f2e8ff;
+      background-color: #07040f;
+      max-width: 600px;
+      margin: 0 auto;
+      padding: 20px;
+    }
+    .container {
+      background-color: #1a0e2e;
+      border-radius: 28px;
+      padding: 30px;
+      border: 1px solid rgba(168, 85, 247, 0.22);
+      box-shadow: 0 20px 60px rgba(75, 0, 130, 0.50);
+    }
+    .header {
+      text-align: center;
+      border-bottom: 2px solid #A855F7;
+      padding-bottom: 20px;
+      margin-bottom: 20px;
+    }
+    .header h1 {
+      color: #A855F7;
+      margin: 0;
+    }
+    .content {
+      margin-bottom: 30px;
+    }
+    .credentials {
+      background-color: #0e0819;
+      border: 1px solid rgba(168, 85, 247, 0.09);
+      border-radius: 10px;
+      padding: 15px;
+      margin: 20px 0;
+      font-family: monospace;
+      font-size: 16px;
+    }
+    .credentials p {
+      margin: 5px 0;
+      color: #f2e8ff;
+    }
+    a{
+      color: #f2e8ff;
+      text-decoration: none;
+    }
+    .credentials strong {
+      color: #A855F7;
+    }
+    .warning {
+      background-color: rgba(239, 68, 68, 0.10);
+      border-left: 4px solid #ef4444;
+      padding: 15px;
+      margin: 20px 0;
+      font-size: 14px;
+      color: #c8aadf;
+    }
+    .warning strong {
+      color: #ef4444;
+    }
+    .button {
+      display: inline-block;
+      background: linear-gradient(135deg, #FF69B4, #A855F7);
+      color: white;
+      padding: 12px 24px;
+      text-decoration: none;
+      border-radius: 9999px;
+      margin: 20px 0;
+      text-align: center;
+      box-shadow: 0 4px 18px rgba(168, 85, 247, 0.35);
+    }
+    .footer {
+      text-align: center;
+      font-size: 12px;
+      color: #7a5a9a;
+      border-top: 1px solid rgba(168, 85, 247, 0.09);
+      padding-top: 20px;
+      margin-top: 20px;
+    }
+    .role-badge {
+      display: inline-block;
+      background: linear-gradient(135deg, #FF69B4, #A855F7);
+      color: white;
+      padding: 4px 12px;
+      border-radius: 20px;
+      font-size: 12px;
+      font-weight: bold;
+    }
+    strong {
+      color: #f2e8ff;
+    }
+    .content p {
+      color: #c8aadf;
+    }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <div class="header">
+      <h1>Welcome to Glam2ena! 🎉</h1>
+      <p>Your account has been successfully created</p>
+    </div>
+    
+    <div class="content">
+      <p>Hello <strong>${username}</strong>,</p>
+      
+      <p>An administrator has created a <span class="role-badge">${roleDisplay[role]}</span> account for you on the Glam2ena platform.</p>
+      
+      <div class="credentials">
+        <p><strong>Your Login Credentials:</strong></p>
+        <p>📧 <strong>Email:</strong> ${email}</p>
+        <p>🔑 <strong>Temporary Password:</strong> ${tempPassword}</p>
       </div>
-    </body>
-    </html>
+      
+      <div class="warning">
+        <strong>⚠️ Important Security Notice:</strong>
+        <p>This is a temporary password. For security reasons, you must change your password after your first login.</p>
+      </div>
+      
+      <div style="text-align: center;">
+        <a href="${loginUrl}" class="button">Go to Login Page</a>
+      </div>
+      
+      <p>After logging in, you can change your password from your account settings.</p>
+
+    </div>
+    
+    <div class="footer">
+      <p>This is an automated message, please do not reply to this email.</p>
+      <p>© ${new Date().getFullYear()} Glam2ena. All rights reserved.</p>
+    </div>
+  </div>
+</body>
+</html>
   `;
 
   try {
