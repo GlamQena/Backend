@@ -84,6 +84,7 @@ const rateOrderProductController = async (req, res) => {
             foundProduct.total_rates = 1;
         }
 
+        foundProduct.hasReviewed = true;
         await foundProduct.save();
 
     res.status(201).json({ message: "product rate saved successfully", savedReview });

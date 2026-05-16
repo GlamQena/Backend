@@ -10,7 +10,7 @@ const getOrderDetailsController = async (req, res) => {
       .populate("user_id", "firstName lastName email phoneNumber address")
       .populate({
         path: "products.owner_store_id", 
-        select: "store_name",
+        select: "_id store_name",
       })
       .populate({
         path: "products.products.prod_id", 
@@ -27,7 +27,7 @@ const getOrderDetailsController = async (req, res) => {
 
     if(userRole === "store_owner"){
       const storeData = order.products.find(
-          (store) => store.owner_store_id.toString() === userId,
+          (store) => store.owner_store_id._id.toString() === userId.toString(),
         );
 
       if (!storeData) {
@@ -49,6 +49,8 @@ const getOrderDetailsController = async (req, res) => {
             product_id: product.prod_id,
             product_name: product.name,
             quantity: product.quantity,
+            hasReviewd: product.prod_id.hasReviewed,
+            images: product.prod_id.images,
             price_per_unit: product.price,
             subtotal: product.subtotal_price,
           })),

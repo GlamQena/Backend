@@ -25,7 +25,7 @@ const addAdminSchema = zod.object({
         "manageAdmins",
         "manageOrders",
         "manageCategories",
-    ], {message: "invalid permission value"})).min(2, {message: "admin must have at least 2 permissions"}),
+    ], {message: "invalid permission value"})).min(3, {message: "admin must have at least 3 permissions"}),
 }).extend(commonAddUserData.shape);
 
 module.exports = { addStoreOwnerSchema, addAdminSchema };
