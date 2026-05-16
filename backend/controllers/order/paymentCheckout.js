@@ -28,12 +28,11 @@ const paymentCheckoutController = async (req, res) => {
       return res.status(404).json({ message: "Order not found" });
     }
 
-    if(order.payment.status === "قيد المعالجة")
-      return res.status(400).json({message: "Payment redirect url already sent to your email"});
-    //TODO => store paymob_redirect_expires_at prop in order payment to check in case of status processing and send again if expired.
-    else if(order.payment.status === "مكتمل")
+    if(order.payment.status === "مكتمل")
       return res.status(400).json({message: "Payment already completed"});
-    //else if payment status failed or pending continue to checkout the payment
+    if(order.payment.status === "قيد المعالجة" && order.payment.method === payment_method)
+      return res.status(400).json({message: `Payment redirect url already sent to your email for ${payment_method} payment`});
+      //TODO => store paymob_redirect_expires_at prop in order payment to check in case of status processing and send again if expired.
 
     const order_prods=[];
     let total_amount_cents=0;
@@ -93,8 +92,10 @@ const paymentCheckoutController = async (req, res) => {
     await updatedUser.save();
 
     order.payment.method = payment_method;
-    order.payment.status= "قيد المعالجة";
-    order.payment.paymob_order_id= order_id;
+    if(payment_method !== "cash"){
+      order.payment.status= "قيد المعالجة";
+      order.payment.paymob_order_id= order_id;
+    }
     await order.save();
 
     const to= updatedUser.email;
@@ -108,7 +109,6 @@ const paymentCheckoutController = async (req, res) => {
     
     else if(payment_method === "wallet") {
       try {
-          // ✅ Call the proper processWalletPayment function
           const walletPaymentResult = await processWalletPayment(paymentToken, billing_data.phone_number);
           
           order.payment.method = "wallet";
@@ -118,11 +118,8 @@ const paymentCheckoutController = async (req, res) => {
           await order.save();
           
           const to = updatedUser.email;
-          
-          // Send the Paymob redirect URL to user's email (optional)
           sendMail(to, walletPaymentResult.redirect_url);
           
-          // Return the redirect_url so frontend can navigate to Paymob's wallet page
           return res.status(200).json({
               success: true,
               redirect_url: walletPaymentResult.redirect_url,  // This is Paymob's wallet page
@@ -133,7 +130,9 @@ const paymentCheckoutController = async (req, res) => {
           
       } catch(error) {
           console.error("Wallet payment error:", error);
-          
+
+          order.payment.status = "فشل";
+          await order.save();
           // If there's an iframe redirect URL (for decline page), send it
           if(error.iframe_redirect_url) {
               sendMail(to, error.iframe_redirect_url);
