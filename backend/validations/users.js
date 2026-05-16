@@ -21,6 +21,8 @@ const addAdminSchema = zod.object({
     permission: zod.array(zod.string().enum([
         "viewAnalytics",
         "manageUsers",
+        "manageStores",
+        "manageAdmins",
         "manageOrders",
         "manageCategories",
     ], {message: "invalid permission value"})).min(2, {message: "admin must have at least 2 permissions"}),

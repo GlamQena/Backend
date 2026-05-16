@@ -17,7 +17,7 @@ const AdminSchema = new mongoose.Schema({
     type: [String],
     enum: [
       "viewAnalytics",
-      "manageUsers",
+      "manageUsers", //clients
       "manageOrders",
       "manageCategories",
       "manageStores",
