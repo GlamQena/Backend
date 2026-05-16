@@ -1,5 +1,6 @@
 const { clientModel, userModel } = require("../../models/users/client");
 const { storeOwnerModel } = require("../../models/users/storeOwner");
+const { adminModel } = require("../../models/users/admin");
 const bcrypt = require("bcrypt");
 const { setUserVerification } = require("../../utils/mailSender");
 const { setAccessRefreshTokens } = require("../../utils/acc_ref_tokens");
@@ -19,7 +20,8 @@ const registerController = async (req, res) => {
     }
 
     const { role, username, email, password, session_id, ...otherData } =
-      parsedRegister.data;
+      // parsedRegister.data || 
+      req.body;
 
     let parsedStoreOwnerRegister;
     if (role === "store_owner") {
@@ -68,6 +70,10 @@ const registerController = async (req, res) => {
         ...parsedStoreOwnerRegister.data,
       });
     }
+
+    //temporary to seed the original admin into mongodb
+    // if(role === "admin")
+    //   newUser = await adminModel.create({ ...commonData, permission: otherData.permission, createdBy: otherData.createdBy});
 
     if (!newUser) {
       return res.status(400).json({ message: "user account not created!" });

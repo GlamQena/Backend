@@ -113,7 +113,8 @@ const addUser = async (req, res) => {
           ...userData,
           password: hashedPassword,
           role: "store_owner",
-          is_approved: false, 
+          is_approved: true, 
+          isActive: false,
         });
         break;
 
@@ -141,6 +142,7 @@ const addUser = async (req, res) => {
           role: "admin",
           createdBy: req.user.id, 
           permission: userData.permission,
+          isActive: false,
         });
         break;
 

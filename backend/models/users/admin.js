@@ -6,7 +6,7 @@ const AdminSchema = new mongoose.Schema({
   createdBy: {
     type: mongoose.Schema.ObjectId,
     ref: "admin",
-    required: true,
+    default: null,
   },
 
   lastActivity: {
@@ -32,6 +32,7 @@ const AdminSchema = new mongoose.Schema({
     default: [
       "viewAnalytics",
       "manageUsers",
+      "manageOrders",
     ],
   },
 
