@@ -2,8 +2,9 @@ const userModel = require("../../models/users/user");
 const { clientModel } = require("../../models/users/client");
 const { storeOwnerModel } = require("../../models/users/storeOwner");
 const { adminModel } = require("../../models/users/admin");
+const otpModel = require("../../models/auth-temps/otp");
 const bcrypt = require("bcrypt");
-const { sendEmail } = require("../../utils/mailSender");
+const { sendEmail,getUrlFrontEnd } = require("../../utils/mailSender");
 
 const addUser = async (req, res) => {
   try {
@@ -114,12 +115,12 @@ const addUser = async (req, res) => {
           password: hashedPassword,
           role: "store_owner",
           is_approved: true,
-          store_phone:"01000000000",
-          store_address:{
-            city:"UnKnown",
-            district:"UnKnown",
-            street:"UnKnown"
-          }
+          store_phone: "01000000000",
+          store_address: {
+            city: "UnKnown",
+            district: "UnKnown",
+            street: "UnKnown",
+          },
         });
         break;
 
@@ -160,12 +161,27 @@ const addUser = async (req, res) => {
     // Save the user
     await newUser.save();
 
+    // generate otp for activateAccount
+    const otp = Math.floor(100000 + Math.random() * 900000).toString();
+
+    const otpObject = await otpModel.create({
+      userId: newUser._id,
+      for: "activateAccount",
+      otpCode: otp,
+      isActive: true,
+      otpExpiry: Date.now() + 1 * 60 * 1000 * 10, // 10 mins
+    });
+
+    await otpObject.save();
+
     // Send welcome email with login credentials
     await sendWelcomeEmail(
+      newUser._id,
       newUser.email,
       newUser.username || userData.username,
       userData.password,
       role,
+      otp
     );
 
     // Remove sensitive data from response
@@ -203,14 +219,14 @@ const addUser = async (req, res) => {
 };
 
 // Helper function to send welcome email
-async function sendWelcomeEmail(email, username, tempPassword, role) {
+async function sendWelcomeEmail(userId,email, username, tempPassword, role,otpCode) {
   const roleDisplay = {
     client: "Client",
     store_owner: "Store Owner",
     admin: "Administrator",
   };
 
-  const loginUrl = "http://localhost:3000/login";
+  const loginUrl = getUrlFrontEnd(userId,email,role);
 
   const emailHtml = `<!DOCTYPE html>
 <html lang="en">
@@ -331,6 +347,7 @@ async function sendWelcomeEmail(email, username, tempPassword, role) {
         <p><strong>Your Login Credentials:</strong></p>
         <p>📧 <strong>Email:</strong> ${email}</p>
         <p>🔑 <strong>Temporary Password:</strong> ${tempPassword}</p>
+        <p>🔗 <strong>OTP is:</strong> ${otpCode}</p>
       </div>
       
       <div class="warning">
