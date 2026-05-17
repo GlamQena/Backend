@@ -5,7 +5,9 @@ const getOrderDetailsController = async (req, res) => {
     const orderId = req.params.id;
     const userId = req.user.id;
     const userRole = req.user.role;
-    const storeId = req.user.store_id;
+const storeId = req.user.store_id || userId;
+    console.log("req.user =>", req.user);                          
+console.log("storeId =>", storeId);
 
     const order = await Order.findById(orderId)
       .populate("user_id", "firstName lastName email phoneNumber address")
@@ -26,8 +28,28 @@ const getOrderDetailsController = async (req, res) => {
         message: "Order Not Found!",
       });
     }
+    console.log("owner_store_id =>", order.products[0]?.owner_store_id);
+console.log("userId =>", userId);
 
-    let data = order; //for client page
+  const reviewModel = require("../../models/review");
+const userReviews = await reviewModel.find({ client_id: userId }).select("product_id").lean();
+const reviewedProductIds = userReviews.map(r => r.product_id.toString());
+
+const enrichedOrder = {
+  ...order,
+  products: order.products.map((store) => ({
+    ...store,
+    products: store.products.map((prod) => {
+      const prodId = (prod.prod_id?._id || prod.prod_id)?.toString();
+      return {
+        ...prod,
+        hasReviewed: reviewedProductIds.includes(prodId),
+      };
+    }),
+  })),
+};
+
+let data = enrichedOrder;
 
     if(userRole === "store_owner"){
     const storeData = order.products.find(
@@ -80,7 +102,9 @@ const getOrderDetailsController = async (req, res) => {
 
           phone: order.user_id?.phoneNumber || "",
 
-          address: order.user_id?.address || "",
+          address: order.user_id?.address
+  ? `${order.user_id.address.street || ""}، ${order.user_id.address.city || ""}، مصر.`
+  : "",
         },
 
         // payout
