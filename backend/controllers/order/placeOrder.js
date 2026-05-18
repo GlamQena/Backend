@@ -3,6 +3,7 @@ const Order = require("../../models/order");
 const Product = require("../../models/product");
 const mongoose = require("mongoose");
 const { clientModel } = require("../../models/users/client");
+const { storeOwnerModel } = require("../../models/users/storeOwner");
 
 const placeOrderController = async (req, res) => {
   try {
@@ -43,7 +44,6 @@ const placeOrderController = async (req, res) => {
       for (let prod of storeProds.products) {
         const product = await Product.findById(prod.prod_id);
 
-        // ✅ Product deleted from DB — clean cart and inform user
         if (!product) {
           for (const store of cart.products) {
             store.products = store.products.filter(
@@ -110,6 +110,7 @@ const placeOrderController = async (req, res) => {
     }
 
     await clientModel.findByIdAndUpdate(userId, {$inc: {totalOrders: +1}});
+    await storeOwnerModel.findByIdAndUpdate(userId, {$inc: {total_orders: +1}});
     
     // Clear cart
     cart.products = [];

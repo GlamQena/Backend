@@ -21,18 +21,18 @@ const router = express.Router();
 router.post("/completion", checkPaymentCompletion);
 router.use(checkAuth());
 
-router.get("/history", checkRole("client"), getClientOrdersController);
+router.get("/history", checkRole(["client", "admin"]), getClientOrdersController);
 router.get(
   "/:id",
-  checkRole(["client", "store_owner"]),
+  checkRole(["client", "store_owner", "admin"]),
   getOrderDetailsController,
 );
 router.get("/", checkRole("store_owner"), getOrdersByOwnerStoreId);
 
-router.post("/", checkRole("client"), placeOrderController);
-router.post("/:id/payment", checkRole("client"), paymentCheckoutController);
-router.post("/:id/reorder",checkRole("client"), reOrderRequest);
-router.post("/:id/rating", checkRole("client"), rateOrderProductController);
+router.post("/", checkRole(["client", "admin"]), placeOrderController);
+router.post("/:id/payment", checkRole(["client", "admin"]), paymentCheckoutController);
+router.post("/:id/reorder",checkRole(["client", "admin"]), reOrderRequest);
+router.post("/:id/rating", checkRole(["client", "admin"]), rateOrderProductController);
 
 router.patch("/:id/status", setOrderStatusController);
 router.patch(
