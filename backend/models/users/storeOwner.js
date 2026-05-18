@@ -13,7 +13,7 @@ const storeOwnerSchema = new mongoose.Schema({
 
   store_phone: {
     type: String,
-    required: false,
+    required: true,
     unique: true,
     trim: true,
     index: true,
@@ -57,7 +57,7 @@ const storeOwnerSchema = new mongoose.Schema({
         required: true,
       },
     },
-    required: false,
+    required: true,
   },
 
   store_description: {
