@@ -16,6 +16,13 @@ const storesRouter= require("./router/stores.js");
 const categoriesRouter= require("./router/categories.js");
 const cartRouter= require("./router/cart.js");
 const usersRouter= require("./router/users.js");
+const adminRouter= require("./router/admin.js");
+const userModel = require("./models/users/user.js");
+const productModel = require("./models/product.js");
+const categoryModel = require("./models/category.js");
+const reviewModel = require("./models/review.js");
+const ActivationFactory = require("./factories/activation.js");
+const checkAuth = require("./middleware/checkAuth.js");
 
 require("dotenv").config({ path: path.join(__dirname, "./env") });
 
@@ -72,6 +79,35 @@ app.use("/products", productsRouter);
 app.use("/order", orderRouter);
 app.use("/cart", cartRouter);
 app.use("/users", usersRouter);
+app.use("/admin", adminRouter);
+
+const activableModels = {
+  "users": {
+    model: userModel,
+    modelName: "user",
+    allowedRoles: ["admin"],
+  },
+
+  "products": {
+    model: productModel,
+    modelName: "product",
+    allowedRoles: ["store_owner"],
+  },
+
+  "categories": {
+    model: categoryModel,
+    modelName: "category",
+    allowedRoles: ["admin"],
+  },
+
+  "reviews": {
+    model: reviewModel,
+    modelName: "review",
+    allowedRoles: ["admin"],
+  },
+}
+
+app.patch(`/:entity/:id/activation`, checkAuth(), ActivationFactory(activableModels));
 
 
 //mongodb connection

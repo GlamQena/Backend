@@ -91,11 +91,13 @@ const storeOwnerSchema = new mongoose.Schema({
   total_products: {
     type: Number,
     default: 0,
+    min: 0
   },
 
   total_orders: {
     type: Number,
     default: 0,
+    min: 0
   },
 
   average_rating: {
@@ -108,6 +110,7 @@ const storeOwnerSchema = new mongoose.Schema({
   total_rates: {
     type: Number,
     default: 0,
+    min: 0
   },
 
   is_approved: {
