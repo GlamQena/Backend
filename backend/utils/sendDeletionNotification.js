@@ -12,73 +12,114 @@ const sendDeletionNotification = async (
     case "client":
       subject = "Account Deleted Successfully";
       htmlContent = `
-        <div style="font-family: Arial, sans-serif; max-width: 600px; margin: 0 auto; padding: 20px; border: 1px solid #e0e0e0; border-radius: 5px;">
-          <h2 style="color: #d9534f;">Account Deletion Notice</h2>
-          <p>Dear ${userName || "User"},</p>
-          <p>We regret to inform you that your <strong>Client Account</strong> has been successfully deleted from our system.</p>
-          <p>The following data has been removed:</p>
-          <ul>
-            <li>Your personal account information</li>
-            <li>Shopping cart items</li>
-            <li>Order history</li>
-          </ul>
-          <p>If you believe this was done in error or wish to create a new account, please contact our support team.</p>
-          <p>Thank you for being part of our community.</p>
-          <hr style="border: none; border-top: 1px solid #e0e0e0; margin: 20px 0;">
-          <p style="color: #666; font-size: 12px;">This is an automated message, please do not reply to this email.</p>
-        </div>
+        <!DOCTYPE html>
+          <html lang="en">
+           <head>
+           <meta charset="UTF-8">
+           <meta name="viewport" content="width=device-width, initial-scale=1.0">
+           <title>Account Deletion from Glam2ena</title>
+           <style>
+             body {
+              margin: 0;
+              padding: 20px;
+              background-color: #07040f;
+              font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            }
+           </style>
+           </head>
+           <body>
+            <div style="font-family: Arial, sans-serif; max-width: 600px; margin: 0 auto; padding: 20px; border: 1px solid rgba(168, 85, 247, 0.22); border-radius: 28px; background-color: #1a0e2e; box-shadow: 0 20px 60px rgba(75, 0, 130, 0.50);">
+              <h2 style="color: #ef4444; margin-top: 0;">Deletion from Glam2ena</h2>
+              <p style="color: #c8aadf;">Dear ${userName || "User"},</p>
+              <p style="color: #c8aadf;">We regret to inform you that your <strong style="color: #f2e8ff;">Client Account</strong> has been successfully deleted from our system.</p>
+              <p style="color: #c8aadf;">The following data has been removed:</p>
+              <ul style="color: #c8aadf;">
+                <li>Your personal account information</li>
+                <li>Shopping cart items</li>
+                <li>Order history</li>
+              </ul>
+              <p style="color: #c8aadf;">If you believe this was done in error or wish to create a new account, please contact our support team.</p>
+              <p style="color: #c8aadf;">Thank you for being part of our community.</p>
+              <hr style="border: none; border-top: 1px solid rgba(168, 85, 247, 0.09); margin: 20px 0;">
+              <p style="color: #7a5a9a; font-size: 12px;">This is an automated message, please do not reply to this email.</p>
+            </div>
+           </body>
+         </html>
       `;
       break;
 
     case "store_owner":
       subject = "Store Account Deleted Successfully";
       htmlContent = `
-        <div style="font-family: Arial, sans-serif; max-width: 600px; margin: 0 auto; padding: 20px; border: 1px solid #e0e0e0; border-radius: 5px;">
-          <h2 style="color: #d9534f;">Store Account Deletion Notice</h2>
-          <p>Dear ${userName || "Store Owner"},</p>
-          <p>We regret to inform you that your <strong>Store Owner Account</strong> has been successfully deleted from our system.</p>
-          <p>The following data has been removed:</p>
-          <ul>
-            <li>Your store owner account information</li>
-            <li>All products associated with your store</li>
-            <li>Store-related data and configurations</li>
-          </ul>
-          <p>Your deletion request was reviewed and approved by our administrators.</p>
-          <p>If you have any questions about this action, please contact our support team.</p>
-          <hr style="border: none; border-top: 1px solid #e0e0e0; margin: 20px 0;">
-          <p style="color: #666; font-size: 12px;">This is an automated message, please do not reply to this email.</p>
-        </div>
+        <!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Deletion from Glam2ena</title>
+  <style>
+    body {
+      margin: 0;
+      padding: 20px;
+      background-color: #07040f;
+      font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    }
+  </style>
+</head>
+<body>
+  <div style="font-family: Arial, sans-serif; max-width: 600px; margin: 0 auto; padding: 20px; border: 1px solid rgba(168, 85, 247, 0.22); border-radius: 28px; background-color: #1a0e2e; box-shadow: 0 20px 60px rgba(75, 0, 130, 0.50);">
+    <h2 style="color: #ef4444; margin-top: 0;">Deletion from Glam2ena</h2>
+    <p style="color: #c8aadf;">Dear ${userName || "Store Owner"},</p>
+    <p style="color: #c8aadf;">We regret to inform you that your <strong style="color: #f2e8ff;">Store Owner Account</strong> has been successfully deleted from our system.</p>
+    <p style="color: #c8aadf;">The following data has been removed:</p>
+    <ul style="color: #c8aadf;">
+      <li>Your store owner account information</li>
+      <li>All products associated with your store</li>
+      <li>Store-related data and configurations</li>
+    </ul>
+    <p style="color: #c8aadf;">Your deletion request was reviewed and approved by our administrators.</p>
+    <p style="color: #c8aadf;">If you have any questions about this action, please contact our support team.</p>
+    <hr style="border: none; border-top: 1px solid rgba(168, 85, 247, 0.09); margin: 20px 0;">
+    <p style="color: #7a5a9a; font-size: 12px;">This is an automated message, please do not reply to this email.</p>
+  </div>
+</body>
+</html>
       `;
       break;
 
     case "admin":
       subject = "Admin Account Deleted";
       htmlContent = `
-        <div style="font-family: Arial, sans-serif; max-width: 600px; margin: 0 auto; padding: 20px; border: 1px solid #e0e0e0; border-radius: 5px;">
-          <h2 style="color: #d9534f;">Admin Account Deletion Notice</h2>
-          <p>Dear ${userName || "Admin"},</p>
-          <p>This email is to confirm that your <strong>Admin Account</strong> has been successfully deleted from the system.</p>
-          <p><strong>Action performed by:</strong> ${deletedBy || "System Administrator"}</p>
-          <p><strong>Date of deletion:</strong> ${new Date().toLocaleString()}</p>
-          <p>If you believe this action was unauthorized, please contact the system administrator immediately.</p>
-          <hr style="border: none; border-top: 1px solid #e0e0e0; margin: 20px 0;">
-          <p style="color: #666; font-size: 12px;">This is an automated message, please do not reply to this email.</p>
-        </div>
+      <!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Deletion from Glam2ena</title>
+  <style>
+    body {
+      margin: 0;
+      padding: 20px;
+      background-color: #07040f;
+      font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    }
+  </style>
+</head>
+<body>
+  <div style="font-family: Arial, sans-serif; max-width: 600px; margin: 0 auto; padding: 20px; border: 1px solid rgba(168, 85, 247, 0.22); border-radius: 28px; background-color: #1a0e2e; box-shadow: 0 20px 60px rgba(75, 0, 130, 0.50);">
+    <h2 style="color: #ef4444; margin-top: 0;">Deletion from Glam2ena</h2>
+    <p style="color: #c8aadf;">Dear ${userName || "Admin"},</p>
+    <p style="color: #c8aadf;">This email is to confirm that your <strong style="color: #f2e8ff;">Admin Account</strong> has been successfully deleted from the system.</p>
+    <p style="color: #c8aadf;"><strong style="color: #f2e8ff;">Action performed by:</strong> ${deletedBy || "System Administrator"}</p>
+    <p style="color: #c8aadf;"><strong style="color: #f2e8ff;">Date of deletion:</strong> ${new Date().toLocaleString()}</p>
+    <p style="color: #c8aadf;">If you believe this action was unauthorized, please contact the system administrator immediately.</p>
+    <hr style="border: none; border-top: 1px solid rgba(168, 85, 247, 0.09); margin: 20px 0;">
+    <p style="color: #7a5a9a; font-size: 12px;">This is an automated message, please do not reply to this email.</p>
+  </div>
+</body>
+</html>
       `;
       break;
-
-    default:
-      subject = "Account Deleted";
-      htmlContent = `
-        <div style="font-family: Arial, sans-serif; max-width: 600px; margin: 0 auto; padding: 20px; border: 1px solid #e0e0e0; border-radius: 5px;">
-          <h2 style="color: #d9534f;">Account Deletion Notice</h2>
-          <p>Dear ${userName || "User"},</p>
-          <p>Your account has been successfully deleted from our system.</p>
-          <p>If you have any questions, please contact our support team.</p>
-          <hr style="border: none; border-top: 1px solid #e0e0e0; margin: 20px 0;">
-          <p style="color: #666; font-size: 12px;">This is an automated message, please do not reply to this email.</p>
-        </div>
-      `;
   }
 
   try {
@@ -93,4 +134,4 @@ const sendDeletionNotification = async (
   }
 };
 
-module.exports=sendDeletionNotification
+module.exports = sendDeletionNotification;

@@ -1,6 +1,7 @@
 const checkRole = (allowedRole) => {
     return async(req, res, next) => {
         const userRole = req.user.role;
+        console.log("user role in checkRole =>", userRole);
         
         // Convert to array for consistent handling
         const allowedRoles = Array.isArray(allowedRole) ? allowedRole : [allowedRole];
