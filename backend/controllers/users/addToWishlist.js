@@ -16,10 +16,10 @@ const addToWishlist= async (req, res) => {
 
         let foundClient= await clientModel.findById(clientId);
 
-        if(!foundProduct)
+        if(!foundClient)
             return res.status(404).json({message: "client not found"});
 
-        const foundWishlistProduct = foundClient.wishlist.find((wish) => wish.productId === productId);
+        const foundWishlistProduct = foundClient.wishlist.find((wish) => wish.productId.toString() === productId.toString());
 
         if(foundWishlistProduct)
             return res.status(400).json({message: "product already exist in your wishlist"});

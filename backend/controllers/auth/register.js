@@ -94,7 +94,8 @@ const registerController = async (req, res) => {
       newUser,
       false,
     );
-    await setUserVerification(newUser, "10m");
+    
+    setUserVerification(newUser, "10m");
 
     res.status(201).json({
       message: cartMergeResult?.merged

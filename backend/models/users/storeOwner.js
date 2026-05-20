@@ -13,7 +13,7 @@ const storeOwnerSchema = new mongoose.Schema({
 
   store_phone: {
     type: String,
-    required: false,
+    required: true,
     unique: true,
     trim: true,
     index: true,
@@ -57,7 +57,7 @@ const storeOwnerSchema = new mongoose.Schema({
         required: true,
       },
     },
-    required: false,
+    required: true,
   },
 
   store_description: {
@@ -91,11 +91,13 @@ const storeOwnerSchema = new mongoose.Schema({
   total_products: {
     type: Number,
     default: 0,
+    min: 0
   },
 
   total_orders: {
     type: Number,
     default: 0,
+    min: 0
   },
 
   average_rating: {
@@ -108,6 +110,7 @@ const storeOwnerSchema = new mongoose.Schema({
   total_rates: {
     type: Number,
     default: 0,
+    min: 0
   },
 
   is_approved: {

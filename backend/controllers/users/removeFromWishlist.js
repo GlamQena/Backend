@@ -11,17 +11,26 @@ const removeFromWishlist= async (req, res) => {
         if(!foundProduct)
             return res.status(404).json({message: "product not found"});
 
-        const updatedClientData= await clientModel.findByIdAndUpdate(
-            clientId, 
-            {$pull:{wishlist: {productId: productId}}},
-            {new: true}
-        ); //$unset for deleting a field from a document, while $pull for removing a document from array
+        let foundClient= await clientModel.findById(clientId);
+        
+        if(!foundClient)
+            return res.status(404).json({message: "client not found"});
 
-        if(!updatedClientData)
-            return res.status(404).json({message: "error removing product from the client wishlist"});
+        let productWishExist= false;
+        foundClient.wishlist.forEach(wish => {
+            if(wish.productId.toString() === productId.toString())
+                productWishExist= true;
+        });
 
-        console.log("user data after deleteFromWishlist => ", updatedClientData);
-        res.status(200).json({message: "product removed from wishlist", updatedClientData});
+        if(!productWishExist)
+            return res.status(404).json({message: "the product wasn't found in the wishlist"});
+
+        foundClient.wishlist= foundClient.wishlist.filter(w => w.productId.toString() !== productId.toString());
+
+        await foundClient.save();
+
+        console.log("user data after deleteFromWishlist => ", foundClient);
+        res.status(200).json({message: "product removed from wishlist", foundClient});
 
     }catch(error){
         console.log("removeFromWishlist error => ", error.message);

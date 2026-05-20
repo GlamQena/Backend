@@ -1,5 +1,6 @@
 const Order = require("../../models/order");
 const Product = require("../../models/product");
+const { clientModel } = require("../../models/users/client");
 const  {storeOwnerModel}  = require("../../models/users/storeOwner");
 const axios = require("axios");
 const path = require("path");
@@ -75,6 +76,11 @@ const cancelOrderController = async(req, res) => {
             await storeOwnerModel.findByIdAndUpdate(
                 storeProds.owner_store_id, 
                 {$inc: {total_orders: -1}},
+            );
+
+            await clientModel.findByIdAndUpdate(
+                storeProds.owner_store_id, 
+                {$inc: {totalOrders: -1}},
             );
         }
 
