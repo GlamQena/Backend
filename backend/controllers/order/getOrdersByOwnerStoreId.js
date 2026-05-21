@@ -48,8 +48,8 @@ const getOrdersByOwnerStoreId = async (req, res) => {
             product_id: product.prod_id,
             product_name: product.name,
             quantity: product.quantity,
-            hasReviewd: product.prod_id.hasReviewed,
-            images: product.prod_id.images,
+           hasReviewed: product.prod_id?.hasReviewed || false,  // ✅ optional chaining
+  images: product.prod_id?.images || [],  
             price_per_unit: product.price,
             subtotal: product.subtotal_price,
           })),
