@@ -16,12 +16,12 @@ const ReviewSchema = new mongoose.Schema(
       index: true,
     },
 
-    store_owner_id: {
-      type: mongoose.Schema.Types.ObjectId,
-      ref: "store_owner",
-      required: true,
-      index: true,
-    },
+    // store_owner_id: {
+    //   type: mongoose.Schema.Types.ObjectId,
+    //   ref: "store_owner",
+    //   required: true,
+    //   index: true,
+    // },
 
     rate: {
       type: Number,
@@ -35,10 +35,10 @@ const ReviewSchema = new mongoose.Schema(
       default: "",
     },
 
-    // isActive: {
-    //   type: Boolean,
-    //   default: true,
-    // },  //can be deactivated by the admin if he found the review isn't fair or from annoying client 
+    isActive: {
+      type: Boolean,
+      default: true,
+    },  //can be deactivated by the admin if he found the review isn't fair or from annoying client 
   },
   {
     timestamps: true,

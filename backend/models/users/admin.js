@@ -9,10 +9,6 @@ const AdminSchema = new mongoose.Schema({
     default: null,
   },
 
-  lastActivity: {
-    type: Date,
-  },
-
   permission: {
     type: [String],
     enum: [
