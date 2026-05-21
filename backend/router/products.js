@@ -18,7 +18,7 @@ router.get("/:id", getProductById);
 
 router.use(checkAuth());
 
-router.use(checkRole(["store_owner", "admin"]));
+router.use(checkRole(["store_owner"]));
 router.post("/", upload.array("images", 7), addNewProductController);
 router.delete("/:id", deleteProductController);
 router.put("/:id", upload.array("images", 7), editProductById)

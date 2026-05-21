@@ -57,6 +57,7 @@ const setOrderStatusController = async(req, res) => {
                       foundOrder.payment.status !== "مكتمل") {
                 return res.status(400).json({message: "can't set order to delivered before payment is completed"});
             }
+            foundOrder.deliveredAt= new Date();
         }
 
         if((status === "جاري التجهيز" || status === "جاهز للتوصيل") && user_role !== "store_owner"){
@@ -91,6 +92,7 @@ const setOrderStatusController = async(req, res) => {
         foundOrder.status = status;
         await foundOrder.save();
 
+        senEmail({to: orderUser.email, subject: "order status update", text: `your status have been updated from ${foundOrder.status} to ${status}`});
         res.status(200).json({message: `order status updated to ${status}`});
     } catch(error){
         console.error(error); // Added for debugging
