@@ -52,6 +52,7 @@ const getActiveClients = async (req, res) => {
           totalSpent: 1,
           totalOrders: 1,
           lastOrderDate: 1,
+          isVIP: { $gt: ["$totalOrders", 10]  },
         },
       },
 
