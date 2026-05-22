@@ -40,7 +40,7 @@ const approveRequestDeletion = async (req, res) => {
     ) {
       return res.status(400).json({
         success: false,
-        message: `User does not have a pending deletion request. Current status: deletion_requested=${userToApprove.deletion_requested}`,
+        message: `User does not have a pending deletion request. Current status: ${userToApprove.deletion_status}, deletion_requested:${userToApprove.deletion_requested}`,
       });
     }
 
@@ -56,7 +56,7 @@ const approveRequestDeletion = async (req, res) => {
         });
       }
 
-      // Check for outstanding or canceled orders
+      // Check for outstanding orders
       const orders = await Order.find({
         "products.owner_store_id": userId,
         status: {

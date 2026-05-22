@@ -10,7 +10,7 @@ const getActiveClients = require("../controllers/stores/getActiveClients");
 const router = express.Router();
 
 router.get("/me/statistics", checkAuth(), checkRole("store_owner"), getStoreStatistics);
-router.get("/me/salesChart", checkAuth(), checkRole("store_owner"), getStoreSalesChart);
+router.get("/me/sales-chart", checkAuth(), checkRole("store_owner"), getStoreSalesChart);
 router.get("/me/active-clients", checkAuth(), checkRole("store_owner"), getActiveClients);
 
 router.use(checkAuth(true));

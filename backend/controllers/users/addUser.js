@@ -115,7 +115,7 @@ const addUser = async (req, res) => {
           password: hashedPassword,
           role: "store_owner",
           is_approved: true, 
-          isActive: false,
+          isActive: true,
           store_phone: "01000000000",
           store_address: {
             city: "UnKnown",
@@ -149,7 +149,7 @@ const addUser = async (req, res) => {
           role: "admin",
           createdBy: req.user.id,
           permission: userData.permission,
-          isActive: false,
+          isActive: true,
         });
         break;
 
@@ -349,7 +349,7 @@ async function sendWelcomeEmail(userId,email, username, tempPassword, role,otpCo
         <p><strong>Your Login Credentials:</strong></p>
         <p>📧 <strong>Email:</strong> ${email}</p>
         <p>🔑 <strong>Temporary Password:</strong> ${tempPassword}</p>
-        <p>🔗 <strong>OTP is:</strong> ${otpCode}</p>
+        <p>🔗 <strong>Activation Code:</strong> ${otpCode}</p>
       </div>
       
       <div class="warning">

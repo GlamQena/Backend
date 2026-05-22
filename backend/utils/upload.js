@@ -12,10 +12,13 @@ const userModel = require("../models/users/user");
 cloudinary_config;
 const storage = new CloudinaryStorage({
   cloudinary,
-  params: {
-    folder: "Glam2ena",
-    allowed_formats: ["jpg", "avif", "png", "jpeg", "webp"],
-  }
+  params: async (req, file) => {
+    return {
+        folder: "Glam2ena",
+        allowed_formats: ["jpg", "jpeg", "png", "webp", "avif"],
+        public_id: `${file.originalname.split('.')[0]}-${Date.now()}}`,
+    };
+  },
 })
 
 // disk storage => memory storage => cloudinary storage 
