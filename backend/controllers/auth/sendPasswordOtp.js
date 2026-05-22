@@ -1,6 +1,6 @@
 const userModel = require("../../models/users/user");
 const otpModel = require("../../models/auth-temps/otp");
-const {sendEmail} = require("../../utils/mailSender");
+const { sendEmailMessage } = require("../../utils/mailSender");
 
 const sendPasswordOtpController = async (req, res) => {
   try {
@@ -14,7 +14,10 @@ const sendPasswordOtpController = async (req, res) => {
 
     const otp = Math.floor(100000 + Math.random() * 900000).toString();
 
-    const otpObject = await otpModel.findOne({ userId: user._id, for: "resetPassword"});
+    const otpObject = await otpModel.findOne({
+      userId: user._id,
+      for: "resetPassword",
+    });
 
     if (otpObject) {
       otpObject.otpCode = otp;
@@ -23,8 +26,7 @@ const sendPasswordOtpController = async (req, res) => {
       otpObject.otpExpiry = Date.now() + 10 * 60 * 1000;
       otpObject.otpAttempts = 0;
       await otpObject.save();
-    }
-    else {
+    } else {
       otpModel.create({
         userId: user._id,
         for: "resetPassword",
@@ -33,15 +35,17 @@ const sendPasswordOtpController = async (req, res) => {
       });
     }
 
-    sendEmail({
+    sendEmailMessage({
       to: email,
       subject: "Password Reset Code",
-      html: `<h2>Your OTP is: ${otp}</h2>`,
+      text: `Your OTP is: ${otp}`,
     });
 
     res.status(200).json({ message: "OTP sent to your email..." });
   } catch (e) {
-    return res.status(500).json({ message:"internal server error!", error: e.message });
+    return res
+      .status(500)
+      .json({ message: "internal server error!", error: e.message });
   }
 };
 

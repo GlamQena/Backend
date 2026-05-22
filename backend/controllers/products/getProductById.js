@@ -1,4 +1,5 @@
 const Product = require('../../models/product');
+const reviewModel = require("../../models/review");
 
 const getProductById= async(req, res)=> {
      try {
@@ -6,7 +7,7 @@ const getProductById= async(req, res)=> {
 
     // جلب تفاصيل المنتج الواحد
     const product = await Product.findById(productId)
-      .select('name description price images average_rating stock');
+      .select('owner_store_id name description price images hasReviewed average_rating total_rates stock');
 
     if (!product) {
       return res.status(404).json({
@@ -15,10 +16,16 @@ const getProductById= async(req, res)=> {
       });
     }
 
+    const productReviews= await reviewModel.find({product_id: productId})
+    .populate("client_id", "firstName lastName");
+    
     res.status(200).json({
       success: true,
       results: 1,
-      data: product
+      data: {
+        product,
+        reviews: productReviews
+      }
     });
 
   } catch (error) {

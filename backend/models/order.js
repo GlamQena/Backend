@@ -77,7 +77,8 @@ const OrderSchema = new mongoose.Schema(
 
     delivery_cost: {
       type: Number,
-      required: true,
+      // required: true,
+      default: 50,
       min: 0,
     }, //bosta estimated_delivery_cost + platform commission
 
@@ -87,42 +88,51 @@ const OrderSchema = new mongoose.Schema(
       min: 0,
     }, //products_price + delivery_cost
 
-    bosta: {
-      trackingNumber: String, 
-      trackingUrl: String,        // Bosta's tracking page
-      status: String,             // Synced from Bosta
-    },
+    // bosta: {
+    //   trackingNumber: String, 
+    //   trackingUrl: String,        // Bosta's tracking page
+    //   status: String,             // Synced from Bosta
+    // },
 
     payment:{
       method: {
         type: String,
         enum: ["card", "cash", "wallet"],
-        required: true,
+        default: "card",
       },
 
       status: {
         type: String,
-        enum: ["pending", "refunded", "failed", "completed", "processing"],
-        default: "pending",
+        enum: [
+                "قيد الانتظار", //pending to enter card or wallet details for paymob payment or for the cash to be collected on delivery
+                "تم الاسترداد",  //when the client cancel the order after payment completion and the order wasn't delivered yet or the order return is accepted
+                "فشل",
+                "مكتمل",
+                "قيد المعالجة" //processing on paymob
+        ],
+        default: "قيد الانتظار",
       },
 
       completedAt: {
         type: Date,
       },
 
-      paymob_transaction_id: String,
+      paymob_transaction_id: String, //for card and wallet payment
+
+      paymob_order_id: String,
     },
 
     status: {
       type: String,
       enum: [
-        "pending",
-        "preparing", //picked up (shipped from the store owner)
-        "out-to-deliver", //in_transit or out_for_delivery
-        "cancelled", //failed or returned
-        "delivered",
+              "قيد الانتظار",    // pending
+              "جاري التجهيز",   // preparing (by the store owner)
+              "جاهز للتوصيل",   // ready to deliver (the store owner finished preparing )
+              "قيد التوصيل",    // out-to-deliver (in_transit or out_for_delivery)
+              "ملغي",           // cancelled (failed or returned)
+              "تم التوصيل"      // delivered
       ],
-      default: "pending",
+      default: "قيد الانتظار",
       index: true,
     },
 
@@ -145,7 +155,8 @@ const OrderSchema = new mongoose.Schema(
           delivery: {
             type: Number,
             min: 0,
-            required: true,
+            // required: true,
+            default: 10,
           }, //20% commission    25% * bosta_estimated_cost
         },
 
@@ -164,11 +175,11 @@ const OrderSchema = new mongoose.Schema(
           }
         ],
 
-        bosta_delivery_cost: {
-          type: Number,
-          min: 0,
-          required: true,
-        }, //calculated by the bosta estimated_delivery_cost api
+        // bosta_delivery_cost: {
+        //   type: Number,
+        //   min: 0,
+        //   required: true,
+        // }, //calculated by the bosta estimated_delivery_cost api
       },
 
       required: true,
@@ -180,8 +191,13 @@ const OrderSchema = new mongoose.Schema(
   },
 );
 
-OrderSchema.pre("save", function(next) {
+OrderSchema.pre("validate", function(next) {
   try{
+    this.profit_breakdown = {
+      platform_revenue: { products: 0, delivery: 10 },
+      stores_payout: []
+    }; //reset the profit breakdown before validating each order document to ensure no duplicates for later calls.
+    
     this.subtotal_price=0;
 
     this.products.forEach((store=>{
@@ -192,16 +208,22 @@ OrderSchema.pre("save", function(next) {
         store.store_subtotal+= prod.subtotal_price;
       });
 
-      const store_payout= this.profit_breakdown.stores_payout.find(s=> s.owner_store_id==store.owner_store_id);
-        if(store_payout)
-          store_payout.amount = (COMMISSION_RATES.STORE_PAYOUT * store.store_subtotal).toFixed(2);
+      const amount = (COMMISSION_RATES.STORE_PAYOUT * store.store_subtotal).toFixed(2);
+      const store_id= (typeof store.owner_store_id === "object") ? store.owner_store_id._id : store.owner_store_id;
+
+      const found_store_payout= this.profit_breakdown.stores_payout.find(s=> s.owner_store_id.toString() === store_id.toString());
+      if(found_store_payout)
+        found_store_payout.amount = amount;
+      else{
+        this.profit_breakdown.stores_payout.push({owner_store_id: new mongoose.Types.ObjectId(store_id), amount});
+      }
 
       this.subtotal_price+=store.store_subtotal;
     }));
 
     this.profit_breakdown.platform_revenue.products= (COMMISSION_RATES.PRODUCT_COMMISSION * this.subtotal_price).toFixed(2);
-    this.profit_breakdown.platform_revenue.delivery= ((1/COMMISSION_RATES.DELIVERY_PAYOUT) * COMMISSION_RATES.DELIVERY_COMMISSION * this.profit_breakdown.bosta_delivery_cost).toFixed(2);
-    this.delivery_cost= this.profit_breakdown.bosta_delivery_cost + this.profit_breakdown.platform_revenue.delivery;
+    // this.profit_breakdown.platform_revenue.delivery= ((1/COMMISSION_RATES.DELIVERY_PAYOUT) * COMMISSION_RATES.DELIVERY_COMMISSION * this.profit_breakdown.bosta_delivery_cost).toFixed(2);
+    // this.delivery_cost= this.profit_breakdown.bosta_delivery_cost + this.profit_breakdown.platform_revenue.delivery;
     this.total_price= this.subtotal_price + this.delivery_cost;
 
     next();

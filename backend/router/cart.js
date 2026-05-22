@@ -6,7 +6,7 @@ const checkAuth = require("../middleware/checkAuth");
 
 const router= express.Router();
 
-router.use(checkAuth);
+router.use(checkAuth(true));
 router.get("/", getCartProducts);
 router.post("/product", addProductToCart);
 router.delete("/product/:id", removeProductFromCart);

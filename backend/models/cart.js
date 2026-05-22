@@ -1,35 +1,35 @@
-const mongoose= require("mongoose");
+const mongoose = require("mongoose");
 
 const CartSchema = new mongoose.Schema(
   {
     user_id: {
       type: mongoose.Schema.Types.ObjectId,
       ref: "client",
-      unique: true,
-      index: true,
+      required: false,
+      default: null,
+      // Remove individual index from here
     },
 
     session_id: {
       type: String,
-      unique: true,
-      index: true,
+      required: false,
+      default: null,
+      // Remove individual index from here
     },
 
     products: {
       type: [
         {
-          owner_store_id:{
+          owner_store_id: {
             type: mongoose.Schema.Types.ObjectId,
             ref: "store_owner",
-            index: true,
           },
 
-          products:[
+          products: [
             {
               prod_id: {
                 type: mongoose.Schema.Types.ObjectId,
                 ref: "product",
-                index: true,
               },
               name: {
                 type: String,
@@ -74,28 +74,56 @@ const CartSchema = new mongoose.Schema(
   },
 );
 
-CartSchema.pre("save", function(next){
-  try{
-    this.total_price=0;
+// Create indexes AFTER schema definition
+// This allows multiple carts with user_id = null
+CartSchema.index(
+  { user_id: 1 },
+  {
+    unique: true,
+    sparse: true,
+    partialFilterExpression: { user_id: { $ne: null } },
+  },
+);
 
-    if(products && products.length>0){
-      this.products.forEach((store=>{
-        store.store_subtotal=0;
+CartSchema.index(
+  { session_id: 1 },
+  {
+    unique: true,
+    sparse: true,
+    partialFilterExpression: { session_id: { $ne: null } },
+  },
+);
 
-        store.products.forEach((prod)=>{
-          prod.subtotal_price= prod.price * prod.quantity;
-          store.store_subtotal+= prod.subtotal_price;
+CartSchema.index(
+  { 
+    'products.owner_store_id': 1,
+    'products.products.prod_id': 1 
+  },
+  { unique: true, sparse: true }
+);
+
+CartSchema.pre("save", function (next) {
+  try {
+    this.total_price = 0;
+
+    if (this.products && this.products.length > 0) {
+      this.products.forEach((store) => {
+        store.store_subtotal = 0;
+
+        store.products.forEach((prod) => {
+          prod.subtotal_price = prod.price * prod.quantity;
+          store.store_subtotal += prod.subtotal_price;
         });
 
-        this.total_price+=store.store_subtotal;
-      }));
+        this.total_price += store.store_subtotal;
+      });
     }
 
     next();
-  }catch(error){
+  } catch (error) {
     next(error);
   }
 });
 
-const cartModel = mongoose.model("cart",CartSchema);
-module.exports= cartModel;
+const cartModel = mongoose.model("cart", CartSchema);
+module.exports = cartModel;

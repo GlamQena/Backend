@@ -1,76 +1,125 @@
-const nodemailer= require("nodemailer");
-const path= require("path");
-require("dotenv").config({path: path.join(__dirname, "../.env")});
+const nodemailer = require("nodemailer");
+const path = require("path");
+require("dotenv").config({ path: path.join(__dirname, "../.env") });
 const fs = require("fs").promises;
 const jwt = require("jsonwebtoken");
 
-const transporter= nodemailer.createTransport({
-    service: "gmail",
-    auth:{
-        user: process.env.EMAIL,
-        pass: process.env.PASSWORD,
-    },
-    tls:{
-        rejectUnauthorized: false,
-    }
+const transporter = nodemailer.createTransport({
+  service: "gmail",
+  auth: {
+    user: process.env.EMAIL,
+    pass: process.env.PASSWORD,
+  },
+  tls: {
+    rejectUnauthorized: false,
+  },
 });
 
 async function sendEmail(options) {
-    const mailOptions = {
-        from: process.env.EMAIL,
-        ...options
-    };
+  const mailOptions = {
+    from: process.env.EMAIL,
+    ...options,
+  };
 
-    try {
-        const info = await transporter.sendMail(mailOptions);
-        console.log("email sent to:", info.accepted);
-    } catch (err) {
-        console.log("failed to send email:", err);
-    }
+  try {
+    const info = await transporter.sendMail(mailOptions);
+    console.log("email sent to:", info.accepted);
+  } catch (err) {
+    console.log("failed to send email:", err);
+  }
+}
+
+async function sendEmailMessage(options) {
+  try {
+    const { to, subject, text } = options;
+    const templatePath = path.join(
+      __dirname,
+      "../templates/emailmsg.template.html",
+    );
+    let emailMsgTemp = await fs.readFile(templatePath, "utf-8");
+
+    emailMsgTemp = emailMsgTemp.replace("{subject}", subject);
+    emailMsgTemp = emailMsgTemp.replace("{message}", text);
+
+    await sendEmail({
+      to,
+      subject,
+      html: emailMsgTemp,
+    });
+  } catch (err) {
+    console.log("Error reading template or sending email:", err);
+  }
+}
+
+function getUrlFrontEnd(userId, email, role,ex) {
+  try{
+  const payload = {
+    id: userId,
+    email: email,
+    role: role,
+  };
+  const token = jwt.sign(payload, process.env.JWT_SECRET, {
+    expiresIn: ex || "10m",
+  });
+  const frontend_url = `http://localhost:${process.env.FRONTEND_PORT}/login?email=${email}&token=${token}`;
+  if (process.env.NODE_ENV === "development") {
+    console.log(frontend_url);
+  }
+  return frontend_url;
+  }catch(error){
+    console.log("getUrlFrontEnd",error)
+  }
+
 }
 
 async function sendEmailVerificationToUser(email, token) {
-    const frontend_url= `http://localhost:${process.env.FRONTEND_PORT}/verify-email?email=${email}&token=${token}`;
-    const backend_url = `http://localhost:${process.env.BACKEND_PORT}/auth/verify/${email}/${token}`;
-    const url = frontend_url;
-    
-    try {
-        const templatePath = path.join(__dirname, "../templates/email.template.html");
+  const frontend_url = `http://localhost:${process.env.FRONTEND_PORT}/verify-email?email=${email}&token=${token}`;
+  const backend_url = `http://localhost:${process.env.BACKEND_PORT}/auth/verify/${email}/${token}`;
+  const url = frontend_url;
 
-        let emailTemp = await fs.readFile(templatePath, "utf-8");
+  try {
+    const templatePath = path.join(
+      __dirname,
+      "../templates/email.template.html",
+    );
 
-        emailTemp = emailTemp.replace("{url}", url);
+    let emailTemp = await fs.readFile(templatePath, "utf-8");
 
-        await sendEmail({ 
-            to: email, 
-            subject: "Email Verification", 
-            html: emailTemp 
-        });
+    emailTemp = emailTemp.replace("{url}", url);
 
-        if (process.env.NODE_ENV === "development") {
-            console.log(url);
-        }
-    } catch (err) {
-        console.log("Error reading template or sending email:", err);
+    await sendEmail({
+      to: email,
+      subject: "Email Verification",
+      html: emailTemp,
+    });
+
+    if (process.env.NODE_ENV === "development") {
+      console.log(url);
     }
+  } catch (err) {
+    console.log("Error reading template or sending email:", err);
+  }
 }
 
 async function setUserVerification(user, ex) {
+  user.isEmailVerified = false;
 
-    user.isEmailVerified = false;
+  const payload = {
+    id: user._id,
+    email: user.email,
+    role: user.role,
+  };
+  const emailToken = jwt.sign(payload, process.env.JWT_SECRET, {
+    expiresIn: ex || "10m",
+  });
 
-    const payload={
-            id: user._id,
-            email: user.email,
-            role: user.role,
-    }
-    const emailToken =  jwt.sign(payload, process.env.JWT_SECRET, {expiresIn:ex|| "8h"});
-    
-    await sendEmailVerificationToUser(user.email, emailToken);
+  await sendEmailVerificationToUser(user.email, emailToken);
 }
 
 module.exports = {
-    setUserVerification,
-    sendEmailVerificationToUser,
-    sendEmail
+  setUserVerification,
+  sendEmailVerificationToUser,
+  sendEmail,
+  sendEmailMessage,
+  getUrlFrontEnd
 };

@@ -3,7 +3,7 @@ const {categorySchema} = require("../../validations/products");
 
 const addCategoryController= async (req, res)=>{
     try{
-        const category= {...req.body};
+        const {name, icon, description}= {...req.body};
         const parsedCategory= categorySchema.safeParse(category);
         if(!parsedCategory.success)
             return res.status(400).json({message: parsedCategory.error.issues[0].message});

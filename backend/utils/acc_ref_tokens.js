@@ -18,7 +18,7 @@ const setAccessRefreshTokens= (res, user, rememberMe=false)=>{
 
         res.cookie("refreshToken", refreshToken, {
             httpOnly: true,
-            secure: process.env.NODE_ENV=="PRODUCTION",
+            secure: process.env.NODE_ENV=="production",
             maxAge: refreshTokenMaxAge,
             sameSite: "lax",
             path: "/",
@@ -42,7 +42,7 @@ const setAccessToken= (res, user)=>{
 
         res.cookie("accessToken", accessToken, {
             httpOnly: true,
-            secure: process.env.NODE_ENV=="PRODUCTION",
+            secure: process.env.NODE_ENV=="production",
             maxAge: parseInt(process.env.ACCESS_TOKEN_MS),
             sameSite: "lax",
             path: "/",

@@ -43,7 +43,7 @@ const storeOwnerProfile= zod.object({
 .extend(storeOwnerSpecificRegister.shape);
 
 const adminProfile= zod.object({
-
+    
 }).extend(commonProfileFields.shape);
 
 module.exports= {clientProfile, storeOwnerProfile, adminProfile};

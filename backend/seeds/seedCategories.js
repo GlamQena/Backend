@@ -3,25 +3,57 @@ const Category = require("../models/category");
 const fs= require("fs");
 require("dotenv").config();
 
-// let categories = [
-//   // --- Skin Care ---
-//   { name: "Cleansers", description: "Formulated to remove impurities while maintaining skin balance." },
-//   { name: "Moisturizers", description: "Hydrating products to lock in moisture and protect the skin barrier." },
-//   { name: "Serums", description: "Concentrated formulas to target specific skin concerns." },
-//   { name: "Sun Care", description: "Essential UV protection to prevent sun damage." },
-//   { name: "Masks", description: "Intensive treatments for deep hydration and skin repair." },
-//   { name: "Toners", description: "Refreshing liquids to refine pores and prep the skin." },
-  
-//   // --- Makeup  ---
-//   { name: "Concealer", description: "Used to mask dark circles, age spots, and other small blemishes." },
-//   { name: "Foundation", description: "Skin-colored makeup applied to the face to create an even, uniform color." },
-//   { name: "Lipstick", description: "Color, texture, and protection to the lips in various finishes." },
-//   { name: "Blusher", description: "Applied to the cheeks to provide a more youthful and radiant appearance." },
-//   { name: "Eyeshadow", description: "Pigmented powders or creams applied to the eyelids to make them stand out." },
-//   { name: "Mascara", description: "Used to enhance the upper and lower eyelashes for a thicker look." },
-//   { name: "Eyeliner", description: "Used to define the eyes and create various artistic looks." },
-//   { name: "Brushes", description: "Essential tools for the precise application of various makeup products." }
-// ];
+let categories = [
+  {
+    _id: "69e387b312d268b6bb3b69db",
+    name: "العناية بالبشرة",
+    icon: "🧴",
+    description: "منتجات لتنظيف وترطيب وعلاج وحماية بشرتك. تشمل المنظفات والسيرومات والمرطبات وواقيات الشمس والأقنعة.",
+    isActive: true
+  },
+  {
+    _id: "69e387b312d268b6bb3b69dc",
+    name: "المكياج",
+    icon: "💄",
+    description: "مستحضرات تجميل لتعزيز الجمال تشمل كريم الأساس وأحمر الشفاه والماسكارا وظلال العيون والبلاش والكونسيلر والكحل.",
+    isActive: true
+  },
+  {
+    _id: "69e387b312d268b6bb3b69dd",
+    name: "الأدوات",
+    icon: "🪞",
+    description: "فرش، إسفنج، مكواة تجعيد، ملاقط وإكسسوارات أخرى لتطبيق لا تشوبه شائبة للمكياج والعناية بالبشرة.",
+    isActive: true
+  },
+  {
+    _id: "69e387b312d268b6bb3b69de",
+    name: "العناية بالجسم",
+    icon: "🧼",
+    description: "لوشن، مقشرات، زيوت، جل استحمام وكريمات يد لتغذية والعناية ببشرة جسمك.",
+    isActive: true
+  },
+  {
+    _id: "69e387b312d268b6bb3b69df",
+    name: "العناية بالشعر",
+    icon: "💇‍♀️",
+    description: "شامبو، بلسم، أقنعة شعر، سيرومات وعلاجات لشعر صحي وجميل.",
+    isActive: true
+  },
+  {
+    _id: "69e387b312d268b6bb3b69e0",
+    name: "العناية بالرجال",
+    icon: "🧔‍♂️",
+    description: "ماكينات حلاقة، كريمات حلاقة، زيوت لحية، مزيلات عرق ومنتجات للعناية بالبشرة مصممة للرجال.",
+    isActive: true
+  },
+  {
+    _id: "69e387b312d268b6bb3b69e1",
+    name: "أخرى",
+    icon: "📦",
+    description: "حقائب مكياج، مرايا، طقم هدايا، إكسسوارات تنظيف ومنتجات أخرى متعلقة بالجمال.",
+    isActive: true
+  }
+];
 
 const seedDB = async () => {
   try {
@@ -29,8 +61,8 @@ const seedDB = async () => {
     console.log("Connected to MongoDB for seeding...");
     
     await Category.deleteMany({});
-    
-    const categories= JSON.parse(fs.readFileSync("./sources/categories.json", "utf-8"));
+    fs.writeFileSync("./sources/categories.json", JSON.stringify(categories), "utf-8");
+    categories= JSON.parse(fs.readFileSync("./sources/categories.json", "utf-8"));
     await Category.insertMany(categories);
     
     console.log("Categories seeded successfully");

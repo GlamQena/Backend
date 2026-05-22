@@ -110,6 +110,11 @@ const UserSchema = new mongoose.Schema(
         message: (props)=> "you must provide at least one notification preference!",
       },
     },
+
+    isActive:{
+      type: Boolean,
+      default: true,
+    },
   },
   options,
 );

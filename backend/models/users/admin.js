@@ -6,38 +6,42 @@ const AdminSchema = new mongoose.Schema({
   createdBy: {
     type: mongoose.Schema.ObjectId,
     ref: "admin",
-    required: true,
-  },
-
-  lastActivity: {
-    type: Date,
+    default: null,
   },
 
   permission: {
     type: [String],
     enum: [
-      "manageUsers",
-      "manageAdmins",
       "viewAnalytics",
-      "manageStores",
-      "manageProducts",
+      "manageUsers", //clients
       "manageOrders",
       "manageCategories",
+      "manageStores",
+      "manageAdmins"
     ],
     validate: {
       validator: (v) => {
-        return v.length >= 5;
+        return v.length >= 3;
       },
-      message: (props)=> "the admin must have at least 5 permissions!",
+      message: (props)=> "the admin must have at least 3 permissions!",
     },
     default: [
+      "viewAnalytics",
       "manageUsers",
-      "manageStores",
-      "manageProducts",
       "manageOrders",
-      "manageCategories",
     ],
   },
+
+  deletion_requested:{
+    type: Boolean,
+    default: false,
+  },
+
+  deletion_status:{
+    type:String,
+    enum: ["pending", "approved", "rejected"],
+    default: "pending",
+  }
 });
 
 const adminModel = userModel.discriminator("admin", AdminSchema); //discriminator key value must match role enum values.

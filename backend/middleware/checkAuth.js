@@ -1,6 +1,8 @@
 const jwt= require("jsonwebtoken");
+const crypto = require("crypto");
 
-const checkAuth= async(req, res, next)=>{
+const checkAuth= (allowGuests=false)=> {
+    const middlewareHandler= (req, res, next)=>{
     let token;
     const headerAuth=req.headers.authorization || req.headers.Authorization
     if( headerAuth && headerAuth.startsWith("Bearer"))
@@ -11,8 +13,11 @@ const checkAuth= async(req, res, next)=>{
         token= req.cookies.accessToken;
     //consider the token come as a header prop or cookie from postman or with Authorization from frontend 'Bearer [token]'.
 
-    if(!token)
-        return res.status(401).json({message: "you're not authorized, please login first!"});
+    if(!token || token==="null" || token === "undefined"){
+        if(!allowGuests)
+            return res.status(401).json({message: "you're not authorized, please login first!"});
+        return next();
+    }
 
     jwt.verify(token, process.env.ACCESS_TOKEN_SECRET, async (err, decodedToken)=>{
         if(err){
@@ -28,6 +33,9 @@ const checkAuth= async(req, res, next)=>{
 
         next();
     });
+}
+    // console.log("type of returned checkAuth middleware => ", typeof middlewareHandler);
+    return middlewareHandler;
 }
 
 module.exports= checkAuth;

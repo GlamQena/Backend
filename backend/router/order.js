@@ -1,16 +1,46 @@
 const express = require("express");
 const checkPaymentCompletion = require("../controllers/order/checkPaymentCompletion");
-const getOrderHistoryController = require("../controllers/order/getOrderHistory");
+const getClientOrdersController = require("../controllers/order/getClientOrders");
 const paymentCheckoutController = require("../controllers/order/paymentCheckout");
 const placeOrderController = require("../controllers/order/placeOrder");
+const setOrderStatusController = require("../controllers/order/setOrderStatus");
+const getOrderDetailsController = require("../controllers/order/getOrderDetails");
+const getOrdersByOwnerStoreId = require("../controllers/order/getOrdersByOwnerStoreId");
+const cancelOrderController = require("../controllers/order/cancelOrder");
+const reOrderRequest = require("../controllers/order/reOrderRequest");
+
 const checkAuth = require("../middleware/checkAuth");
+const checkRole = require("../middleware/checkRole");
+const rateOrderProductController = require("../controllers/order/rateOrderProduct");
+
+const getAllOrders = require("../controllers/order/getAllOrders");
 
 const router = express.Router();
 
-router.use(checkAuth);
-router.post("/", placeOrderController);
-router.get("/history", getOrderHistoryController);
-router.post("/:id/payment", paymentCheckoutController);
+//no checkAuth middleware to allow the paymob http requests
 router.post("/completion", checkPaymentCompletion);
+router.use(checkAuth());
+
+router.get("/history", checkRole(["client", "admin"]), getClientOrdersController);
+router.get(
+  "/:id",
+  checkRole(["client", "store_owner", "admin"]),
+  getOrderDetailsController,
+);
+router.get("/", checkRole("store_owner"), getOrdersByOwnerStoreId);
+
+router.post("/", checkRole(["client", "admin"]), placeOrderController);
+router.post("/:id/payment", checkRole(["client", "admin"]), paymentCheckoutController);
+router.post("/:id/reorder",checkRole(["client", "admin"]), reOrderRequest);
+router.post("/:id/rating", checkRole(["client", "admin"]), rateOrderProductController);
+
+router.patch("/:id/status", setOrderStatusController);
+router.patch(
+  "/:id/cancel",
+  checkRole(["client", "admin"]),
+  cancelOrderController,
+);
+
+router.get("/admin/orders", checkRole("admin"), getAllOrders);
 
 module.exports = router;

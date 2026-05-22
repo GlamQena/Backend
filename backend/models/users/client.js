@@ -72,7 +72,34 @@ const ClientSchema = new mongoose.Schema({
     min: 0,
     index: true,
   },
-  //TODO-> add address details required for paymob payment billing data and for production later.
+
+  additionalBillingData:{
+    type: {
+      country: {
+        type: String,
+        default: "EG",
+      },
+      building:  {
+        type: String,
+        default: "24",
+      },
+      floor:  {
+        type: String,
+        default: "2",
+      },
+      apartment:  {
+        type: String,
+        default: "3",
+      },
+    },
+
+    default: {
+      country: "EG",
+      building: "24",
+      floor: "2",
+      apartment: "3",
+    }
+  }
 }); //the used term 'amount' represent the cost
 
 const clientModel = userModel.discriminator("client", ClientSchema);

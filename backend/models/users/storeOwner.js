@@ -86,36 +86,18 @@ const storeOwnerSchema = new mongoose.Schema({
         "البنك الزراعي المصري",
       ],
     },
-  },
-
-  products:{
-    type: [
-      {
-        product_id:{
-          type: mongoose.Schema.Types.ObjectId,
-          ref: "product",
-        },
-        
-        addeddAt: Date,
-
-        isActive: {
-          type: Boolean,
-          default: true,
-        }
-      }
-    ],
-
-    default: [],
-  },
+  }, //for later payout 
 
   total_products: {
     type: Number,
     default: 0,
+    min: 0
   },
 
   total_orders: {
     type: Number,
     default: 0,
+    min: 0
   },
 
   average_rating: {
@@ -128,21 +110,23 @@ const storeOwnerSchema = new mongoose.Schema({
   total_rates: {
     type: Number,
     default: 0,
+    min: 0
   },
 
   is_approved: {
     type: Boolean,
     default: false,
-  }, //by the admin
+  }, //by the admin for the registeration request
 
-  interactive_clients: {
-    type: [
-      {
-        type: mongoose.Schema.Types.ObjectId,
-        ref: "client",
-      },
-    ],
-    default: [],
+  deletion_requested:{
+    type: Boolean,
+    default: false,
+  },
+
+  deletion_status:{
+    type:String,
+    enum: ["pending", "approved", "rejected"],
+    default: "pending",
   }
 });
 

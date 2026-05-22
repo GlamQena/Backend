@@ -13,7 +13,7 @@ const refreshAccessTokenController= async(req, res)=>{
         else
             refreshToken= req.cookies.refreshToken;
 
-        if(!refreshToken)
+        if(!refreshToken || refreshToken==="null" || refreshToken === "undefined")
             return res.status(401).json({message:"expired refresh token!"});
 
         let decodedRefreshToken;

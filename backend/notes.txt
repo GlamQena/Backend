@@ -8,10 +8,31 @@
 
                      test payment
 - card number: 5123456789012346,  cvv: 123,  ex: 12/30,  name: Test User
-* install ngrok package to use for exposing the local url to paymob processed callback webhook.
+- wallet number: 01010101010 (a vodafone cash test number registered in paymob system), MPIN & OTP: 123456
+
+* install ngrok package to use for exposing the local url to paymob processed callback webhook to receive http requests in ngrok terminal.
   - 'npm i -g ngrok'
-  - 'ngrok config add-authtoken [ngrok-platform-authtoken]'
-  - 'ngrok http 3000'
+  - 'ngrok config add-authtoken [ngrok-platform-authtoken]'  **authtoken => 3AcBaVtaXp6H0kBF60fmrWOiNOB_5eEaAfySvCi7mVJhR5mPE
+  - 'ngrok http [BACKEND_PORT]'
+
+* solve ngrok access denied error message:
+  - # Remove the ngrok binary cache
+    >> Remove-Item -Path "$env:USERPROFILE\.ngrok" -Recurse -Force -ErrorAction SilentlyContinue
+    >> 
+    >> # Remove the npm ngrok package
+    >> Remove-Item -Path "$env:APPDATA\npm\node_modules\ngrok" -Recurse -Force -ErrorAction SilentlyContinue
+  - >> npm cache clean --force
+  - >> npm install -g ngrok
+  - #check ngrok.exe exist 
+    >> Get-ChildItem "$env:APPDATA\npm\node_modules\ngrok\bin"
+    
+  *the basic two steps:
+  - >>& "$env:APPDATA\npm\node_modules\ngrok\bin\ngrok.exe" config add-authtoken 3AcBaVtaXp6H0kBF60fmrWOiNOB_5eEaAfySvCi7mVJhR5mPE
+  - >>ngrok http 8080
+
+- set the paymob developers integration (for card and wallet payments):
+  'Transaction response callback' to the front end page route to redirect to it on payment process completion 
+  'Transaction processed callback' to the webhook backend controller route.
 
                           git
 * merge to github main branch: 
@@ -32,3 +53,7 @@
   ,but both can't handle the empty string coming from the front-end form so it must handled with preprocess function to return undefined 
 - handle all non-value cases (null, undefined, "", "   ") to return only undefined for the database document to be clean 
   (undefined fields without default value will be ignored in creation and can be handled to unset for updatinng).
+
+                   testing accounts
+- semon_owner  [semonowner1@gmail.com]  password:ownerSs123456   for storeOwner dashboard  (connected to my phone)
+- semon_admin  [semonadmin@gmail.com]  password:adminSs123456   for admin dashboard  (connected to myMother phone)

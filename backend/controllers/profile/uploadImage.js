@@ -16,9 +16,9 @@
     user.image = req.file.path;
     await user.save();
 
-    res.status(200).json({message: "avatar image uploaded successfully"});
+    res.status(200).json({message: "avatar image uploaded successfully", imagePath: user.image});
   } catch (error) {
-    res.status(500).json({ message: "Delete failed", error: error.message });
+    res.status(500).json({ message: "error uploading profile avatar", error: error.message });
   }
 
 }
