@@ -3,6 +3,8 @@ const {storeOwnerModel} = require("../../models/users/storeOwner");
 const path = require("path");
 const fs= require("fs");
 const orderModel = require('../../models/order');
+const cartModel = require('../../models/cart');
+const categoryModel = require('../../models/category');
 
 const deleteProduct= async(req, res)=> {
   try {
@@ -33,7 +35,7 @@ const deleteProduct= async(req, res)=> {
     });
 
     await cartModel.findOneAndUpdate({"products.owner_store_id": storeOwnerId, "products.products.prod_id": productId}, {$pull: {"products.$.products": {prod_id: productId}}});
-    await storeOwnerModel.findByIdAndUpdate(ownerStoreId, {$inc:{total_products: -1}});
+    await storeOwnerModel.findByIdAndUpdate(storeOwnerId, {$inc:{total_products: -1}});
     await categoryModel.findByIdAndUpdate(deletedProduct.category_id, {$inc: {totalProducts: -1}});
 
     res.status(200).json({

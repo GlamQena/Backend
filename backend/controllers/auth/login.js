@@ -44,21 +44,19 @@ const loginController = async (req, res) => {
     let resetPassCodeCreated = false;
     if (token) {
       let decodedToken;
-      jwt.verify(token, process.env.JWT_SECRET, (err, decoded) => {
-        if (err) {
-          console.log("admin or storeOwner firstmost login token is invalid");
-          return res.status(401).json({ message: "Invalid token" });
-        }
+      try {
+        decodedToken = await jwt.verify(token, process.env.JWT_SECRET);
+      } catch (err) {
+        console.log("admin or storeOwner firstmost login token is invalid");
+        return res.status(401).json({ message: "Invalid token" });
+      }
 
-        decodedToken = decoded;
-      });
-
-      const { user_id, role } = decodedToken;
+      const { id:user_id, role, email } = decodedToken;
 
       if (
         user_id.toString() !== user._id.toString() ||
         user.role !== role ||
-        (role !== "admin" && role !== "storeOwner")
+        (role !== "admin" && role !== "store_owner")
       ) {
         return res.status(401).json({ message: "Invalid token user" });
       }
@@ -102,7 +100,9 @@ const loginController = async (req, res) => {
       }
 
       await foundCode.save();
-      await userModel.findByIdAndUpdate(user_id, { isApproved: true });
+
+      if(role === "admin" || role === "store_owner")
+        await userModel.findByIdAndUpdate(user_id, { isApproved: true });
 
       // generate restPassword OTP for the obligatory reset pass
       const resetPassCode = Math.floor(
@@ -130,12 +130,17 @@ const loginController = async (req, res) => {
       }
 
       resetPassCodeCreated = true;
-      sendEmailMessage({
-        to: user.email,
-        subject: "Reset Password Code",
-        text: `Your password reset code is: ${resetPassCode}`,
-      });
-      //don't required to await for sendEmailMessage although it's async for the response to not be late
+
+      try{
+        await sendEmailMessage({
+          to: user.email,
+          subject: "Reset Password Code",
+          text: `Your password reset code is: ${resetPassCode}`,
+        });
+        //don't required to await for sendEmailMessage although it's async for the response to not be late
+      }catch(err){
+        console.error("error sending reset password email");
+      }
     }
 
     // MERGE CART ONLY DURING LOGIN if session_id is provided
