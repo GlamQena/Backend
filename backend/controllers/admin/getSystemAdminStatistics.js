@@ -174,7 +174,6 @@ const getSystemAdminStatistics = async (req, res) => {
     // Round to 2 decimal places
     profitGrowthRate = Math.round(profitGrowthRate * 100) / 100;
 
-
     // Calculate total completed orders for context
     const totalCompletedOrders = await orderModel.countDocuments({
       "payment.status": "مكتمل",
@@ -204,13 +203,10 @@ const getSystemAdminStatistics = async (req, res) => {
         totalProfits,
         profitGrowthRate: `${profitGrowthRate}%`,
 
-        // Additional metrics (optional but helpful)
-        additionalMetrics: {
-          totalCompletedOrders,
-          averageOrderValue: Math.round(averageOrderValue * 100) / 100,
-          currentMonthProfit,
-          previousMonthProfit,
-        },
+        totalCompletedOrders,
+        averageOrderValue: Math.round(averageOrderValue * 100) / 100,
+        currentMonthProfit,
+        previousMonthProfit,
       },
       timestamp: new Date().toISOString(),
     });
