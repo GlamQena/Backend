@@ -57,3 +57,4 @@
                    testing accounts
 - semon_owner  [semonowner1@gmail.com]  password:ownerSs123456   for storeOwner dashboard  (connected to my phone)
 - semon_admin  [semonadmin@gmail.com]  password:adminSs123456   for admin dashboard  (connected to myMother phone)
+- semon_admin_second  [semonadminsecond@gmail.com]  password:admin2Ss123456  for created admin  (connected to mySister phone)
