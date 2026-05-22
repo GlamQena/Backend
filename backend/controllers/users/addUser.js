@@ -130,7 +130,7 @@ const addUser = async (req, res) => {
         if (!userData.permission) {
           return res.status(400).json({
             success: false,
-            message: "permission is required",
+            message: "PLease, Enter permission is required",
           });
         }
         if (

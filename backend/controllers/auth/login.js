@@ -7,6 +7,8 @@ const bcrypt = require("bcrypt");
 const jwt = require("jsonwebtoken");
 const otpModel = require("../../models/auth-temps/otp");
 const { sendEmailMessage } = require("../../utils/mailSender");
+const {promisify} = require("util");
+const jwtVerify = promisify(jwt.verify);
 
 const loginController = async (req, res) => {
   try {
@@ -45,7 +47,7 @@ const loginController = async (req, res) => {
     if (token) {
       let decodedToken;
       try {
-        decodedToken = await jwt.verify(token, process.env.JWT_SECRET);
+        decodedToken = await jwtVerify(token, process.env.JWT_SECRET);
       } catch (err) {
         console.log("admin or storeOwner firstmost login token is invalid");
         return res.status(401).json({ message: "Invalid token" });
