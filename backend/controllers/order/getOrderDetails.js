@@ -80,7 +80,7 @@ let data = enrichedOrder;
             product_id: product.prod_id,
             product_name: product.name,
             quantity: product.quantity,
-           hasReviewed: product.prod_id?.hasReviewed || false,  // ✅
+           hasReviewed: product.prod_id?.hasReviewed || false,
   images: product.prod_id?.images || [],  
             price_per_unit: product.price,
             subtotal: product.subtotal_price,
@@ -117,7 +117,7 @@ let data = enrichedOrder;
           })?.amount || 0,
 
         // delivery
-        delivery_cost: order.delivery_cost || 0,
+        delivery_cost: order.delivery_cost || 50,
 
         // timestamps
         order_created_at: order.createdAt,

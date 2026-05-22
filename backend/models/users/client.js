@@ -72,12 +72,6 @@ const ClientSchema = new mongoose.Schema({
     min: 0,
     index: true,
   },
-  
-  // billingDataSaved:{
-  //   type: Boolean,
-  //   default: false,
-  // },  
-  // //the billing form will appear and show saved data and accept editing each time so no need to track if saved or not
 
   additionalBillingData:{
     type: {
