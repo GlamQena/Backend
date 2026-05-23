@@ -3,7 +3,7 @@ const path = require("path");
 const crypto = require("crypto");
 const fs = require("fs");
 const cloudinary = require("cloudinary").v2;
-const {CloudinaryStorage} = require("multer-storage-cloudinary");
+const CloudinaryStorage = require("multer-storage-cloudinary");
 const connect_mongodb = require("../config/connectMongoDB");
 const cloudinary_config = require("../config/connectCloudinary");
 const productModel = require("../models/product");
@@ -16,7 +16,7 @@ const storage = new CloudinaryStorage({
     return {
         folder: "Glam2ena",
         allowed_formats: ["jpg", "jpeg", "png", "webp", "avif"],
-        public_id: `${file.originalname.split('.')[0]}-${Date.now()}}`,
+        public_id: `${file.originalname.split('.')[0]}-${Date.now()}`,
     };
   },
 })
