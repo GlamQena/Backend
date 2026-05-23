@@ -10,7 +10,7 @@ const getStoreProducts = async (req, res) => {
       .populate({path: "category_id", select: "name icon description"})
       .select('name description price images average_rating stock'); 
 
-    const store = await storeOwnerModel.findById(storeId).select("store_name total_products average_rating");
+    const store = await storeOwnerModel.findById(storeId).select("store_name total_products average_rating image");
 
     res.status(200).json({
       success: true,
