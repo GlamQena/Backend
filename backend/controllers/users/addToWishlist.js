@@ -40,7 +40,7 @@ const addToWishlist= async (req, res) => {
             return res.status(404).json({message: "error adding product to the client wishlist"});
 
         console.log("user data after addToWishlist => ", updatedClientData);
-        res.status(200).json({message: "product added to wishlist", updatedClientData});
+        res.status(200).json({message: "product added to wishlist", user: updatedClientData});
 
     }catch(error){
         res.status(500).json({message: "internal server error", error: error.message});
