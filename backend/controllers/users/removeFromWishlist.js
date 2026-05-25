@@ -30,7 +30,7 @@ const removeFromWishlist= async (req, res) => {
         await foundClient.save();
 
         console.log("user data after deleteFromWishlist => ", foundClient);
-        res.status(200).json({message: "product removed from wishlist", foundClient});
+        res.status(200).json({message: "product removed from wishlist", user: foundClient});
 
     }catch(error){
         console.log("removeFromWishlist error => ", error.message);

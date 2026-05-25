@@ -4,6 +4,7 @@ const {storeOwnerModel} = require('../../models/users/storeOwner');
 const getStoreProducts = async (req, res) => {
   try {
     const storeId = req.params.id; 
+    console.log(storeId)
 
     // جلب المنتجات الخاصة بالمحل
     const products = await Product.find({ owner_store_id: storeId })
