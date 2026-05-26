@@ -5,15 +5,17 @@ const getSpecialProducts = async(req, res) => {
     try{
         const {status= "قيد الانتظار", start_date, end_date, limit=5} = req.query;
         
-        // Get recent products - NO status filter here
+        // Get recent products
         const products = await productModel.find()
             .sort({createdAt: -1})
             .populate("owner_store_id", "store_name")
             .select("_id name description price images average_rating");
         const recentProducts = products.slice(0, parseInt(limit));
 
-        // Get frequently sold products - WITH status filter for orders
-        const orderMatchConditions = { status: status };
+        // Build match conditions for orders
+        const orderMatchConditions = { 
+            status: status  // Note: this is order status, not payment status
+        };
 
         if(start_date || end_date){
             orderMatchConditions.createdAt = {};
@@ -23,42 +25,53 @@ const getSpecialProducts = async(req, res) => {
                 orderMatchConditions.createdAt.$lte = new Date(end_date);
         }
 
-         const ordersCount = await orderModel.countDocuments({ status: status });
-        console.log(`Found ${ordersCount} orders with status "${status}"`);
+        // Debug
+        const ordersCount = await orderModel.countDocuments(orderMatchConditions);
+        console.log(`Found ${ordersCount} orders with conditions:`, JSON.stringify(orderMatchConditions));
 
         const frequentlySoldProducts = await orderModel.aggregate([
             { $match: orderMatchConditions },
             
+            // First unwind: the outer products array (stores)
             { $unwind: "$products" },
             
+            // Second unwind: the inner products array (actual products in each store)
             { $unwind: "$products.products" },
             
+            // Lookup product details
             { $lookup: {
-                from: "product",
+                from: "products",  // Note: 'products' (plural)
                 localField: "products.products.prod_id",
                 foreignField: "_id",
                 as: "product_info"
             }},
             
-            { $unwind: { path: "$product_info", preserveNullAndEmptyArrays: false } },
+            { $unwind: { 
+                path: "$product_info", 
+                preserveNullAndEmptyArrays: true  // Keep even if product deleted
+            }},
             
+            // Lookup store details
             { $lookup: {
-                from: "store_owner",
+                from: "users", //lookup in the base collection not the discriminated one itself
                 localField: "products.owner_store_id",
                 foreignField: "_id",
                 as: "store_info"
             }},
             
-            { $unwind: { path: "$store_info", preserveNullAndEmptyArrays: false } },
+            { $unwind: { 
+                path: "$store_info", 
+                preserveNullAndEmptyArrays: true 
+            }},
             
+            // Group by product ID to sum quantities
             { $group: {
-                _id: {
-                    product_id: "$products.products.prod_id",
-                    store_id: "$products.owner_store_id"
-                },
+                _id: "$products.products.prod_id",
+                store_id: { $first: "$products.owner_store_id" },
                 store_name: { $first: "$store_info.store_name" },
                 price: { $first: "$products.products.price" },
-                name: { $first: "$product_info.name" },
+                //If product is deleted from database, it falls back to the name stored in the order
+                name: { $first: { $ifNull: ["$product_info.name", "$products.products.name"] } }, 
                 description: { $first: "$product_info.description" },
                 images: { $first: "$product_info.images" },
                 average_rating: { $first: "$product_info.average_rating" },
@@ -70,8 +83,8 @@ const getSpecialProducts = async(req, res) => {
             { $limit: parseInt(limit) },
             
             { $project: {
-                _id: "$_id.product_id",
-                store_id: "$_id.store_id",
+                _id: 1,
+                store_id: 1,
                 store_name: 1,
                 price: 1,
                 name: 1,
@@ -81,6 +94,8 @@ const getSpecialProducts = async(req, res) => {
                 totalQuantitySold: 1
             }}
         ]);
+
+        console.log(`Found ${frequentlySoldProducts.length} frequently sold products`);
 
         return res.status(200).json({ 
             success: true,
