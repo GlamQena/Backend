@@ -74,7 +74,7 @@ const addNewProductController = async (req, res) => {
 
         res.status(201).json({message: "product created successfully", newProduct});
     } catch (error) {
-        console.log("server error => ", error);
+        console.log("server error => ", error.message);
         res.status(500).json({ message: "internal server error", error: error.message });
     }
 };

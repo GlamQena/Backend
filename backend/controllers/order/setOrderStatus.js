@@ -1,5 +1,6 @@
 const Order = require("../../models/order");
 const userModel = require("../../models/users/user");
+const { sendEmail, sendEmailMessage } = require("../../utils/mailSender");
 const { optionalEnumHandler } = require("../../validations/auth");
 
 const setOrderStatusController = async(req, res) => {
@@ -92,7 +93,7 @@ const setOrderStatusController = async(req, res) => {
         foundOrder.status = status;
         await foundOrder.save();
 
-        senEmail({to: orderUser.email, subject: "order status update", text: `your status have been updated from ${foundOrder.status} to ${status}`});
+        sendEmailMessage({to: orderUser.email, subject: "order status update", text: `your status have been updated from ${foundOrder.status} to ${status}`});
         res.status(200).json({message: `order status updated to ${status}`});
     } catch(error){
         console.error(error); // Added for debugging

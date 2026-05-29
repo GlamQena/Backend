@@ -3,79 +3,113 @@ const orderModel = require("../../models/order");
 
 const getSpecialProducts = async(req, res) => {
     try{
-        const {status= "تم التوصيل", start_date, end_date, limit=5} = req.query;
-        const matchConditions= {};
+        const {status= "قيد الانتظار", start_date, end_date, limit=5} = req.query;
+        
+        // Get recent products
+        const products = await productModel.find()
+            .sort({createdAt: -1})
+            .populate("owner_store_id", "store_name")
+            .select("_id name description price images average_rating");
+        const recentProducts = products.slice(0, parseInt(limit));
+
+        // Build match conditions for orders
+        const orderMatchConditions = { 
+            status: status  // Note: this is order status, not payment status
+        };
 
         if(start_date || end_date){
-            matchConditions.createdAt= {};
+            orderMatchConditions.createdAt = {};
             if(start_date)
-                matchConditions.createdAt.$gte = new Date(start_date);
+                orderMatchConditions.createdAt.$gte = new Date(start_date);
+            if(end_date)
+                orderMatchConditions.createdAt.$lte = new Date(end_date);
         }
 
-        const products= await productModel.find(matchConditions).sort({createdAt: -1}).populate("owner_store_id", "store_name").select("_id name description price average_rate");
-        const recentProducts= products.slice(0, parseInt(limit)-1);
+        // Debug
+        const ordersCount = await orderModel.countDocuments(orderMatchConditions);
+        console.log(`Found ${ordersCount} orders with conditions:`, JSON.stringify(orderMatchConditions));
 
-        if(end_date)
-            matchConditions.createdAt.$lte = new Date(end_date);
-
-        matchConditions.status= status; //the status for filtering the frequently sold products from the orders with that status
         const frequentlySoldProducts = await orderModel.aggregate([
-            {$match: matchConditions},
-
-            {$unwind: "$products"},
-
-            {$lookup: {
-                from: "store_owners", 
-                localField: "products.owner_store_id",
-                foreignField: "_id",
-                as: "store_info"
-            }}, //lookup localField mustn't contain $
-
-            {$unwind: {path: "$store_info", preserveNullAndEmptyArrays: true}},
-
-            {$unwind: "$products.products"},
-
-            {$lookup: {
-                from: "product",
+            { $match: orderMatchConditions },
+            
+            // First unwind: the outer products array (stores)
+            { $unwind: "$products" },
+            
+            // Second unwind: the inner products array (actual products in each store)
+            { $unwind: "$products.products" },
+            
+            // Lookup product details
+            { $lookup: {
+                from: "products",  // Note: 'products' (plural)
                 localField: "products.products.prod_id",
                 foreignField: "_id",
                 as: "product_info"
-            }}, 
-
-            {$unwind: {path: "$product_info", preserveNullAndEmptyArrays: true}},
-            
-            {$group: {
-                _id: {
-                    product_id: "$products.products.prod_id",
-                    store_id: "$products.owner_store_id"
-                },
-                store_name: {$first: "$store_info.store_name"},
-                price: {$first: "$products.products.price"},
-                name: {$first: "$products.products.name"},
-                description: {$first: "$product_info.description"},
-                average_rating: {$avg: "$product_info.average_rating"},
-                totalQuantitySold: {$sum: "$products.products.quantity"},
             }},
-
-            {$sort: {totalQuantitySold: -1}},
-
-            {$limit: parseInt(limit)},
-
-            {$project: {
+            
+            { $unwind: { 
+                path: "$product_info", 
+                preserveNullAndEmptyArrays: true  // Keep even if product deleted
+            }},
+            
+            // Lookup store details
+            { $lookup: {
+                from: "users", //lookup in the base collection not the discriminated one itself
+                localField: "products.owner_store_id",
+                foreignField: "_id",
+                as: "store_info"
+            }},
+            
+            { $unwind: { 
+                path: "$store_info", 
+                preserveNullAndEmptyArrays: true 
+            }},
+            
+            // Group by product ID to sum quantities
+            { $group: {
+                _id: "$products.products.prod_id",
+                store_id: { $first: "$products.owner_store_id" },
+                store_name: { $first: "$store_info.store_name" },
+                price: { $first: "$products.products.price" },
+                //If product is deleted from database, it falls back to the name stored in the order
+                name: { $first: { $ifNull: ["$product_info.name", "$products.products.name"] } }, 
+                description: { $first: "$product_info.description" },
+                images: { $first: "$product_info.images" },
+                average_rating: { $first: "$product_info.average_rating" },
+                totalQuantitySold: { $sum: "$products.products.quantity" }
+            }},
+            
+            { $sort: { totalQuantitySold: -1 } },
+            
+            { $limit: parseInt(limit) },
+            
+            { $project: {
+                _id: 1,
+                store_id: 1,
                 store_name: 1,
-                product_id: 1,
                 price: 1,
                 name: 1,
                 description: 1,
+                images: 1,
                 average_rating: 1,
-                totalQuantitySold: "$totalQuantitySold"
-            }} 
+                totalQuantitySold: 1
+            }}
         ]);
 
-        return res.status(200).json({recentProducts, frequentlySoldProducts});
+        console.log(`Found ${frequentlySoldProducts.length} frequently sold products`);
 
-    }catch(error){
-        res.status(500).json({message: "internal server error", error: error.message});
+        return res.status(200).json({ 
+            success: true,
+            recentProducts, 
+            frequentlySoldProducts 
+        });
+
+    } catch(error){
+        console.error("Error in getSpecialProducts:", error);
+        res.status(500).json({ 
+            success: false,
+            message: "Internal server error", 
+            error: error.message 
+        });
     }
 }
 
