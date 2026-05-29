@@ -6,33 +6,28 @@ const orderModel = require("../../models/order");
 
 const getSystemAdminStatistics = async (req, res) => {
   try {
+    // Get period from query params (default: 12 months)
+    const period = parseInt(req.query.period) || 12; // months
     const currentDate = new Date();
-    const lastYearStart = new Date(
-      currentDate.getFullYear() - 1,
-      currentDate.getMonth(),
-      1,
-    );
-    const lastMonthStart = new Date(
+    
+    // Calculate start date based on period
+    const startDate = new Date(
       currentDate.getFullYear(),
-      currentDate.getMonth() - 1,
-      1,
+      currentDate.getMonth() - period + 1,
+      1
     );
-    const currentMonthStart = new Date(
+    
+    const endDate = new Date(
       currentDate.getFullYear(),
-      currentDate.getMonth(),
-      1,
-    );
-    const twoMonthsAgoStart = new Date(
-      currentDate.getFullYear(),
-      currentDate.getMonth() - 2,
-      1,
+      currentDate.getMonth() + 1,
+      0
     );
 
-    // 1. Aggregate last year profits per month
-    const lastYearProfits = await orderModel.aggregate([
+    // 1. Aggregate profits per month (including product profits + delivery fees)
+    const monthlyProfits = await orderModel.aggregate([
       {
         $match: {
-          createdAt: { $gte: lastYearStart },
+          createdAt: { $gte: startDate, $lte: endDate },
           "payment.status": "مكتمل",
           status: "تم التوصيل",
         },
@@ -43,7 +38,14 @@ const getSystemAdminStatistics = async (req, res) => {
             year: { $year: "$createdAt" },
             month: { $month: "$createdAt" },
           },
-          totalProfit: { $sum: "$profit_breakdown.platform_revenue.products" },
+          totalProfit: { 
+            $sum: { 
+              $add: [
+                "$profit_breakdown.platform_revenue.products",
+                "$profit_breakdown.platform_revenue.delivery"
+              ]
+            } 
+          },
         },
       },
       {
@@ -51,11 +53,29 @@ const getSystemAdminStatistics = async (req, res) => {
       },
     ]);
 
-    const profitsPerMonth = lastYearProfits.map((item) => ({
-      month: item._id.month,
-      year: item._id.year,
-      profit: item.totalProfit,
-    }));
+    // Prepare chart data arrays (same format as getStoreSalesChart)
+    const labels = [];
+    const values = [];
+    
+    // Create a map for quick lookup
+    const profitMap = new Map();
+    monthlyProfits.forEach(item => {
+      const key = `${item._id.year}-${item._id.month}`;
+      profitMap.set(key, item.totalProfit);
+    });
+
+    // Fill all months in the period
+    for (let i = 0; i < period; i++) {
+      const date = new Date(startDate.getFullYear(), startDate.getMonth() + i, 1);
+      const month = date.getMonth() + 1;
+      const year = date.getFullYear();
+      const monthName = date.toLocaleString('ar-EG', { month: 'long' });
+      
+      labels.push(`${monthName} ${year}`);
+      
+      const key = `${year}-${month}`;
+      values.push(profitMap.get(key) || 0);
+    }
 
     // 2. Count active stores (approved and not requested deletion)
     const activeStores = await storeOwnerModel.countDocuments({
@@ -102,8 +122,8 @@ const getSystemAdminStatistics = async (req, res) => {
     const totalPendingDeletionRequests =
       pendingDeletionRequests[0] + pendingDeletionRequests[1];
 
-    // 8. Calculate platform commission (15% of all completed orders)
-    const platformCommissionAgg = await orderModel.aggregate([
+    // 8. Calculate total profits including delivery fees
+    const totalProfitsAgg = await orderModel.aggregate([
       {
         $match: {
           "payment.status": "مكتمل",
@@ -114,19 +134,31 @@ const getSystemAdminStatistics = async (req, res) => {
         $group: {
           _id: null,
           totalPlatformCommission: {
-            $sum: "$profit_breakdown.platform_revenue.products",
+            $sum: { 
+              $add: [
+                "$profit_breakdown.platform_revenue.products",
+                "$profit_breakdown.platform_revenue.delivery"
+              ]
+            },
           },
         },
       },
     ]);
 
-    const totalPlatformCommission =
-      platformCommissionAgg[0]?.totalPlatformCommission || 0;
+    const totalProfits = totalProfitsAgg[0]?.totalPlatformCommission || 0;
 
-    // 9. Calculate total profits (platform commission from all completed orders)
-    const totalProfits = totalPlatformCommission;
+    // 9. Calculate profit growth rate in the last month (%)
+    const lastMonthStart = new Date(
+      currentDate.getFullYear(),
+      currentDate.getMonth() - 1,
+      1
+    );
+    const currentMonthStart = new Date(
+      currentDate.getFullYear(),
+      currentDate.getMonth(),
+      1
+    );
 
-    // 10. Calculate profit growth rate in the last month (%)
     const lastMonthProfits = await orderModel.aggregate([
       {
         $match: {
@@ -138,7 +170,14 @@ const getSystemAdminStatistics = async (req, res) => {
       {
         $group: {
           _id: null,
-          total: { $sum: "$profit_breakdown.platform_revenue.products" },
+          total: { 
+            $sum: { 
+              $add: [
+                "$profit_breakdown.platform_revenue.products",
+                "$profit_breakdown.platform_revenue.delivery"
+              ]
+            } 
+          },
         },
       },
     ]);
@@ -154,7 +193,14 @@ const getSystemAdminStatistics = async (req, res) => {
       {
         $group: {
           _id: null,
-          total: { $sum: "$profit_breakdown.platform_revenue.products" },
+          total: { 
+            $sum: { 
+              $add: [
+                "$profit_breakdown.platform_revenue.products",
+                "$profit_breakdown.platform_revenue.delivery"
+              ]
+            } 
+          },
         },
       },
     ]);
@@ -168,10 +214,9 @@ const getSystemAdminStatistics = async (req, res) => {
         ((currentMonthProfit - previousMonthProfit) / previousMonthProfit) *
         100;
     } else if (currentMonthProfit > 0) {
-      profitGrowthRate = 100; // 100% growth from zero
+      profitGrowthRate = 100;
     }
 
-    // Round to 2 decimal places
     profitGrowthRate = Math.round(profitGrowthRate * 100) / 100;
 
     // Calculate total completed orders for context
@@ -187,8 +232,11 @@ const getSystemAdminStatistics = async (req, res) => {
     return res.status(200).json({
       success: true,
       data: {
-        // Last year profits breakdown
-        profitsPerMonth: profitsPerMonth,
+        // Chart data in the same format as getStoreSalesChart
+        chartData: {
+          labels: labels,    // Array of month names
+          values: values     // Array of profit values
+        },
 
         // Counts
         activeStores,
@@ -199,10 +247,8 @@ const getSystemAdminStatistics = async (req, res) => {
         pendingDeletionRequests: totalPendingDeletionRequests,
 
         // Financial metrics
-        platformCommission: totalPlatformCommission,
         totalProfits,
         profitGrowthRate: `${profitGrowthRate}%`,
-
         totalCompletedOrders,
         averageOrderValue: Math.round(averageOrderValue * 100) / 100,
         currentMonthProfit,
