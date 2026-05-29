@@ -5,11 +5,15 @@ const Order = require("../../models/order");
 
 const getAllOrders = async (req, res) => {
   try {
-    const { status } = req.query;
+    const { status ,client_id } = req.query;
     const query = {};
 
     if (status) {
       query.status = status; 
+    }
+
+    if (client_id) {
+      query.user_id = client_id;
     }
 
     const orders = await Order.find(query)
