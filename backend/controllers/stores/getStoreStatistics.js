@@ -28,7 +28,7 @@ const getStoreStatistics = async (req, res) => {
     // الطلبات الحالية
    const currentOrders = await Order.countDocuments({
       "products.owner_store_id": storeId,
-       status: { $in: ["قيد الانتظار", "قيد المعالجة"] }
+       status: { $in: ["قيد الانتظار", "جاري التجهيز"] }
     });
 
     // منتجات قليلة المخزون
