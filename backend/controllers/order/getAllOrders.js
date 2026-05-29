@@ -5,7 +5,7 @@ const Order = require("../../models/order");
 
 const getAllOrders = async (req, res) => {
   try {
-    const { status ,client_id } = req.query;
+    const { status , client_id } = req.query;
     const query = {};
 
     if (status) {
