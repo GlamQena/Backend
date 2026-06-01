@@ -16,7 +16,8 @@ const getUserById = async (req, res) => {
     }
 
     const user = await userModel.findById(id).select("-password");
-
+    console.log("user data =>", user);
+    
     if (!user) {
       return res.status(404).json({
         success: false,
