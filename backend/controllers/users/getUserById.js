@@ -2,7 +2,7 @@ const mongoose = require("mongoose");
 const userModel = require("../../models/users/user");
 const Order = require("../../models/order");
 
-const getUserById = async (req, res, next) => {
+const getUserById = async (req, res) => {
   try {
     const { id } = req.params;
 
