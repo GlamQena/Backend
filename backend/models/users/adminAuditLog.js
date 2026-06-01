@@ -9,7 +9,7 @@ const AuditLogSchema = new mongoose.Schema({
     },
 
     operation: {
-        type: string,
+        type: String,
         enum: ["addAdmin", "addStoreOwner", "addCategory", "deleteCategory",
             "blockClient",  "blockStoreOwner", "blockAdmin", "blockCategory",
             "activateClient",  "activateStoreOwner", "activateAdmin", "activateCategory",
@@ -20,7 +20,7 @@ const AuditLogSchema = new mongoose.Schema({
     },
 
     operationGroup: {
-        type: string,
+        type: String,
         enum: [
             "CREATE", 
             "DELETE", //for category
