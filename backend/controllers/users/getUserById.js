@@ -1,6 +1,7 @@
 const mongoose = require("mongoose");
 const userModel = require("../../models/users/user");
 const Order = require("../../models/order");
+const auditLogModel = require("../../models/users/adminAuditLog");
 
 const getUserById = async (req, res) => {
   try {
@@ -59,18 +60,13 @@ const getUserById = async (req, res) => {
         latestOrderDate: latestDate,
       };
     } else if (user.role === "store_owner") {
+
+      const storeOwnerId = new mongoose.Types.ObjectId(id);
+
       const storeStats = await Order.aggregate([
-        {
-          $match: {
-            "products.owner_store_id": new mongoose.Types.ObjectId(id),
-          },
-        },
+        { $match: { "products.owner_store_id": storeOwnerId } },
         { $unwind: "$products" },
-        {
-          $match: {
-            "products.owner_store_id": new mongoose.Types.ObjectId(id),
-          },
-        },
+        { $match: { "products.owner_store_id": storeOwnerId } },
         {
           $group: {
             _id: null,
@@ -79,7 +75,85 @@ const getUserById = async (req, res) => {
           },
         },
       ]);
-      extraData = storeStats[0] || { totalRevenue: 0, totalOrders: 0 };
+
+
+      const recentOrders = await Order.find({
+        "products.owner_store_id": storeOwnerId,
+      })
+        .sort({ createdAt: -1 })
+        .limit(3)
+        .populate("user_id", "firstName lastName")
+        .select("createdAt total_price status products");
+
+
+        const topProducts = await Order.aggregate([
+        { $match: { "products.owner_store_id": storeOwnerId } },
+        { $unwind: "$products" },
+        { $match: { "products.owner_store_id": storeOwnerId } },
+        { $unwind: "$products.products" },
+        {
+          $group: {
+            _id: "$products.products.prod_id",
+            productName: { $first: "$products.products.name" },
+            totalSold: { $sum: "$products.products.quantity" },
+          },
+        },
+        { $sort: { totalSold: -1 } },
+        { $limit: 3 },
+      ]);
+
+      extraData = {
+        totalRevenue: storeStats[0]?.totalRevenue ?? 0,
+        totalOrders: storeStats[0]?.totalOrders ?? 0,
+        recentOrders,
+        topProducts,
+      };
+    } else if (user.role === "admin") {
+      const startOfMonth = new Date(
+        new Date().getFullYear(),
+        new Date().getMonth(),
+        1,
+      );
+
+      const operationsThisMonth = await auditLogModel.countDocuments({
+        admin_id: id,
+        createdAt: { $gte: startOfMonth },
+      });
+
+      const operationStats = await auditLogModel.aggregate([
+        { $match: { admin_id: new mongoose.Types.ObjectId(id) } },
+        {
+          $group: {
+            _id: "$operationGroup",
+            count: { $sum: 1 },
+          },
+        },
+      ]);
+
+      const operationSummary = {
+        APPROVAL: 0,
+        UPDATE: 0,
+        DELETE: 0,
+        ACTIVATION: 0,
+        CREATE: 0,
+      };
+
+      operationStats.forEach(({ _id, count }) => {
+        if (_id && operationSummary.hasOwnProperty(_id)) {
+          operationSummary[_id] = count;
+        }
+      });
+
+      const recentAuditLogs = await auditLogModel
+        .find({ admin_id: new mongoose.Types.ObjectId(id) })
+        .sort({ createdAt: -1 })
+        .limit(5);
+
+      extraData = {
+        operationsThisMonth,
+        recentAuditLogs,
+        operationSummary,
+      };
     }
 
     const userData = user.toObject();
