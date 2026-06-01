@@ -41,6 +41,16 @@ const AdminSchema = new mongoose.Schema({
     type:String,
     enum: ["pending", "approved", "rejected"],
     default: "pending",
+  },
+
+  totalOperations:{
+    type: Number,
+    default: 0,
+  },
+
+  lastActivity: {
+    type: Date,
+    default: null,
   }
 });
 
