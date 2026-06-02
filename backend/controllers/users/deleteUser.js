@@ -8,6 +8,7 @@ const Order = require("../../models/order");
 const sendDeletionNotification = require("../../utils/sendDeletionNotification");
 const fs = require("fs");
 const path = require("path");
+const auditLogModel = require("../../models/users/adminAuditLog");
 
 const deleteUserController = async (req, res) => {
   try {
@@ -103,7 +104,11 @@ const deleteUserController = async (req, res) => {
       return res.status(404).json({ message: "User not found" });
     }
 
-    // Delete avatar image if exists
+    //save operation log
+    await adminModel.findByIdAndUpdate(requestingUserId, {$set: {lastActivity: new Date()}, $inc: {totalOperations: 1}});
+    const operationLog = await auditLogModel.create({admin_id: requestingUserId, operation: "deleteUser", entityModel: userRole, entityId: userId, operationGroup: "DELETE"});
+
+    // Delete avatar image locally from uploads if exists
     if (deletedUser.image) {
       const avatarPath = path.join(__dirname, "../../", deletedUser.image);
       if (fs.existsSync(avatarPath)) fs.unlinkSync(avatarPath);

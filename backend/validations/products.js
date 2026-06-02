@@ -1,13 +1,68 @@
 const zod = require("zod");
 const { optionalEnumHandler } = require("./auth");
 
-const categoryEnum= ["العناية بالبشرة", "المكياج", "الأدوات", "العناية بالجسم", "العناية بالشعر", "العناية بالرجال", "أخرى"];
-const categorySchema=zod.object({
-    name: zod.string().trim().pipe(zod.enum(categoryEnum, {message: `category name must be one of ${categoryEnum.join(", ")}`})),
-    description: zod.string().trim().max(500, "category description mustn't exceed 500 characters"),
-    totalProducts: zod.number().optional().default(0),
-    isActive: zod.boolean().default(true),
+// Schema for creating a NEW category 
+const addCategorySchema = zod.object({
+  name: zod
+    .string()
+    .trim()
+    .min(2, "Category name must be at least 2 characters")
+    .max(50, "Category name must not exceed 50 characters"),
+  
+  description: zod
+    .string()
+    .trim()
+    .min(1, "Description is required")
+    .max(500, "Category description must not exceed 500 characters"),
+  
+  icon: zod
+    .string()
+    .emoji?.( "Icon must be a valid emoji") || zod.string().default("📦"),
+  
+  totalProducts: zod
+    .number()
+    .min(0, "Total products cannot be negative")
+    .optional()
+    .default(0),
+  
+  isActive: zod
+    .boolean()
+    .default(true),
 });
+
+// Schema for EDITING an existing category
+const editCategorySchema = zod.object({
+  name: zod
+    .string()
+    .trim()
+    .max(50, "Category name must not exceed 50 characters")
+    .optional(),  //can't set min length for an optional field
+  
+  description: zod
+    .string()
+    .trim()
+    .max(500, "Category description must not exceed 500 characters")
+    .optional(),
+  
+  icon: zod
+    .string()
+    .emoji?.( "Icon must be a valid emoji")
+    .optional(),
+  
+  totalProducts: zod
+    .number()
+    .min(0, "Total products cannot be negative")
+    .optional(),
+  
+  isActive: zod
+    .boolean()
+    .optional(),
+}).refine(
+  (data) => Object.keys(data).length > 0,
+  {
+    message: "At least one field must be provided for update"
+  }
+);
 
 const skinTypeEnum= ['جافة', 'دهنية', 'مختلطة', 'حساسة', 'عادية'];
 const productSchema = zod.object({
@@ -56,4 +111,4 @@ const productSchema = zod.object({
     skinType: optionalEnumHandler(skinTypeEnum).default("عادية"),
 });
 
-module.exports= {categorySchema, productSchema};
+module.exports= {addCategorySchema, editCategorySchema, productSchema};

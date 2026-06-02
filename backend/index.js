@@ -23,6 +23,7 @@ const categoryModel = require("./models/category.js");
 const reviewModel = require("./models/review.js");
 const ActivationFactory = require("./factories/activation.js");
 const checkAuth = require("./middleware/checkAuth.js");
+const { adminModel } = require("./models/users/admin.js");
 
 require("dotenv").config({ path: path.join(__dirname, "./env") });
 
@@ -82,32 +83,34 @@ app.use("/users", usersRouter);
 app.use("/admin", adminRouter);
 
 const activableModels = {
-  "users": {
-    model: userModel,
-    modelName: "user",
-    allowedRoles: ["admin"],
-  },
+    users: {
+        model: userModel,
+        modelName: "user",  // For error messages and audit logs
+        allowedRoles: ["admin"],
+    },
+    products: {
+        model: productModel,
+        modelName: "product",
+        allowedRoles: ["admin", "store_owner"],  // Both can manage products
+        requiredPermission: "manageProducts"  // For admins
+    },
+    categories: {
+        model: categoryModel,
+        modelName: "category",
+        allowedRoles: ["admin"],
+        requiredPermission: "manageCategories"
+    },
+    reviews: {
+        model: reviewModel,
+        modelName: "review",
+        allowedRoles: ["admin"],
+        requiredPermission: "manageUsers"  // Reviews are user-generated
+    },
+};
 
-  "products": {
-    model: productModel,
-    modelName: "product",
-    allowedRoles: ["store_owner"],
-  },
+const activationHandler = ActivationFactory(activableModels);
 
-  "categories": {
-    model: categoryModel,
-    modelName: "category",
-    allowedRoles: ["admin"],
-  },
-
-  "reviews": {
-    model: reviewModel,
-    modelName: "review",
-    allowedRoles: ["admin"],
-  },
-}
-
-app.patch(`/:entity/:id/activation`, checkAuth(), ActivationFactory(activableModels));
+app.patch("/:entity/:id/activation", checkAuth(), activationHandler);
 
 
 //mongodb connection

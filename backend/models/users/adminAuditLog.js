@@ -9,24 +9,28 @@ const AuditLogSchema = new mongoose.Schema({
     },
 
     operation: {
-        type: string,
-        enum: ["addAdmin", "addStoreOwner", "addCategory", "deleteCategory",
-            "blockClient",  "blockStoreOwner", "blockAdmin", "blockCategory",
-            "activateClient",  "activateStoreOwner", "activateAdmin", "activateCategory",
+        type: String,
+        enum: [
+            "addUser", "addCategory", 
+            "deleteUser", "deleteCategory",
+            "activateUser", "activateCategory",
+            "deactivateUser", "deactivateCategory",
             "acceptRegisteration", "cancelRegisteration",
-            "editCategory", "updateOrderStatus", "updateUserDeletionStatus"
+            "editCategory", 
+            "updateOrderStatus", 
+            "updateUserDeletionStatus"
         ],
         required: true,
     },
 
     operationGroup: {
-        type: string,
+        type: String,
         enum: [
             "CREATE", 
-            "DELETE", //for category
+            "DELETE", //for category, admin or store owner
             "UPDATE", //editCategory or update status of order or userDeletion
             "APPROVAL", //cancel/accept
-            "ACTIVATION" //block/activate
+            "ACTIVATION" //activate/deactivate
         ],
     },
 
@@ -42,6 +46,11 @@ const AuditLogSchema = new mongoose.Schema({
         required: true,
     },
 
+    entityName: {
+        type: String,
+        default: null,
+    },
+
     previousStatus: {
         type: String,
         default: null,
@@ -50,7 +59,7 @@ const AuditLogSchema = new mongoose.Schema({
     newStatus: {
         type: String,
         default: null,
-    }, //for tracking order status update or user deletion status
+    }, //for tracking activation status, order status update or user deletion status
 
     previousData:{
         type: mongoose.Schema.Types.Mixed,

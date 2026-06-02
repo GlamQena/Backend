@@ -77,13 +77,13 @@ const cancelOrderController = async(req, res) => {
                 storeProds.owner_store_id, 
                 {$inc: {total_orders: -1}},
             );
-
-            await clientModel.findByIdAndUpdate(
-                storeProds.owner_store_id, 
-                {$inc: {totalOrders: -1}},
-            );
         }
 
+        await clientModel.findByIdAndUpdate(
+            userId, 
+            {$inc: {totalOrders: -1}},
+        );
+        
         // Update order status
         foundOrder.status = "ملغي";
         foundOrder.cancelledAt = new Date();

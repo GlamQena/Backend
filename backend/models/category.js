@@ -8,8 +8,6 @@ const CategorySchema = new mongoose.Schema(
       required: true,
       index: true,
       unique: true,
-      enum: 
-      ["العناية بالبشرة", "المكياج", "الأدوات", "العناية بالجسم", "العناية بالشعر", "العناية بالرجال", "أخرى"]
     },
 
     icon: {

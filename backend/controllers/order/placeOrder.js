@@ -100,17 +100,18 @@ const placeOrderController = async (req, res) => {
       status: "قيد الانتظار",
     });
 
-    // Decrease stock
+    // Decrease stock and increase total_orders for store owner
     for (const storeProds of cart.products) {
       for (const item of storeProds.products) {
         await Product.findByIdAndUpdate(item.prod_id, {
           $inc: { stock: -item.quantity },
         });
       }
+    await storeOwnerModel.findByIdAndUpdate(storeProds.owner_store_id, {$inc: {total_orders: +1}});
     }
 
+    // Increase total_orders for client
     await clientModel.findByIdAndUpdate(userId, {$inc: {totalOrders: +1}});
-    await storeOwnerModel.findByIdAndUpdate(userId, {$inc: {total_orders: +1}});
     
     // Clear cart
     cart.products = [];

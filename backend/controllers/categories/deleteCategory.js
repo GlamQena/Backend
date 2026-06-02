@@ -1,9 +1,22 @@
+const mongoose = require("mongoose");
+const { adminModel } = require("../../models/users/admin");
+const auditLogModel = require("../../models/users/adminAuditLog");
 const categoryModel = require("../../models/category");
 
 const deleteCategoryById = async (req, res) => {
   try {
+    const requestingUserId = req.user.id;
     const { id } = req.params;
 
+    // Check if ID is valid format
+    if (!id || !mongoose.Types.ObjectId.isValid(id)) {
+      return res.status(400).json({
+        success: false,
+        message: "Invalid category ID format",
+      });
+    } //if the id was a string but valid when converting to mongoose.Types.ObjectId this condition will pass
+
+    // Find the category
     const category = await categoryModel.findById(id);
     if (!category) {
       return res.status(404).json({
@@ -12,28 +25,35 @@ const deleteCategoryById = async (req, res) => {
       });
     }
 
+    // Check if category has products
     if (category.totalProducts > 0) {
       return res.status(400).json({
         success: false,
-        message: `Cannot delete category with ${category.totalProducts} product(s)`,
+        message: `Cannot delete category with ${category.totalProducts} product(s), consider deactivating it instead`,
       });
     }
 
-    await categoryModel.findByIdAndUpdate(id, { isActive: false });
+    await categoryModel.findByIdAndDelete(id);
+
+    //save operation log
+    await adminModel.findByIdAndUpdate(requestingUserId, {$set: {lastActivity: new Date()}, $inc: {totalOperations: 1}});
+    const operationLog = await auditLogModel.create({admin_id: requestingUserId, operation: "deleteCategory", entityModel: "category", entityId: category._id, operationGroup: "DELETE"});
 
     return res.status(200).json({
       success: true,
-      message: "Category deactivated successfully",
+      message: "Category deleted successfully",
       data: {
-        id: category._id,
-        name: category.name,
+        ...category.toObject(),
       },
+      operationLog: operationLog.toObject(),
     });
+
   } catch (error) {
-   return res.status(500).json({
+
+    console.log("Error deleting category:", error);
+    return res.status(500).json({
       success: false,
-      message: "Internal server error",
-      error: error.message,
+      message: "Internal server error"
     });
   }
 };
