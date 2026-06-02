@@ -5,6 +5,7 @@ const { adminModel } = require("../../models/users/admin");
 const otpModel = require("../../models/auth-temps/otp");
 const bcrypt = require("bcrypt");
 const { sendEmail,getUrlFrontEnd } = require("../../utils/mailSender");
+const auditLogModel = require("../../models/users/adminAuditLog");
 
 const addUser = async (req, res) => {
   try {
@@ -163,6 +164,13 @@ const addUser = async (req, res) => {
     // Save the user
     await newUser.save();
 
+    //store operation log
+    admin.totalOperations += 1;
+    admin.lastActivity = new Date();
+    await admin.save();
+
+    const operationLog = await auditLogModel.create({admin_id: admin._id, operation: "addUser", entityModel: role, entityId: newUser._id, operationGroup: "CREATE"});
+
     // generate otp for activateAccount
     const otp = Math.floor(100000 + Math.random() * 900000).toString();
 
@@ -197,6 +205,7 @@ const addUser = async (req, res) => {
       success: true,
       message: message,
       data: userResponse,
+      operationLog,
     });
   } catch (error) {
     console.error("Error in addUser:", error);

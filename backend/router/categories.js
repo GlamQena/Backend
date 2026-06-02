@@ -12,6 +12,6 @@ router.use(checkAuth());
 router.get("/", getCategoriesController);
 
 router.post("/", checkRole("admin"), addCategoryController);
-router.put("/:id",checkRole("admin"),editCategoryById)
-router.delete("/:id",checkRole("admin"),deleteCategoryById)
+router.put("/:id",checkRole("admin"), editCategoryById)
+router.delete("/:id",checkRole("admin"), deleteCategoryById)
 module.exports= router;
