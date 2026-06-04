@@ -15,6 +15,7 @@ const AdminSchema = new mongoose.Schema({
       "viewAnalytics",
       "manageUsers", //clients
       "manageOrders",
+      // "manageProducts",
       "manageCategories",
       "manageStores",
       "manageAdmins"

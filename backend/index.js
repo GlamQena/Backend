@@ -24,6 +24,8 @@ const reviewModel = require("./models/review.js");
 const ActivationFactory = require("./factories/activation.js");
 const checkAuth = require("./middleware/checkAuth.js");
 const { adminModel } = require("./models/users/admin.js");
+const { clientModel } = require("./models/users/client.js");
+const { storeOwnerModel } = require("./models/users/storeOwner.js");
 
 require("dotenv").config({ path: path.join(__dirname, "./env") });
 
@@ -83,10 +85,23 @@ app.use("/users", usersRouter);
 app.use("/admin", adminRouter);
 
 const activableModels = {
-    users: {
-        model: userModel,
-        modelName: "user",  // For error messages and audit logs
+    clients: {
+        model: clientModel,
+        modelName: "client",  // For error messages and audit logs
         allowedRoles: ["admin"],
+        requiredPermission: "manageUsers"  // For admins to manage clients
+    },
+    store_owners: {
+        model: storeOwnerModel,
+        modelName: "store_owner", 
+        allowedRoles: ["admin"],
+        requiredPermission: "manageStores"  // For admins to manage store owners
+    },
+    admins: {
+        model: adminModel,
+        modelName: "admin", 
+        allowedRoles: ["admin"],
+        requiredPermission: "manageAdmins"  // For admins to manage other admins
     },
     products: {
         model: productModel,
@@ -100,12 +115,12 @@ const activableModels = {
         allowedRoles: ["admin"],
         requiredPermission: "manageCategories"
     },
-    reviews: {
-        model: reviewModel,
-        modelName: "review",
-        allowedRoles: ["admin"],
-        requiredPermission: "manageUsers"  // Reviews are user-generated
-    },
+    // reviews: {
+    //     model: reviewModel,
+    //     modelName: "review",
+    //     allowedRoles: ["admin"],
+    //     requiredPermission: "manageUsers"  // Reviews are user-generated
+    // },
 };
 
 const activationHandler = ActivationFactory(activableModels);
