@@ -116,7 +116,7 @@ const addUser = async (req, res) => {
           role: "store_owner",
           is_approved: true, 
           isActive: true,
-          store_phone: "01000000000",
+          store_phone: "0100000000",
           store_address: {
             city: "UnKnown",
             district: "UnKnown",
