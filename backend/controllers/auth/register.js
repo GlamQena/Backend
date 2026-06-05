@@ -68,6 +68,8 @@ const registerController = async (req, res) => {
       newUser = await storeOwnerModel.create({
         ...commonData,
         ...parsedStoreOwnerRegister.data,
+        is_approved: false,
+        isActive: false,
       });
     }
 

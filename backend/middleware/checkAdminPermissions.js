@@ -1,4 +1,4 @@
-const adminModel = require("../../models/users/admin");
+const {adminModel} = require("../models/users/admin");
 
 const checkAdminPermissions = (allowedPermission) => {
 

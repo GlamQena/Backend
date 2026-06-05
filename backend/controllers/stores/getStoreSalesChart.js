@@ -29,6 +29,11 @@ const getStoreSalesChart = async (req, res) => {
       },
       {$unwind: "$products"},
       {
+        $match: {
+          "products.owner_store_id": new mongoose.Types.ObjectId(storeId)
+        }
+      },
+      {
         $group: {
           _id: {
             $dateToString: { format: "%Y-%m-%d", date: "$createdAt" }

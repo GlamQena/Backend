@@ -1,4 +1,8 @@
 const express = require("express");
+const checkAuth = require("../middleware/checkAuth");
+const checkRole = require("../middleware/checkRole");
+const checkAdminPermissions = require("../middleware/checkAdminPermissions");
+
 const checkPaymentCompletion = require("../controllers/order/checkPaymentCompletion");
 const getClientOrdersController = require("../controllers/order/getClientOrders");
 const paymentCheckoutController = require("../controllers/order/paymentCheckout");
@@ -8,11 +12,7 @@ const getOrderDetailsController = require("../controllers/order/getOrderDetails"
 const getOrdersByOwnerStoreId = require("../controllers/order/getOrdersByOwnerStoreId");
 const cancelOrderController = require("../controllers/order/cancelOrder");
 const reOrderRequest = require("../controllers/order/reOrderRequest");
-
-const checkAuth = require("../middleware/checkAuth");
-const checkRole = require("../middleware/checkRole");
 const rateOrderProductController = require("../controllers/order/rateOrderProduct");
-
 const getAllOrders = require("../controllers/order/getAllOrders");
 
 const router = express.Router();
@@ -41,6 +41,6 @@ router.patch(
   cancelOrderController,
 );
 
-router.get("/admin/orders", checkRole("admin"), getAllOrders);
+router.get("/admin/orders", checkRole("admin"), checkAdminPermissions(["manageOrders"]), getAllOrders);
 
 module.exports = router;

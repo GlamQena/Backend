@@ -15,7 +15,7 @@ const optionalSchemaHandler = (schema) =>
             return undefined;
         }
         return val;
-    }, schema.optional());
+    }, schema.optional().nullable());
 
 const optionalDateHandler = z.preprocess((val) => {
     if (!val || val === "") return undefined;

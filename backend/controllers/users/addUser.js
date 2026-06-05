@@ -15,13 +15,13 @@ const addUser = async (req, res) => {
     const adminPermissions = admin.permission || [];
 
     // Validate permissions for each role
-    if (role === "client" && !adminPermissions.includes("manageUsers")) {
-      return res.status(403).json({
-        success: false,
-        message:
-          "Access denied. You need 'manageUsers' permission to add clients.",
-      });
-    }
+    // if (role === "client" && !adminPermissions.includes("manageUsers")) {
+    //   return res.status(403).json({
+    //     success: false,
+    //     message:
+    //       "Access denied. You need 'manageUsers' permission to add clients.",
+    //   });
+    // }
 
     if (role === "store_owner" && !adminPermissions.includes("manageStores")) {
       return res.status(403).json({
@@ -40,11 +40,14 @@ const addUser = async (req, res) => {
     }
 
     // Validate role
-    const allowedRoles = ["client", "store_owner", "admin"];
+    const allowedRoles = [
+      // "client", 
+      "store_owner", 
+      "admin"];
     if (!allowedRoles.includes(role)) {
       return res.status(400).json({
         success: false,
-        message: "Invalid role. Allowed roles: client, store_owner, admin",
+        message: "Invalid role. Allowed roles: store_owner, admin",
       });
     }
 
@@ -82,20 +85,20 @@ const addUser = async (req, res) => {
 
     // Create user based on role
     switch (role) {
-      case "client":
-        newUser = new clientModel({
-          ...userData,
-          password: hashedPassword,
-          role: "client",
-        });
-        break;
+      // case "client":
+      //   newUser = new clientModel({
+      //     ...userData,
+      //     password: hashedPassword,
+      //     role: "client",
+      //   });
+      //   break;
 
       case "store_owner":
         // Validate required store owner fields
         if (!userData.store_name || !userData.store_email) {
           return res.status(400).json({
             success: false,
-            message: "Store owners must provide store_name and store_email",
+            message: "you must provide the store name and email",
           });
         }
 
@@ -116,7 +119,7 @@ const addUser = async (req, res) => {
           password: hashedPassword,
           role: "store_owner",
           is_approved: true, 
-          isActive: true,
+          isActive: false,
           store_phone: "01000000000",
           store_address: {
             city: "UnKnown",
@@ -131,7 +134,7 @@ const addUser = async (req, res) => {
         if (!userData.permission) {
           return res.status(400).json({
             success: false,
-            message: "PLease, Enter permission is required",
+            message: "you must set the permission of the admin to be added",
           });
         }
         if (
@@ -150,7 +153,7 @@ const addUser = async (req, res) => {
           role: "admin",
           createdBy: req.user.id,
           permission: userData.permission,
-          isActive: true,
+          isActive: false,
         });
         break;
 
@@ -196,7 +199,8 @@ const addUser = async (req, res) => {
 
     // Remove sensitive data from response
     const userResponse = newUser.toObject();
-    delete userResponse.password;
+    if(userResponse.password)
+      delete userResponse.password;
 
     // Add role-specific response messages
     let message = `${role} created successfully. Login credentials have been sent to their email.`;
