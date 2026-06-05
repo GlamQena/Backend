@@ -7,7 +7,7 @@ const bcrypt = require("bcrypt");
 const jwt = require("jsonwebtoken");
 const otpModel = require("../../models/auth-temps/otp");
 const { sendEmailMessage } = require("../../utils/mailSender");
-const {promisify} = require("util");
+const { promisify } = require("util");
 const jwtVerify = promisify(jwt.verify);
 
 const loginController = async (req, res) => {
@@ -16,17 +16,20 @@ const loginController = async (req, res) => {
     let { usernameOrEmail, password, activationCode, rememberMe, session_id } =
       req.body;
 
+    // Validate input
     const validatedLoginSchema = loginSchema.safeParse({
       usernameOrEmail,
       password,
     });
 
     if (!validatedLoginSchema.success) {
-      return res
-        .status(400)
-        .json({ message: validatedLoginSchema.error.issues[0].message });
+      return res.status(400).json({ 
+        success: false,
+        message: validatedLoginSchema.error.issues[0].message 
+      });
     }
 
+    // Find user
     const user = await userModel
       .findOne({
         $or: [{ email: usernameOrEmail }, { username: usernameOrEmail }],
@@ -34,151 +37,207 @@ const loginController = async (req, res) => {
       .select("+password");
 
     if (!user) {
-      return res.status(401).json({ message: "Invalid email or username" });
+      return res.status(401).json({ 
+        success: false,
+        message: "Invalid email or username" 
+      });
     }
 
+    // Check password
     const isMatch = bcrypt.compareSync(password, user.password);
     if (!isMatch) {
-      return res.status(401).json({ message: "Invalid password" });
+      return res.status(401).json({ 
+        success: false,
+        message: "Invalid password" 
+      });
     }
 
-    //handle admin and storeOwner firstmost login with activation code
+    // Handle first-time login for admin and store_owner
+    const isFirstLogin = !user.isActive && (user.role === "admin" || user.role === "store_owner");
     let resetPassCodeCreated = false;
-    if (token) {
+    
+    if (isFirstLogin) {
+      // Require token for first login
+      if (!token) {
+        return res.status(401).json({ 
+          success: false,
+          message: "Activation token required for first-time login" 
+        });
+      }
+
       let decodedToken;
       try {
         decodedToken = await jwtVerify(token, process.env.JWT_SECRET);
       } catch (err) {
-        console.log("admin or storeOwner firstmost login token is invalid");
-        return res.status(401).json({ message: "Invalid token" });
+        console.log("First login token invalid");
+        return res.status(401).json({ 
+          success: false,
+          message: "Invalid or expired activation token" 
+        });
       }
 
-      const { id:user_id, role, email } = decodedToken;
+      const { id: user_id, role, email } = decodedToken;
 
+      // Validate token matches user
       if (
         user_id.toString() !== user._id.toString() ||
         user.role !== role ||
         (role !== "admin" && role !== "store_owner")
       ) {
-        return res.status(401).json({ message: "Invalid token user" });
+        return res.status(401).json({ 
+          success: false,
+          message: "Invalid token for this user" 
+        });
       }
 
+      // Validate activation code
       if (!activationCode) {
-        return res
-          .status(400)
-          .json({ message: "activation code is required for first login" });
+        return res.status(400).json({ 
+          success: false,
+          message: "Activation code is required for first login" 
+        });
       }
 
       activationCode = activationCode.trim();
       if (activationCode.length !== 6) {
-        return res
-          .status(400)
-          .json({ message: "activation code must be 6 digits length" });
+        return res.status(400).json({ 
+          success: false,
+          message: "Activation code must be 6 digits" 
+        });
       }
 
-      //verify the account activation code
+      // Verify activation code
       const foundCode = await otpModel.findOne({
         userId: user_id,
         otpCode: activationCode,
         for: "activateAccount",
       });
 
-      if (
-        !foundCode ||
-        foundCode.otpExpiry < Date.now() ||
-        foundCode.isVerified ||
-        foundCode.isActive === false
-      ) {
-        return res
-          .status(400)
-          .json({
-            message: `Invalid or expired activation code ${foundCode ? `(attempts left: ${3 - ++foundCode.otpAttempts})` : ""}`,
-          });
+      if (!foundCode) {
+        return res.status(400).json({ 
+          success: false,
+          message: "Invalid activation code" 
+        });
       }
 
-      foundCode.isVerified = true;
+      // Check if code is expired or already used
+      if (foundCode.otpExpiry < Date.now()) {
+        return res.status(400).json({ 
+          success: false,
+          message: "Activation code has expired. Please request a new one." 
+        });
+      }
+
+      if (foundCode.isVerified) {
+        return res.status(400).json({ 
+          success: false,
+          message: "Activation code already used" 
+        });
+      }
+
+      if (!foundCode.isActive) {
+        return res.status(400).json({ 
+          success: false,
+          message: "Activation code is no longer active" 
+        });
+      }
+
+      // Increment attempts
+      foundCode.otpAttempts += 1;
+      
       if (foundCode.otpAttempts >= 3) {
         foundCode.isActive = false;
+        await foundCode.save();
+        return res.status(400).json({ 
+          success: false,
+          message: "Maximum attempts exceeded. Please request a new activation code." 
+        });
       }
 
+      // Mark as verified
+      foundCode.isVerified = true;
       await foundCode.save();
 
-      if(role === "admin" || role === "store_owner")
-        await userModel.findByIdAndUpdate(user_id, { isApproved: true });
+      // Activate the user
+      await userModel.findByIdAndUpdate(user_id, { isActive: true });
 
-      // generate restPassword OTP for the obligatory reset pass
-      const resetPassCode = Math.floor(
-        100000 + Math.random() * 900000,
-      ).toString();
-      const foundResetPassCode = await otpModel.findOne({
-        userId: user_id,
-        for: "resetPassword",
-      });
-
-      if (!foundResetPassCode) {
-        const newResetPasswordCode = new otpModel({
-          userId: user_id,
-          for: "resetPassword",
+      // Generate reset password code
+      const resetPassCode = Math.floor(100000 + Math.random() * 900000).toString();
+      
+      await otpModel.findOneAndUpdate(
+        { userId: user_id, for: "resetPassword" },
+        {
           otpCode: resetPassCode,
-        });
-        await newResetPasswordCode.save();
-      } else {
-        foundResetPassCode.otpCode = resetPassCode;
-        foundResetPassCode.otpAttempts = 0;
-        foundResetPassCode.isActive = true;
-        foundResetPassCode.isVerified = false;
-
-        await foundResetPassCode.save();
-      }
+          otpAttempts: 0,
+          isActive: true,
+          isVerified: false,
+          otpExpiry: new Date(Date.now() + 10 * 60 * 1000) // 10 minutes
+        },
+        { upsert: true, new: true }
+      );
 
       resetPassCodeCreated = true;
 
-      try{
-        await sendEmailMessage({
-          to: user.email,
-          subject: "Reset Password Code",
-          text: `Your password reset code is: ${resetPassCode}`,
-        });
-        //don't required to await for sendEmailMessage although it's async for the response to not be late
-      }catch(err){
-        console.error("error sending reset password email");
-      }
+      // Send reset password email (non-blocking)
+      sendEmailMessage({
+        to: user.email,
+        subject: "Set Your Password",
+        text: `Welcome! Please set your password using this code: ${resetPassCode}\n\nThe code expires in 10 minutes.`,
+      }).catch(err => console.error("Error sending reset password email:", err));
+
+      // Return response with reset requirement (no access token yet)
+      return res.status(200).json({
+        success: true,
+        message: "First login successful. Please set your password to continue.",
+        requiresPasswordReset: true,
+        userId: user._id,
+        email: user.email
+      });
     }
 
-    // MERGE CART ONLY DURING LOGIN if session_id is provided
+    // Regular login for active users
+    if (!user.isActive) {
+      return res.status(403).json({ 
+        success: false,
+        message: "Account is deactivated. Please contact support." 
+      });
+    }
+
+    // Merge guest cart for clients
     let cartMergeResult = null;
     if (session_id && user.role === "client") {
       cartMergeResult = await mergeGuestCartWithUserCart(user._id, session_id);
-      console.log("Cart merge result during login:", cartMergeResult);
+      console.log("Cart merge result:", cartMergeResult);
     }
-    //====MERGE CART ONLY DURING LOGIN if session_id is provided===//
 
-    let userData = user.toObject();
-    delete userData["password"];
+    // Generate tokens
+    const userData = user.toObject();
+    delete userData.password;
 
     const { accessToken, refreshToken } = setAccessRefreshTokens(
       res,
       user,
-      rememberMe,
+      rememberMe
     );
 
     res.status(200).json({
+      success: true,
       message: cartMergeResult?.merged
         ? "Login successful. Guest cart merged with your account."
-        : resetPassCodeCreated
-          ? "Login successful. Please reset your password with the new code sent to your email."
-          : "Successful login...",
+        : "Login successful",
       user: userData,
       accessToken,
       refreshToken,
       cart_merged: cartMergeResult?.merged || false,
-      resetPassCodeCreated,
     });
+
   } catch (error) {
     console.error("Login error:", error);
-    res
-      .status(500)
-      .json({ message: "internal server error", error: error.message });
+    res.status(500).json({ 
+      success: false,
+      message: "Internal server error",
+      ...(process.env.NODE_ENV === "development" && { error: error.message })
+    });
   }
 };
 

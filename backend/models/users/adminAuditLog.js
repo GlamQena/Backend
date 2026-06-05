@@ -29,8 +29,10 @@ const AuditLogSchema = new mongoose.Schema({
             "CREATE", 
             "DELETE", //for category, admin or store owner
             "UPDATE", //editCategory or update status of order or userDeletion
-            "APPROVAL", //cancel/accept
-            "ACTIVATION" //activate/deactivate
+            "APPROVAL", //ACCEPT REGISTERATION
+            "CANCELLATION", //cancel registeration
+            "ACTIVATION",
+            "DEACTIVATION"
         ],
     },
 

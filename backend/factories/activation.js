@@ -240,7 +240,7 @@ const ActivationFactory = (activableModels) => {
         const auditLog = new auditLogModel({
           admin_id: req.user.id,
           operation: auditOperation,
-          operationGroup: "ACTIVATION",
+          operationGroup: activateStatus ? "ACTIVATION" : "DEACTIVATION",
           entityModel: auditEntityModel,
           entityId: targetEntity._id,
           entityName:

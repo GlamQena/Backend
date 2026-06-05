@@ -1,6 +1,8 @@
 const express = require("express");
 const checkAuth = require("../middleware/checkAuth");
 const checkRole = require("../middleware/checkRole");
+const checkAdminPermissions = require("../middleware/checkAdminPermissions");
+
 const addToWishlist = require("../controllers/users/addToWishlist");
 const removeFromWishlist = require("../controllers/users/removeFromWishlist");
 const getUserById = require("../controllers/users/getUserById");
@@ -15,9 +17,11 @@ const router = express.Router();
 router.post("/me/wishlist", checkRole("client"), addToWishlist);
 router.delete("/me/wishlist", checkRole("client"), removeFromWishlist);
 
-router.get("/", checkRole("admin"), getUsers);
-router.get("/:id", checkRole("admin"), getUserById);
-router.post("/",checkRole("admin"),addUser)
-router.delete("/:id",checkRole("admin"),deleteUserController)
+router.use(checkRole("admin"));
+
+router.get("/", checkAdminPermissions(["manageUsers", "manageStores", "manageAdmins"]), getUsers);
+router.get("/:id", checkAdminPermissions(["manageUsers", "manageStores", "manageAdmins"]), getUserById);
+router.post("/", checkAdminPermissions(["manageStores", "manageAdmins"]), addUser);
+router.delete("/:id", checkAdminPermissions(["manageStores", "manageAdmins"]), deleteUserController);
 
 module.exports = router;
