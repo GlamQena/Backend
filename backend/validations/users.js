@@ -9,16 +9,16 @@ const commonAddUserData = zod.object({
 });
 
 const addStoreOwnerSchema = zod.object({
-    store_name: z.string({required_error: "store name is required"}).trim().max(100, {message: "store name must be at most 100 characters"}),
-    store_address: z.object({
-            city: z.string().trim().max(50, { message: "city must be at most 50 characters" }).optional(),
-            district: z.string().trim().max(50, { message: "district must be at most 50 characters" }).optional(),
-            street: z.string().trim().max(100, { message: "street must be at most 100 characters" }).optional()
+    store_name: zod.string({required_error: "store name is required"}).trim().max(100, {message: "store name must be at most 100 characters"}),
+    store_address: zod.object({
+            city: zod.string().trim().max(50, { message: "city must be at most 50 characters" }).optional(),
+            district: zod.string().trim().max(50, { message: "district must be at most 50 characters" }).optional(),
+            street: zod.string().trim().max(100, { message: "street must be at most 100 characters" }).optional()
         }).optional(),
 }).extend(commonAddUserData.shape);
 
 const addAdminSchema = zod.object({
-    permission: zod.array(zod.string().enum([
+    permission: zod.array(zod.enum([
         "viewAnalytics",
         "manageUsers",
         "manageStores",
@@ -30,7 +30,7 @@ const addAdminSchema = zod.object({
 
 const updateAdminPermissionsSchema = zod.object({
     permission: zod.array(
-        zod.string().enum([
+        zod.enum([
             "viewAnalytics",
             "manageUsers",
             "manageStores",
