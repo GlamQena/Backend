@@ -18,7 +18,8 @@ const AuditLogSchema = new mongoose.Schema({
             "acceptRegisteration", "cancelRegisteration",
             "editCategory", 
             "updateOrderStatus", 
-            "updateUserDeletionStatus"
+            "updateUserDeletionStatus",
+            "updateAdminPermissions"
         ],
         required: true,
     },

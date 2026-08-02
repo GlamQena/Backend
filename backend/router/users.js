@@ -10,6 +10,8 @@ const getUsers = require("../controllers/users/getUsers");
 const addUser = require("../controllers/users/addUser");
 const deleteUserController = require("../controllers/users/deleteUser");
 
+const updateAdminPermissions = require("../controllers/users/updateAdminPermissions");
+
 const router = express.Router();
 
  router.use(checkAuth());
@@ -23,5 +25,7 @@ router.get("/", checkAdminPermissions(["manageUsers", "manageStores", "manageAdm
 router.get("/:id", checkAdminPermissions(["manageUsers", "manageStores", "manageAdmins"]), getUserById);
 router.post("/", checkAdminPermissions(["manageStores", "manageAdmins"]), addUser);
 router.delete("/:id", checkAdminPermissions(["manageStores", "manageAdmins"]), deleteUserController);
+
+router.patch("/:id/permissions", checkAdminPermissions(["manageAdmins"]), updateAdminPermissions);
 
 module.exports = router;
