@@ -47,11 +47,13 @@ const verifyEmailController = async (req, res) => {
     if(user.password)
       delete user["password"];
     
-    await setAccessRefreshTokens(req, res, user, false);
+    const {accessToken, refreshToken} = await setAccessRefreshTokens(req, res, user, false);
 
     return res.status(200).json({
       message: "Email verified successfully",
-      user
+      user,
+      accessToken,
+      refreshToken
     });
 
   } catch (error) {

@@ -12,12 +12,13 @@ const addNewProductController = async (req, res) => {
         console.log("new product data come from request => ", req.body);
         console.log("add new product request files => ", req.files);
         
-        if (!req.files || req.files.length < 1) {
+        const uploadedUrls = req.uploadedUrls;
+
+        if (!uploadedUrls || uploadedUrls.length < 1) {
             return res.status(400).json({ message: "Please upload at least 1 image" });
         }
 
-        const imagePaths = req.files.map(file => file.path);
-        productData["images"] = imagePaths;
+        productData["images"] = uploadedUrls;
 
         // Parse JSON strings safely
         let dimensions = { length: 15, width: 10, height: 5 };
@@ -65,7 +66,7 @@ const addNewProductController = async (req, res) => {
         const newProduct = await Product.create({
             ...parsedData.data,
             category_id: productData.category_id,
-            images: imagePaths,
+            images: uploadedUrls,
             owner_store_id: ownerStoreId
         });
 

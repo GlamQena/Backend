@@ -8,12 +8,12 @@
     if(!user)
         return res.status(404).json({message: "user account not found"});
 
-    if(!req.file){
+    if(!req.uploadedUrl){
       return res.status(400).json({message: "image file must be provided"});
     }
 
-    console.log("avatar image file => ", req.file);
-    user.image = req.file.path;
+    console.log("avatar image file => ", req.uploadedUrl);
+    user.image = req.uploadedUrl;
     await user.save();
 
     res.status(200).json({message: "avatar image uploaded successfully", imagePath: user.image});

@@ -1,18 +1,95 @@
-<h1>
-  <div
-    style="
-      display: flex;
-      justify-content: center;
-      align-items: center;
-      background-color: rgba(30, 20, 50, 0.9);
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Verify Your Email</title>
+  <style>
+    body {
+      font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+      line-height: 1.6;
+      color: #f2e8ff;
+      background-color: #07040f;
+      max-width: 600px;
+      margin: 0 auto;
       padding: 20px;
-      border-radius: 10px;
-    "
-  >
-    <a
-      style="color: #e0d7f1;; text-decoration: none; font-size: 22px"
-      href="{url}"
-      >Verify your email</a
-    >
+    }
+    .container {
+      background-color: #1a0e2e;
+      border-radius: 28px;
+      padding: 30px;
+      border: 1px solid rgba(168, 85, 247, 0.22);
+      text-align: center;
+    }
+    .header h1 {
+      color: #A855F7;
+      margin: 0 0 10px 0;
+      font-size: 24px;
+    }
+    .content {
+      margin: 25px 0;
+    }
+    .content p {
+      color: #c8aadf;
+      font-size: 15px;
+    }
+    .button {
+      display: inline-block;
+      background-color: #A855F7;
+      color: #ffffff !important; 
+      padding: 14px 32px;
+      text-decoration: none;
+      border-radius: 9999px;
+      font-weight: bold;
+      font-size: 16px;
+      margin: 20px 0;
+      border: none;
+      background: #A855F7 !important;
+    }
+    /* Hover styles works in some email clients*/
+    .button:hover {
+      background-color: #9333EA;
+    }
+    .footer {
+      font-size: 12px;
+      color: #7a5a9a;
+      border-top: 1px solid rgba(168, 85, 247, 0.09);
+      padding-top: 20px;
+      margin-top: 20px;
+    }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <div class="header">
+      <h1>Verify Your Email Address ✉️</h1>
+    </div>
+    <div class="content">
+      <p>Thank you for joining Glam2ena! Please click the button below to confirm and verify your email address.</p>
+      <a 
+        href="{url}" 
+        class="button"
+        style="
+          display: inline-block;
+          background-color: #A855F7;
+          color: #ffffff !important;
+          padding: 14px 32px;
+          text-decoration: none !important;
+          border-radius: 50px;
+          font-weight: bold;
+          font-size: 16px;
+          margin: 20px 0;
+          border: none;
+          background: #A855F7;
+          background-color: #A855F7;
+        "
+      >
+        Verify Email Address
+      </a>
+    </div>
+    <div class="footer">
+      <p>© ${new Date().getFullYear()} Glam2ena. All rights reserved.</p>
+    </div>
   </div>
-</h1>
+</body>
+</html>

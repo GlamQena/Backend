@@ -1,39 +1,70 @@
-<div style="
-    max-width: 500px;
-    margin: 0 auto;
-    background-color: #fff5f9;
-    border-radius: 12px;
-    overflow: hidden;
-    font-family: Arial, sans-serif;
-">
-    <!-- Header -->
-    <div style="
-        background-color: #ff69b4;
-        padding: 18px;
-        text-align: center;
-    ">
-        <h1 style="
-            color: #2d1b47;
-            font-size: 22px;
-            margin: 0;
-            font-weight: bold;
-        ">
-            {subject}
-        </h1>
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>${subject}</title>
+  <style>
+    body {
+      font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+      line-height: 1.6;
+      color: #f2e8ff;
+      background-color: #07040f;
+      max-width: 600px;
+      margin: 0 auto;
+      padding: 20px;
+    }
+    .container {
+      background-color: #1a0e2e;
+      border-radius: 28px;
+      padding: 30px;
+      border: 1px solid rgba(168, 85, 247, 0.22);
+      box-shadow: 0 20px 60px rgba(75, 0, 130, 0.50);
+    }
+    .header {
+      text-align: center;
+      border-bottom: 2px solid #A855F7;
+      padding-bottom: 20px;
+      margin-bottom: 20px;
+    }
+    .header h1 {
+      color: #A855F7;
+      margin: 0;
+      font-size: 22px;
+      font-weight: bold;
+    }
+    .content {
+      text-align: center;
+      padding: 10px 0;
+    }
+    .content p {
+      color: #c8aadf;
+      font-size: 15px;
+      line-height: 1.6;
+      margin: 0;
+    }
+    .footer {
+      text-align: center;
+      font-size: 12px;
+      color: #7a5a9a;
+      border-top: 1px solid rgba(168, 85, 247, 0.09);
+      padding-top: 20px;
+      margin-top: 20px;
+    }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <div class="header">
+      <h1>{subject}</h1>
     </div>
-
-    <!-- Body -->
-    <div style="
-        padding: 27px;
-        text-align: center;
-    ">
-        <p style="
-            color: #5a3a7a;
-            font-size: 15px;
-            line-height: 1.6;
-            margin: 0;
-        ">
-            {message}
-        </p>
+    <div class="content">
+      <p>{message}</p>
     </div>
-</div>
+    <div class="footer">
+      <p>This is an automated message, please do not reply to this email.</p>
+      <p>© ${new Date().getFullYear()} Glam2ena. All rights reserved.</p>
+    </div>
+  </div>
+</body>
+</html>

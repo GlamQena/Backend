@@ -3,140 +3,117 @@ const path = require("path");
 const crypto = require("crypto");
 const fs = require("fs");
 const cloudinary = require("cloudinary").v2;
-const {CloudinaryStorage} = require("multer-storage-cloudinary");
-const connect_mongodb = require("../config/connectMongoDB");
 const cloudinary_config = require("../config/connectCloudinary");
+const { CloudinaryStorage } = require("multer-storage-cloudinary");
 const productModel = require("../models/product");
 const userModel = require("../models/users/user");
 
-cloudinary_config;
-const storage = new CloudinaryStorage({
-  cloudinary,
-  params: async (req, file) => {
-    return {
-        folder: "Glam2ena",
-        allowed_formats: ["jpg", "jpeg", "png", "webp", "avif"],
-        public_id: `${file.originalname.split('.')[0]}-${Date.now()}}`,
-    };
-  },
-})
+cloudinary_config(); //automatically configure the imported cloudinary before beig used in CloudinaryStorage
 
-// disk storage => memory storage => cloudinary storage 
+// Helper to get file hash
+const getFileHash = (buffer) => {
+    return crypto.createHash('md5').update(buffer).digest('hex');
+};
+
+// Memory storage first (to get buffer)
+const memoryStorage = multer.memoryStorage();
+
 const upload = multer({
-  storage,
-  limits: {
-    fileSize: 3 * 1024 * 1024, // 3MB per file
-  },
+    storage: memoryStorage, // Store in memory first to check duplicate
+    limits: {
+        fileSize: 3 * 1024 * 1024, // 3MB per file
+    },
+    fileFilter: (req, file, cb) => {
+        // Accept images only
+        if (!file.originalname.match(/\.(jpg|jpeg|png|webp|avif)$/)) {
+            return cb(new Error('Only image files are allowed!'), false);
+        }
+        cb(null, true);
+    },
 });
 
-// async function migrateLocalImagesWithCloudinary() {
-//   const uploadDir= path.join(__dirname, "../uploads");
-//   const files= fs.readdirSync(uploadDir);
+// Middleware to handle duplicate check and upload to Cloudinary
+const uploadToCloudinary = async (req, res, next) => {
+    try {
+        // If no files, skip
+        if (!req.file && !req.files) {
+            return next();
+        }
+        
+        const isMultiple = req.files && req.files.length > 0;
+        const files = isMultiple ? req.files : [req.file];
+        
+        const uploadedUrls = [];
+        
+        for (const file of files) {
+            // Calculate hash of the file
+            const fileHash = getFileHash(file.buffer);
+            
+            // Check if this image already exists in the database
+            let existingImage = null;
+            
+            // Check in products
+            const productWithImage = await productModel.findOne({
+                'images': { $regex: fileHash, $options: 'i' }
+            });
+            
+            if (productWithImage) {
+                existingImage = productWithImage.images.find(img => img.includes(fileHash));
+            }
+            
+            // Check in users if not found
+            if (!existingImage) {
+                const userWithImage = await userModel.findOne({
+                    'image': { $regex: fileHash, $options: 'i' }
+                });
+                if (userWithImage) {
+                    existingImage = userWithImage.image;
+                }
+            }
+            
+            if (existingImage) {
+                // Use existing URL
+                uploadedUrls.push(existingImage);
+                continue;
+            }
+            
+            // No duplicate found - upload to Cloudinary
+            const result = await new Promise((resolve, reject) => {
+                const uploadStream = cloudinary.uploader.upload_stream(
+                    {
+                        folder: "Glam2ena",
+                        allowed_formats: ["jpg", "jpeg", "png", "webp", "avif"],
+                        public_id: `${file.originalname.split('.')[0]}-${Date.now()}-${fileHash.substring(0, 8)}`,
+                    },
+                    (error, result) => {
+                        if (error) reject(error);
+                        else resolve(result);
+                    }
+                );
+                
+                // Convert buffer to stream
+                const Readable = require('stream').Readable;
+                const readableStream = new Readable();
+                readableStream.push(file.buffer);
+                readableStream.push(null);
+                readableStream.pipe(uploadStream);
+            });
+            
+            uploadedUrls.push(result.secure_url);
+        }
+        
+        // Attach URLs to request
+        if (isMultiple) {
+            req.uploadedUrls = uploadedUrls;
+        } else {
+            req.uploadedUrl = uploadedUrls[0];
+        }
+        
+        next();
+    } catch (error) {
+        console.error("Cloudinary upload error:", error);
+        next(error);
+    }
+};
 
-//   for (let file of files){
-//     const filePath= path.join(uploadDir, file);
-//     const result = await cloudinary.uploader.upload(filePath, {folder:"Glam2ena"});
-//     await productModel.updateMany(
-//           {images: `uploads/${file}`}, 
-//           { $set: { "images.$[elem]": result.secure_url } },
-//           { arrayFilters: [{ elem: `uploads/${file}` }] }
-//         );
-//     await userModel.updateMany({image: `uploads/${file}`}, {$set: {image: result.secure_url}});
-//     console.log(`file ${file} migrated with cloudinary`);
-//   }
-// }
-
-// connect_mongodb();
-// migrateLocalImagesWithCloudinary();
-//run this file for once to execute migration of local files into cloudinary
-
-// Middleware to check for duplicates and save to disk
-// const checkDuplicateAndSave = async (req, res, next) => {
-//   // Handle both single file (req.file) and multiple files (req.files)
-//   const isMultipleFiles = req.files && req.files.length > 0;
-//   const isSingleFile = req.file && !isMultipleFiles;
-  
-//   if (!isMultipleFiles && !isSingleFile) {
-//     return next();
-//   }
-  
-//   const uploadsDir = path.join(__dirname, '../uploads'); // Adjust path to uploads directory
-  
-//   // Ensure uploads directory exists
-//   if (!fs.existsSync(uploadsDir)) {
-//     fs.mkdirSync(uploadsDir, { recursive: true });
-//   }
-  
-//   // Helper function to process a single file
-//   const processFile = (file) => {
-//     // Calculate hash of uploaded file from buffer
-//     const hash = crypto.createHash('md5');
-//     hash.update(file.buffer);
-//     const fileHash = hash.digest('hex');
-    
-//     const files = fs.readdirSync(uploadsDir);
-//     let duplicateFound = false;
-//     let existingFileName = null;
-    
-//     // Check existing files for same hash
-//     for (const existingFile of files) {
-//       const existingPath = path.join(uploadsDir, existingFile);
-//       const existingBuffer = fs.readFileSync(existingPath);
-//       const existingHash = crypto.createHash('md5').update(existingBuffer).digest('hex');
-      
-//       if (existingHash === fileHash) {
-//         // Duplicate found
-//         duplicateFound = true;
-//         existingFileName = existingFile;
-//         break;
-//       }
-//     }
-    
-//     if (duplicateFound) {
-//       // Use existing file
-//       return path.join('uploads', existingFileName);
-//     } else {
-//       // No duplicate - generate unique filename and save
-//       const ext = path.extname(file.originalname);
-//       const name = path.basename(file.originalname, ext);
-//       const fileName = `${name}-${Date.now()}${ext}`;
-//       const filePath = path.join(uploadsDir, fileName);
-      
-//       // Save the file to disk
-//       fs.writeFileSync(filePath, file.buffer);
-      
-//       return path.join('uploads', fileName);
-//     }
-//   };
-  
-//   // Process based on upload type
-//   if (isMultipleFiles) {
-//     // Handle multiple files
-//     const savedPaths = [];
-//     for (const file of req.files) {
-//       const savedPath = processFile(file);
-//       savedPaths.push(savedPath);
-//     }
-    
-//     // Attach saved files path to req.files
-//     req.files = req.files.map((file, index) => ({
-//       ...file,
-//       path: savedPaths[index],
-//       buffer: undefined,
-//     }));
-//   } else if (isSingleFile) {
-//     // Handle single file for profile avatar
-//     const savedPath = processFile(req.file);
-    
-//     // Attach saved path to req.file
-//     req.file = {
-//       ...req.file,
-//       path: savedPath,
-//       buffer: undefined,
-//     };
-//   }
-  
-//   next();
-// };
-
-module.exports = { upload };
+module.exports = { upload, uploadToCloudinary };

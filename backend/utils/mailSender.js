@@ -85,7 +85,7 @@ async function sendEmailVerificationToUser(email, token) {
 
     let emailTemp = await fs.readFile(templatePath, "utf-8");
 
-    emailTemp = emailTemp.replace("{url}", url);
+    emailTemp = emailTemp.replace(/\{url\}/g, url);
 
     await sendEmail({
       to: email,

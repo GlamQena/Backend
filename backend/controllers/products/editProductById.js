@@ -21,9 +21,8 @@ const editProductById = async (req, res) => {
 
     console.log("edit product files => ", req.files);
     // Images
-    if (req.files && req.files.length > 0) {
-      const imagePaths = req.files.map((file) => file.path);
-      validUpdates["images"] = imagePaths;
+    if (req.uploadedUrls && req.uploadedUrls.length > 0) {
+      validUpdates["images"] = uploadedUrls;
     }
 
     // Check if there's anything to update

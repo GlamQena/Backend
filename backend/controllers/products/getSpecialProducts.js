@@ -51,6 +51,11 @@ const getSpecialProducts = async(req, res) => {
                 preserveNullAndEmptyArrays: true  // Keep even if product deleted
             }},
             
+            // Filter out products that don't exist in the product collection (in db)
+            { $match: {
+                "product_info": { $ne: null }  // ← Only keep products that exist
+            }},
+
             // Lookup store details
             { $lookup: {
                 from: "users", //lookup in the base collection not the discriminated one itself
@@ -70,7 +75,6 @@ const getSpecialProducts = async(req, res) => {
                 store_id: { $first: "$products.owner_store_id" },
                 store_name: { $first: "$store_info.store_name" },
                 price: { $first: "$products.products.price" },
-                //If product is deleted from database, it falls back to the name stored in the order
                 name: { $first: { $ifNull: ["$product_info.name", "$products.products.name"] } }, 
                 description: { $first: "$product_info.description" },
                 images: { $first: "$product_info.images" },

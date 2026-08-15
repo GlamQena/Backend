@@ -11,11 +11,13 @@ const addUser = require("../controllers/users/addUser");
 const deleteUserController = require("../controllers/users/deleteUser");
 
 const updateAdminPermissions = require("../controllers/users/updateAdminPermissions");
+const getUserWishlist = require("../controllers/users/getUserWishlist");
 
 const router = express.Router();
 
  router.use(checkAuth());
 
+router.get("/me/wishlist", checkRole("client"), getUserWishlist);
 router.post("/me/wishlist", checkRole("client"), addToWishlist);
 router.delete("/me/wishlist", checkRole("client"), removeFromWishlist);
 
