@@ -4,19 +4,19 @@ const cors = require("cors");
 const session = require("express-session");
 const cookie_parser = require("cookie-parser");
 const connect_mongodb = require("./config/connectMongoDB.js");
-const {connect_redis} = require("./config/connectRedis");
+const { connect_redis } = require("./config/connectRedis");
 const applySecurity = require("./middleware/applySecurity.js");
 const applyLogger = require("./middleware/logger.js");
 const mongoose = require("mongoose");
 const authRouter = require("./router/auth.js");
 const profileRouter = require("./router/profile.js");
-const orderRouter= require("./router/order.js");
-const productsRouter= require("./router/products.js");
-const storesRouter= require("./router/stores.js");
-const categoriesRouter= require("./router/categories.js");
-const cartRouter= require("./router/cart.js");
-const usersRouter= require("./router/users.js");
-const adminRouter= require("./router/admin.js");
+const orderRouter = require("./router/order.js");
+const productsRouter = require("./router/products.js");
+const storesRouter = require("./router/stores.js");
+const categoriesRouter = require("./router/categories.js");
+const cartRouter = require("./router/cart.js");
+const usersRouter = require("./router/users.js");
+const adminRouter = require("./router/admin.js");
 const userModel = require("./models/users/user.js");
 const productModel = require("./models/product.js");
 const categoryModel = require("./models/category.js");
@@ -32,8 +32,7 @@ require("dotenv").config({ path: path.join(__dirname, "./env") });
 const app = express();
 app.use(express.json());
 
-app.use( express.static(path.join(__dirname, 'uploads'))); //to allow access the photos in uploads folder
-
+app.use(express.static(path.join(__dirname, "uploads"))); //to allow access the photos in uploads folder
 
 //enable cookies
 const allowedOrigins = [
@@ -85,48 +84,47 @@ app.use("/users", usersRouter);
 app.use("/admin", adminRouter);
 
 const activableModels = {
-    clients: {
-        model: clientModel,
-        modelName: "client",  // For error messages and audit logs
-        allowedRoles: ["admin"],
-        requiredPermission: "manageUsers"  // For admins to manage clients
-    },
-    store_owners: {
-        model: storeOwnerModel,
-        modelName: "store_owner", 
-        allowedRoles: ["admin"],
-        requiredPermission: "manageStores"  // For admins to manage store owners
-    },
-    admins: {
-        model: adminModel,
-        modelName: "admin", 
-        allowedRoles: ["admin"],
-        requiredPermission: "manageAdmins"  // For admins to manage other admins
-    },
-    products: {
-        model: productModel,
-        modelName: "product",
-        allowedRoles: ["admin", "store_owner"],  // Both can manage products
-        requiredPermission: "manageProducts"  // For admins
-    },
-    categories: {
-        model: categoryModel,
-        modelName: "category",
-        allowedRoles: ["admin"],
-        requiredPermission: "manageCategories"
-    },
-    // reviews: {
-    //     model: reviewModel,
-    //     modelName: "review",
-    //     allowedRoles: ["admin"],
-    //     requiredPermission: "manageUsers"  // Reviews are user-generated
-    // },
+  clients: {
+    model: clientModel,
+    modelName: "client", // For error messages and audit logs
+    allowedRoles: ["admin"],
+    requiredPermission: "manageUsers", // For admins to manage clients
+  },
+  store_owners: {
+    model: storeOwnerModel,
+    modelName: "store_owner",
+    allowedRoles: ["admin"],
+    requiredPermission: "manageStores", // For admins to manage store owners
+  },
+  admins: {
+    model: adminModel,
+    modelName: "admin",
+    allowedRoles: ["admin"],
+    requiredPermission: "manageAdmins", // For admins to manage other admins
+  },
+  products: {
+    model: productModel,
+    modelName: "product",
+    allowedRoles: ["admin", "store_owner"], // Both can manage products
+    requiredPermission: "manageProducts", // For admins
+  },
+  categories: {
+    model: categoryModel,
+    modelName: "category",
+    allowedRoles: ["admin"],
+    requiredPermission: "manageCategories",
+  },
+  // reviews: {
+  //     model: reviewModel,
+  //     modelName: "review",
+  //     allowedRoles: ["admin"],
+  //     requiredPermission: "manageUsers"  // Reviews are user-generated
+  // },
 };
 
 const activationHandler = ActivationFactory(activableModels);
 
 app.patch("/:entity/:id/activation", checkAuth(), activationHandler);
-
 
 //mongodb connection
 connect_mongodb();
@@ -135,16 +133,21 @@ mongoose.connection.once("connected", async () => {
   console.log("server connected to mongodb successfully...");
   // await connect_redis();
 
-  app.listen(process.env.BACKEND_PORT, "0.0.0.0", (err) => {
-    if (err) {
-      console.error(`error listening on port: ${process.env.BACKEND_PORT}!`);
-    } else {
-      console.log(`express server listening on port-> ${process.env.BACKEND_PORT}...`);
-    }
-  });
+  if (require.main === module) {
+    app.listen(process.env.BACKEND_PORT, "0.0.0.0", (err) => {
+      if (err) {
+        console.error(`error listening on port: ${process.env.BACKEND_PORT}!`);
+      } else {
+        console.log(
+          `express server listening on port-> ${process.env.BACKEND_PORT}...`,
+        );
+      }
+    });
+  }
 });
-
 
 mongoose.connection.on("error", (err) => {
   console.error(`error connecting to mongodb-> ${err}`);
 });
+
+module.exports = app;
