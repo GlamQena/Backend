@@ -5,6 +5,7 @@ const approveRequestDeletion = require("../controllers/admin/approveRequestDelet
 const rejectRequest = require("../controllers/admin/rejectRequest");
 const pendingRequest = require("../controllers/admin/pendingRequest");
 const getSystemAdminStatistics = require("../controllers/admin/getSystemAdminStatistics");
+const approveRegistration = require("../controllers/admin/approveRegistration");
 
 const router= express.Router();
 
@@ -14,5 +15,6 @@ router.get("/statistics",checkRole("admin"),getSystemAdminStatistics)
 router.patch("/reject-request/:id", checkRole("admin"), rejectRequest); //deletion / registration
 router.patch("/approve-deletion/:id",checkRole("admin"), approveRequestDeletion);// after approve go to delete end point (click delete button in frontend)
 router.patch("/pending-deletion/:id",checkRole("admin"), pendingRequest) // if admin change his opinion after approve (click cancel button in frontend instead of delete button) return to pending 
+router.patch("/approve-registration/:id",checkRole("admin"),approveRegistration)
 
 module.exports= router;
