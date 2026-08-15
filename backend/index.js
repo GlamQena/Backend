@@ -27,7 +27,7 @@ const { adminModel } = require("./models/users/admin.js");
 const { clientModel } = require("./models/users/client.js");
 const { storeOwnerModel } = require("./models/users/storeOwner.js");
 
-require("dotenv").config({ path: path.join(__dirname, "./env") });
+require("dotenv").config({ path: path.join(__dirname, ".env") });
 
 const app = express();
 app.use(express.json());
