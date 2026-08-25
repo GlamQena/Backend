@@ -438,323 +438,438 @@ let seedData = [
   {
     owner_store_id: "{id}",
     category_id: "69e387b312d268b6bb3b69dc",
-    name: "Maybelline New York ماسكارا Volum' Express The Colossal القابلة للغسل - أسود",
-    description: "ماسكارا مضادة للحجم لرموش جريئة ودراماتيكية.",
+    name: "ماسكارا L'Oréal Paris Volume",
+    description: "ابقِ أنيقة وجميلة مع ماسكارا فوليومينوس بارادايس الخفيفة للغاية. مع ماسكارا فوليومينوس بارادايس، ستشعر رموشك بأنها ناعمة كالريش بدون أي تقشر. تركيبته الناعمة الملمس تغطي رموشك بزيت الخروع المغذي للرموش. مع فرشاة فائقة النعومة، يتم تغطية كل رمش من الجذر حتى الأطراف للحصول على نتائج متساوية. اختبري أقصى درجات الراحة مع هذه الماسكارا سهلة الاستخدام والحمل؛ مثالية لمجموعة مكياجك.​​ لوريال باريس ليست مجرد علامة تجميل، إنها علامة تمكن النساء من التعرف على قيمتهن الحقيقية. وبفضل 110 أعوام من البحث العلمي والابتكار، تقدم لوريال باريس مجموعة كاملة من منتجات التجميل المتقدمة للغاية مع فعالية وسلامة مثبتة إكلينيكيًا.",
     price: 274.0,
     stock: 100,
-    ingredients: ["ماء", "شمع العسل", "أكاسيد الحديد", "شمع الكرنوبا"],
-    images: [
-      "https://f.nooncdn.com/p/pnsku/N13625792A/45/_/1767607682/ca23528c-ad73-4ce1-987b-aae1022c0df7.jpg?width=800",
-      "https://f.nooncdn.com/p/pnsku/N13625792A/45/_/1764241942/2a78875b-ce92-462f-8d64-30d195b2e893.jpg?width=800",
-      "https://f.nooncdn.com/p/pnsku/N13625792A/45/_/1764242064/2b6b9999-9f8e-4a1c-8496-00a98d52fdc4.jpg?width=800",
+    ingredients: [
+      "ماء",
+      "شمع العسل",
+      "أكاسيد الحديد",
+      "شمع الكرنوبا",
+      "زيت الخروع"
     ],
-    weight: 0.2,
-    dimensions: { length: 10, width: 5, height: 5 },
+    images: [
+      "https://f.nooncdn.com/p/pnsku/N13159486A/45/_/1767607849/2e12186c-73d9-498e-9ba8-f30eedac154c.jpg?width=800",
+      "https://f.nooncdn.com/p/pnsku/N13159486A/45/_/1764235323/191b0752-84a6-406e-a01b-0864a2af8cef.jpg?width=800",
+      "https://f.nooncdn.com/p/pnsku/N13159486A/45/_/1764235326/bebf4e12-e21b-4531-9577-bceb3af542ad.jpg?width=800",
+      "https://f.nooncdn.com/p/pnsku/N13159486A/45/_/1764235328/054e48d2-1651-4b47-a919-bbaa7269dd6b.jpg?width=800",
+      "https://f.nooncdn.com/p/pnsku/N13159486A/45/_/1764235325/52307482-d984-484f-a6c4-5d0396e04525.jpg?width=800",
+      "https://f.nooncdn.com/p/pnsku/N13159486A/45/_/1764235327/f6519d05-c76a-4ead-b87a-b974a2bce0b8.jpg?width=800"
+    ],
     skinType: "عادية",
+    weight: 0.2,
+    volume: 9,
+    dimensions: { length: 10, width: 5, height: 5 }
   },
   {
     owner_store_id: "{id}",
     category_id: "69e387b312d268b6bb3b69dc",
-    name: "Amanda Milano Nude Nation بودرة سائبة شبه شفافة فائقة النعومة وردي ناعم .6",
-    description: "بودرة سائبة فائقة النعومة للحصول على لمسة نهائية ناعمة غير لامعة.",
+    name: "بودرة نود نيشن",
+    description: "بودرة تثبيت فائقة النعومة من Nude Nation، مصممة لتثبيت المكياج وإبقاء بشرتك طبيعية وخالية من اللمعان. تركيبتها الخفيفة والشفافة تتحكم في الزيوت طوال اليوم بدون ما تثقل على البشرة. درجة Soft Pink تعطي لمسة من الإشراقة والنضارة، لتخلي بشرتك تبدو صحية ومشرقة. مناسبة لكل أنواع البشرة، وتوفر تغطية قابلة للبناء من خفيفة إلى متوسطة.",
     price: 259.0,
     stock: 50,
-    ingredients: ["تلك", "ميكا", "سيليكا", "فيتامين E"],
+    ingredients: [
+      "تلك",
+      "ميكا",
+      "سيليكا",
+      "فيتامين E",
+      "نشا الذرة"
+    ],
     images: [
       "https://f.nooncdn.com/p/pzsku/Z57A87AF9BC6C8BC7D9A2Z/45/_/1773320164/2094a127-500a-4f3e-a260-e0aeb97e147e.jpg?width=800",
       "https://f.nooncdn.com/p/pzsku/Z57A87AF9BC6C8BC7D9A2Z/45/_/1775554255/170ec1de-459b-4908-94a0-9bf1e4a7cd27.jpg?width=800",
       "https://f.nooncdn.com/p/pzsku/Z57A87AF9BC6C8BC7D9A2Z/45/_/1775554228/5e0a2027-b4af-450b-b038-42ca4ab31c16.jpg?width=800",
+      "https://f.nooncdn.com/p/pzsku/Z57A87AF9BC6C8BC7D9A2Z/45/_/1775554299/2f96ae2a-c026-4cbf-b405-1693e4555d8f.jpg?width=800"
     ],
+    skinType: "دهنية",
     weight: 0.3,
-    dimensions: { length: 8, width: 8, height: 5 },
-    skinType: "عادية",
+    volume: 25,
+    dimensions: { length: 8, width: 8, height: 5 }
   },
   {
     owner_store_id: "{id}",
     category_id: "69e387b312d268b6bb3b69dc",
-    name: "SHEGLAM LOVE DIVE TENDER HEART بودرة خدود - خوخي",
-    description: "بودرة خدود على شكل قلب مع صبغة خوخية ناعمة.",
+    name: "بودرة تثبيت مضيئة Bubblegum",
+    description: "بودرة تثبيت ناعمة جدًا بلون الوردي، مصممة لإعطاء البشرة الفاتحة إشراقة فورية ومظهر مشرق ومنتعش. تركيبتها بدون تالك تمتص الزيوت الزائدة وتتحكم باللمعان، بينما تعمل جزيئاتها العاكسة للضوء على تنعيم المسام والخطوط الدقيقة. تثبت المكياج لساعات طويلة وتترك لمسة نهائية غير لامعة وناعمة كالحرير. مناسبة لجميع أنواع البشرة وتوفر تغطية خفيفة يمكن زيادتها. اللون الوردي يمنح البشرة نضارة رائعة، مما يجعلها خيار مثالي للبشرة الفاتحة.",
     price: 405.05,
     stock: 75,
-    ingredients: ["ميكا", "فلوروفلوجوبيتات اصطناعية", "ستيرات المغنيسيوم"],
-    images: [
-      "https://f.nooncdn.com/p/pnsku/N70040979V/45/_/1706104929/96deac5d-cde0-41fe-814c-1e6c0626d02b.jpg?width=800",
-      "https://f.nooncdn.com/p/pnsku/N70040979V/45/_/1706104932/cfb34253-0b27-4a06-932d-299dd85eda56.jpg?width=800",
-      "https://f.nooncdn.com/p/pnsku/N70040979V/45/_/1706104933/56c30eb9-12fd-4450-9fa4-1d354a78e759.jpg?width=800",
+    ingredients: [
+      "ميكا",
+      "فلوروفلوجوبيتات اصطناعية",
+      "ستيرات المغنيسيوم",
+      "ثنائي الميثيكون",
+      "فيتامين E"
     ],
-    weight: 0.25,
-    dimensions: { length: 7, width: 7, height: 2 },
+    images: [
+      "https://f.nooncdn.com/p/pzsku/Z7E6C05153736F7F05379Z/45/_/1779094038/558f6184-945c-4365-8c0c-a7cd4595eee9.jpg?width=800",
+      "https://f.nooncdn.com/p/pzsku/Z7E6C05153736F7F05379Z/45/_/1779094038/516c9802-2c50-4320-ab02-26102e1e0fdc.jpg?width=800",
+      "https://f.nooncdn.com/p/pzsku/Z7E6C05153736F7F05379Z/45/_/1779094038/2936494f-9725-48e5-b862-f10b0d666aa9.jpg?width=800",
+      "https://f.nooncdn.com/p/pzsku/Z7E6C05153736F7F05379Z/45/_/1779094038/fc883318-63be-4201-8216-bcf2ef3e8871.jpg?width=800"
+    ],
     skinType: "عادية",
+    weight: 0.25,
+    volume: 20,
+    dimensions: { length: 7, width: 7, height: 2 }
   },
   {
     owner_store_id: "{id}",
     category_id: "69e387b312d268b6bb3b69dc",
-    name: "Essence Extreme Shine Volume لمعة شفاه لامعة للغاية | توت براق",
-    description: "لمعة شفاه عالية اللمعان غير لاصقة لتأثير النفخ.",
+    name: "Extreme Shine Volume Lipgloss",
+    description: "لمعان شفاه فائق الجودة من essence يمنحك حجمًا ممتلئًا وإشراقة رائعة تدوم طويلاً. تركيبة هذا اللمعان الخفيفة غير اللاصقة تنزلق على شفتيك بسلاسة، لتمنحك لونًا جذابًا ولمعانًا مميزًا دون أي شعور بالثقل. يحتوي على تأثير مكثف يمنح شفتيك امتلاءً فوريًا ويحافظ على ترطيبها طوال اليوم. درجة Glazed Berry هي مزيج مثالي من اللون الحيوي واللمعان، لتضفي على شفتيك إطلالة عصرية وجريئة تناسب جميع ألوان البشرة. تركيبة نباتية، خالية من القسوة، وخالية من الزيوت والجلوتين، مما يجعلها خيارًا مثاليًا لعشاق الجمال الواعي.",
     price: 225.15,
     stock: 120,
-    ingredients: ["بوليبيوتين", "بولي إيزوبوتين هيدروجين", "نكهة"],
+    ingredients: [
+      "بوليبيوتين",
+      "بولي إيزوبوتين هيدروجين",
+      "نكهة",
+      "فيتامين E",
+      "زيت جوز الهند"
+    ],
     images: [
       "https://f.nooncdn.com/p/pnsku/N70131792V/45/_/1732852042/f1352b6c-006e-4ffe-b64b-6ec238fdbd12.jpg?width=800",
       "https://f.nooncdn.com/p/pnsku/N70131792V/45/_/1732852031/486d2e84-d939-403e-a8be-b29af0c2ce34.jpg?width=800",
-      "https://f.nooncdn.com/p/pnsku/N70131792V/45/_/1732852043/c4efd28b-936a-44a8-a460-3d813f6aafcd.jpg?width=800",
+      "https://f.nooncdn.com/p/pnsku/N70131792V/45/_/1732852043/c4efd28b-936a-44a8-a460-3d813f6aafcd.jpg?width=800"
     ],
-    weight: 0.1,
-    dimensions: { length: 12, width: 2, height: 2 },
     skinType: "عادية",
+    weight: 0.1,
+    volume: 10,
+    dimensions: { length: 12, width: 2, height: 2 }
   },
   {
     owner_store_id: "{id}",
     category_id: "69e387b312d268b6bb3b69dc",
-    name: "Maybelline Superstay Matte Ink أحمر شفاه سائل غير لامع وردي نونو 175 Ringle",
-    description: "أحمر شفاه سائل غير لامع طويل الأمد مع ثبات عالي للون.",
+    name: "أحمر شفاه Superstay Matte Ink",
+    description: "مثالي بشكل مكثف، مكثف بشكل مثالي. لون شفاهك حتى 16 ساعة من لمسة مطفية مشبعة مع أحمر الشفاه السائل مايبيلين نيويورك سوبر ستاي ميت إنك™. هذا أحمر الشفاه السائل عالي الصبغة يقدم شفاه مطفية 100٪ بدون تشققات، بدون جفاف، وبدون انتقال—يحافظ على لونك طوال اليوم. المطبّق الفريد على شكل سهم يضمن تطبيقًا دقيقًا وسهلاً للحصول على لمسة نهائية خالية من العيوب تدوم طويلاً. الظل 80 Ruler يقدّم لونًا جريئًا وأنيقًا مثاليًا للبشرات المتوسطة. الصيغة فائقة التشبع توفر لونًا مكثفًا لا يتلاشى، لتظل شفاهك زاهية وجميلة من الصباح حتى الليل. مايبيلين هي العلامة التجارية رقم 1 عالميًا في المكياج، مستوحاة من المدينة ومختبرة في شوارعها.",
     price: 635.0,
     stock: 80,
-    ingredients: ["إيزودوديكان", "دايميثيكون", "تريميثيل سيلوكسيسيليكات"],
-    images: [
-      "https://f.nooncdn.com/p/v1615724291/N45208600A_1.jpg?width=800",
-      "https://f.nooncdn.com/p/v1615724292/N45208600A_2.jpg?width=800",
-      "https://f.nooncdn.com/p/v1615724290/N45208600A_3.jpg?width=800",
+    ingredients: [
+      "إيزودوديكان",
+      "دايميثيكون",
+      "تريميثيل سيلوكسيسيليكات",
+      "دايميثيكون كروس بوليمر",
+      "فينيل دايميثيكون",
+      "كوارتز-18"
     ],
-    weight: 0.15,
-    dimensions: { length: 12, width: 2, height: 2 },
+    images: [
+      "https://f.nooncdn.com/p/v1607410004/N29782178A_3.jpg?width=800",
+      "https://f.nooncdn.com/p/v1628077872/N29782178A_2.jpg?width=800",
+      "https://f.nooncdn.com/p/v1607410003/N29782178A_6.jpg?width=800",
+      "https://f.nooncdn.com/p/v1607410003/N29782178A_7.jpg?width=800",
+      "https://f.nooncdn.com/p/v1607410004/N29782178A_8.jpg?width=800",
+      "https://f.nooncdn.com/p/v1607410004/N29782178A_9.jpg?width=800"
+    ],
     skinType: "عادية",
+    weight: 0.15,
+    volume: 7,
+    dimensions: { length: 12, width: 2, height: 2 }
   },
   //hair care products
   {
     owner_store_id: "{id}",
     category_id: "69e387b312d268b6bb3b69df",
-    name: "Aloe Eva ماسك شعر مقوي",
-    description: "ماسك شعر مقوي غني بالصبار لشعر صحي.",
+    name: "حمام كريم بزبدة الشيا",
+    description: "امنحي شعرك العناية التي يستحقها مع ماسك الشعر بزبدة الشيا من سكاي هيربال كير – الحل الأمثل للشعر الجاف والتالف الذي يحتاج إلى تغذية عميقة وترطيب مكثف. غني بزبدة الشيا النقية، هذه التركيبة الكريمية الغنية تخترق عمق الشعر لترطيب من الجذور حتى الأطراف، مسببة لشعرك ملمسًا حريريًا ونعومة طبيعية ولمعان رائع بعد كل استخدام. يعيد الحيوية للشعر التالف نتيجة التصفيف أو الحرارة أو العلاجات الكيميائية، وفي نفس الوقت يقوي الخصلات ويقلل من التكسر وتساقط الشعر. الحجم الكبير بوزن 1 كغ يجعله مثاليًا للاستخدام المنزلي الطويل ويوفر قيمة مميزة. آمن لجميع أنواع الشعر، بما في ذلك الشعر المصبوغ والحساس، هذا الماسك خالي من الكبريتات والمواد الكيميائية الضارة. يغذي وينعش الشعر بعمق، ليمنحك شعرًا صحيًا، ناعمًا، سهل التسريح مع لمعة جميلة كل يوم.",
     price: 66.0,
     stock: 100,
-    ingredients: ["مستخلص الصبار", "كحول سيتيل", "بانثينول"],
+    ingredients: ["زبدة الشيا", "زيت الأرجان", "فيتامين E"],
     images: [
-      "https://f.nooncdn.com/p/pzsku/Z15C5E3BF9511B62C9158Z/45/_/1698776792/9e49fb96-f030-48e9-acc3-ce8d1b7d4ea2.jpg?width=800",
+      "https://f.nooncdn.com/p/pzsku/Z5A23B7C58971BC5A1D60Z/45/_/1776862582/27e1a0e9-7483-4f37-a904-ef3b14c2efd8.jpg?width=800",
+      "https://f.nooncdn.com/p/pzsku/Z5A23B7C58971BC5A1D60Z/45/_/1776862645/2c9a4942-cd38-4890-99ad-921a732ac0aa.jpg?width=800",
+      "https://f.nooncdn.com/p/pzsku/Z5A23B7C58971BC5A1D60Z/45/_/1776862645/53e87266-97fe-4428-8ac3-f9b5832976ab.jpg?width=800",
+      "https://f.nooncdn.com/p/pzsku/Z5A23B7C58971BC5A1D60Z/45/_/1776862645/b479411c-f856-4c9c-8a20-75df3f41efbd.jpg?width=800",
+      "https://f.nooncdn.com/p/pzsku/Z5A23B7C58971BC5A1D60Z/45/_/1776862645/9bd48622-73a8-429b-adce-1a42eb13a104.jpg?width=800",
     ],
-    weight: 0.3,
-    dimensions: { length: 15, width: 10, height: 5 },
-    skinType: "عادية",
+    weight: 1.0, // 1 kg from product specification
+    volume: null, // Not applicable for hair mask (solid/cream product)
+    dimensions: { length: 15, width: 15, height: 10 }, // Adjusted for 1kg container
+    skinType: "جافة", // For dry and damaged hair
   },
   {
     owner_store_id: "{id}",
     category_id: "69e387b312d268b6bb3b69df",
-    name: "CLARY ماسك شعر 300 مل مع بروكابيل",
-    description: "ماسك مضاد لتساقط الشعر مصمم للشعر الجاف والتالف.",
+    name: "قناع شعر Clary Procapil",
+    description: "قوّي شعرك من الجذور حتى الأطراف مع ماسك الشعر كلاري، المُعزز بالبروكا بيل وزبدة الشيا. تركيبة قوية صُممت لإصلاح الشعر التالف، وتقليل التكسر، وزيادة كثافة الشعر بشكل ملحوظ للحصول على مظهر أكثر امتلاءً وصحة. حجم 300 مل مثالي للاستخدام المنتظم، ويوفر تغذية وحماية مكثفة لاستعادة حيوية ولمعان شعرك الطبيعي.",
     price: 285.0,
     stock: 60,
-    ingredients: ["بروكابيل", "كيراتين", "زبدة الشيا"],
+    ingredients: ["بروكابيل", "زبدة الشيا", "كيراتين"],
     images: [
-      "https://f.nooncdn.com/p/pzsku/ZE3AC361696972FB6D808Z/45/1765448777/d543988b-594b-4d26-bb36-0c33df2869e6.jpg?width=800",
+      "https://f.nooncdn.com/p/pzsku/Z95A7A81A10D76F2062C5Z/45/_/1707400707/945ba4c7-229a-4e47-96ef-93b90fca55ad.jpg?width=800",
       "https://f.nooncdn.com/p/pzsku/Z26C3566C4E99EECEE179Z/45/_/1777283084/3d8245c2-5a2f-4827-aed6-6b3db5252d7f.jpg?width=800",
       "https://f.nooncdn.com/p/pzsku/Z26C3566C4E99EECEE179Z/45/_/1777283085/d0f2886b-11ee-49fc-9a6c-d367feb560cc.jpg?width=800",
+      "https://f.nooncdn.com/p/pzsku/Z26C3566C4E99EECEE179Z/45/_/1777283085/e8f390a7-3462-482c-9edd-fc3b1e095456.jpg?width=800",
+      "https://f.nooncdn.com/p/pzsku/Z26C3566C4E99EECEE179Z/45/_/1777283085/ba86caa8-0a79-4dea-a3dd-0bc91ac14f60.jpg?width=800",
+      "https://f.nooncdn.com/p/pzsku/Z26C3566C4E99EECEE179Z/45/_/1777283085/5689ee81-f161-4d36-9437-fb44e61a1abc.jpg?width=800",
     ],
-    weight: 0.4,
+    weight: 0.4, // Approximate weight for 300ml cream
+    volume: 300, // 300ml from product name
     dimensions: { length: 10, width: 10, height: 8 },
-    skinType: "عادية",
+    skinType: "جافة", // For dry and damaged hair
   },
   {
     owner_store_id: "{id}",
     category_id: "69e387b312d268b6bb3b69df",
-    name: "L'Oréal Professionnel Absolut Repair ماسك جزيئي للشعر التالف جداً",
-    description: "ماسك إصلاح احترافي لاستعادة البنية الجزيئية للشعر التالف جداً.",
+    name: "شامبو سيريه إكسبيرت Absolut Repair",
+    description: "مشبع بالكينوا الذهبية والبروتين، تركيبة شامبو الفورمة الاحترافي Instant Resurfacing تنظف الشعر التالف فورًا وتعيده إلى بنيته الطبيعية، مع لمسة خفيفة. هذه التركيبة المتطورة تصلح الشعر بنسبة 77%، وتستعيد قوته وحيويته الطبيعية. يصبح الشعر لامعًا وناعمًا 7 مرات أكثر، مع لمسة ناعمة وحريرية تدوم. حجم 500 مل مثالي للاستخدام المنتظم، مما يجعله خيارًا اقتصاديًا للحفاظ على شعر صحي وجميل. مناسب لجميع أنواع الشعر ولكلا الجنسين، هذا الشامبو هو الحل الأمثل للشعر الجاف والتالف الذي يحتاج إلى عناية مكثفة.",
     price: 1406.43,
     stock: 30,
-    ingredients: ["ببتيدات بوندر", "أحماض أمينية"],
+    ingredients: ["بروتين الكينوا الذهبية", "بروتين", "بانثينول"],
     images: [
-      "https://f.nooncdn.com/p/pzsku/Z893DF81FEAD0ACF60D5DZ/45/_/1773139640/3b92652e-0210-44e6-8714-4614395552b4.jpg?width=800",
-      "https://f.nooncdn.com/p/pzsku/Z893DF81FEAD0ACF60D5DZ/45/_/1773139640/abdb73b4-523b-45de-9f25-14082e6ad2c7.jpg?width=800",
-      "https://f.nooncdn.com/p/pzsku/Z893DF81FEAD0ACF60D5DZ/45/_/1773139640/0d22be23-4f27-446f-8c52-49098f46d57d.jpg?width=800",
+      "https://f.nooncdn.com/p/pzsku/Z2BCB76B5CA4941CB98D6Z/45/_/1773139599/a26cf76f-5b0d-4395-a210-035f0a8a8fca.jpg?width=800",
+      "https://f.nooncdn.com/p/pzsku/Z2BCB76B5CA4941CB98D6Z/45/_/1773139599/6228c134-650e-47b7-9543-0e2c1ca48ad9.jpg?width=800",
+      "https://f.nooncdn.com/p/pzsku/Z2BCB76B5CA4941CB98D6Z/45/_/1773139599/7c918f94-befe-4b36-89d3-d4d0a8b4b71b.jpg?width=800",
+      "https://f.nooncdn.com/p/pzsku/Z2BCB76B5CA4941CB98D6Z/45/_/1773139599/fb4a1c13-2810-463a-b005-d90729d52ca9.jpg?width=800",
+      "https://f.nooncdn.com/p/pzsku/Z2BCB76B5CA4941CB98D6Z/45/_/1773139599/2744827e-506f-40af-a526-b5e29e70e2c0.jpg?width=800",
     ],
-    weight: 0.3,
-    dimensions: { length: 9, width: 9, height: 6 },
-    skinType: "عادية",
+    weight: 0.55, // Approximate weight for 500ml liquid
+    volume: 500, // 500ml from specifications
+    dimensions: { length: 9, width: 9, height: 22 }, // Taller bottle for shampoo
+    skinType: "جافة", // For dry and damaged hair
   },
   {
     owner_store_id: "{id}",
     category_id: "69e387b312d268b6bb3b69df",
-    name: "LEAVES ماسك لترطيب الشعر للاصلاح 200 مل",
-    description: "ماسك ترطيب عميق لإصلاح الشعر بالأعشاب الهندية.",
+    name: "كريم Leaves لتغذية وتصفيف الشعر ضد التجعد",
+    description: "حوّل شعرك مع كريم الشعر المغذي والمرتب من Leaves، تركيبة مضادة للتطاير غنية بالأعشاب الهندية. هذا الكريم العلاجي مصمم لإصلاح الشعر وتغذيته وتصفيفه مع مكافحة تساقطه وتقليل التكسر. يعمل على ترطيب عميق لاستعادة النعومة واللمعان والملمس الناعم، مما يجعل شعرك أكثر سهولة في التسريح ومظهراً صحياً. الكريم يُترك على الشعر ويسهل تطبيقه، ومثالي للاستخدام اليومي.",
     price: 198.0,
     stock: 50,
-    ingredients: ["مستخلص الأعشاب الهندية", "جليسرين", "كحول سيتيريل"],
+    ingredients: ["مستخلص الأعشاب الهندية", "زبدة الشيا", "زيت جوز الهند"],
     images: [
-      "https://f.nooncdn.com/p/pzsku/Z177BC1DE52862E6E84A1Z/45/_/1773493995/fa0e8ef7-6cd7-4dc8-88dd-3611fc033e8c.jpg?width=800",
-      "https://f.nooncdn.com/p/pzsku/Z177BC1DE52862E6E84A1Z/45/_/1773493995/4158969e-9a0e-442a-bc22-f9a158e6423c.jpg?width=800",
+      "https://f.nooncdn.com/p/pzsku/ZE6A7CE3068B8B8FC0F3EZ/45/1764161906/fff8e597-0556-4ac9-ba38-4983207e6e54.jpg?width=800",
+      "https://f.nooncdn.com/p/pzsku/ZE6A7CE3068B8B8FC0F3EZ/45/1764161906/6e1737de-c0ff-4918-a4fb-6206cb01e62d.jpg?width=800",
+      "https://f.nooncdn.com/p/pzsku/ZE6A7CE3068B8B8FC0F3EZ/45/_/1773409353/bf985fbe-f785-4a05-b819-ba4e456f57f5.jpg?width=800",
+      "https://f.nooncdn.com/p/pzsku/ZE6A7CE3068B8B8FC0F3EZ/45/_/1773409353/176dff9d-4d8b-4842-9e6b-26419ba7ee20.jpg?width=800",
+      "https://f.nooncdn.com/p/pzsku/ZE6A7CE3068B8B8FC0F3EZ/45/_/1773409353/ddb7e5be-9c36-4506-bb8c-04bf88ce60f2.jpg?width=800",
     ],
-    weight: 0.25,
+    weight: 0.25, // Approximate weight for 200ml cream
+    volume: 200, // 200ml from product name
     dimensions: { length: 16, width: 5, height: 4 },
-    skinType: "عادية",
+    skinType: "عادية", // Suitable for all hair types
   },
   {
     owner_store_id: "{id}",
     category_id: "69e387b312d268b6bb3b69df",
-    name: "SKINOVA IMAGE سيروم شعر 100 مل",
-    description: "سيروم شعر مع بروتين القمح المائي لإصلاح الأطراف المتقصفة وإضافة القوة.",
+    name: "SKINOVA IMAGE سيروم شعر",
+    description: "استعيدي لمعان شعرك ونعومته وحيويته مع سيروم الشعر من سكينوفا، صيغة خفيفة مصممة لتغذية الشعر وحمايته من التلف اليومي. غني بمكونات متقدمة لتكييف الشعر، يساعد هذا السيروم على التحكم في التجعد وتقليل الجفاف ويترك الشعر يبدو حريرياً وصحياً وأسهل في التصفيف. قوامه غير الدهني ويمتص بسرعة ليغطي كل خصلة ويمنح نعومة فورية ولمعان طبيعي دون أن يثقل الشعر. مناسب لجميع أنواع الشعر، يساعد على الحماية من حرارة التصفيف والضغوطات البيئية مع تحسين ملمس الشعر بشكل عام. مع الاستخدام المنتظم، يعزز سيروم الشعر من سكينوفا النعومة ويضيف اللمعان ويمنح شعرك مظهراً مصقولاً يشبه صالونات التجميل كل يوم.",
     price: 230.0,
     stock: 90,
-    ingredients: ["بروتين القمح المائي", "سايكلوميثيكون", "دايميثيكونول"],
+    ingredients: ["بروتين القمح", "سايكلوميثيكون", "دايميثيكونول"],
     images: [
-      "https://f.nooncdn.com/p/pzsku/Z74EFF139F208877313DFZ/45/_/1775709338/3dc543c1-996c-4eaf-a40b-240c972f36b8.jpg?width=800",
-      "https://f.nooncdn.com/p/pzsku/Z74EFF139F208877313DFZ/45/_/1775709338/ae8cb36b-70b1-4253-b97d-c9a77ee59f08.jpg?width=800",
+      "https://f.nooncdn.com/p/pzsku/Z14B791B48111A9B28B5EZ/45/_/1786905581/5a919ada-ea6d-4106-ad38-ddc18e96507f.jpg?width=800",
+      "https://f.nooncdn.com/p/pzsku/Z14B791B48111A9B28B5EZ/45/_/1777296250/3ed484f2-e997-45b0-a61c-f80cf92fa603.jpg?width=800",
+      "https://f.nooncdn.com/p/pzsku/Z14B791B48111A9B28B5EZ/45/_/1777296250/c50dca3d-3c4b-4ddc-b653-43d50be5547f.jpg?width=800",
+      "https://f.nooncdn.com/p/pzsku/Z14B791B48111A9B28B5EZ/45/_/1777296250/b39c1d3a-d0ba-4357-8abc-3045d62c99e8.jpg?width=800",
+      "https://f.nooncdn.com/p/pzsku/Z14B791B48111A9B28B5EZ/45/_/1777296250/6b5e79e7-690c-4766-8375-4078d207873a.jpg?width=800",
     ],
-    weight: 0.15,
+    weight: 0.15, // Lightweight serum bottle
+    volume: 100, // Typical serum size (estimated from image)
     dimensions: { length: 5, width: 5, height: 12 },
-    skinType: "عادية",
+    skinType: "عادية", // Suitable for all hair types
   },
   //men's grooming products
   {
     owner_store_id: "{id}",
     category_id: "69e387b312d268b6bb3b69e0",
-    name: "Nivea Men لوشن ما بعد الحلاقة ديب كومفورت، مضاد للبكتيريا 100 مل",
-    description: "لوشن ما بعد الحلاقة مع حماية مضادة للبكتيريا للحصول على لمسة نهائية مريحة ومنعشة.",
+    name: "بلسم بعد الحلاقة Nivea Men",
+    description: "قم بتهدئة وراحة تهيج الحلاقة فورًا مع بلسم ما بعد الحلاقة المنعش للرجال من نيفيا للبشرة الحساسة. تم صياغته خصيصًا للبشرة الحساسة، هذا البلسم الخالي من الكحول يمنح إحساسًا بالبرودة لطيفًا وطويل الأمد بدون لسعة الحرق المعتادة للبلسمات التقليدية. غني بمستخلص البابونج والأعشاب البحرية، يهدئ الاحمرار والتهيجات بلطف ويحمي البشرة من أضرار الحلاقة. مع الوقت، يحسن حالة البشرة ويخفف الجفاف وينعشها لتصبح ناعمة وصحية. حجم 100 مل مثالي للاستخدام اليومي، مما يجعله جزءًا أساسيًا من روتين العناية الشخصية لكل رجل. نيفيا للرجال—يبدأ كل شيء معك!",
     price: 241.8,
     stock: 80,
-    ingredients: ["أكوا", "كحول مغير الخواص", "جليسرين", "نشا فوسفات ثنائي"],
+    ingredients: ["مستخلص البابونج", "مستخلص الأعشاب البحرية", "جليسرين", "بانثينول"],
     images: [
-      "https://f.nooncdn.com/p/pnsku/N19516297A/45/_/1767607351/af6e84a0-a561-4467-98d9-a1a12b37c2ce.jpg?width=800",
-      "https://f.nooncdn.com/p/pnsku/N19516297A/45/_/1732554835/7e3c05f1-bfd9-465a-ab0a-a0ee77ed91aa.jpg?width=800",
-      "https://f.nooncdn.com/p/pnsku/N19516297A/45/_/1732554836/6cfa34c9-f8c0-40e4-9a9d-ef908a6f2df2.jpg?width=800",
+      "https://f.nooncdn.com/p/pnsku/N11292856A/45/_/1764242457/ca558377-459e-4b29-baf4-3ceee1f04e02.jpg?width=800",
+      "https://f.nooncdn.com/p/pnsku/N11292856A/45/_/1764242459/e52451be-c0c7-4abc-9d5e-4636c4de5d29.jpg?width=800",
+      "https://f.nooncdn.com/p/pnsku/N11292856A/45/_/1764242460/6bfc864d-67ca-4f7f-9b31-6a9fcd4824a7.jpg?width=800",
+      "https://f.nooncdn.com/p/pnsku/N11292856A/45/_/1764242461/56047fa9-cca3-41f9-9999-8f55938d6d18.jpg?width=800",
+      "https://f.nooncdn.com/p/pnsku/N11292856A/45/_/1764242462/b39bd918-5df4-4d58-a3dc-ebdb174bedc5.jpg?width=800",
+      "https://f.nooncdn.com/p/pnsku/N11292856A/45/_/1764242462/5a521789-616f-4101-b437-790850c3b4e5.jpg?width=800",
+      "https://f.nooncdn.com/p/pnsku/N11292856A/45/_/1764242458/60cb68e4-49c9-4437-98ea-fee1c3d6fcfd.jpg?width=800"
     ],
-    weight: 0.2,
+    weight: 0.15, // 100ml cream/balm
+    volume: 100, // 100ml from description
     dimensions: { length: 8, width: 5, height: 12 },
-    skinType: "عادية",
+    skinType: "حساسة", // Specially formulated for sensitive skin
   },
   {
     owner_store_id: "{id}",
     category_id: "69e387b312d268b6bb3b69e0",
-    name: "Nivea MEN جل حلاقة للبشرة الحساسة، بابونج وهماميليس",
-    description: "جل حلاقة مهدئ مصمم خصيصًا للبشرة الحساسة.",
-    price: 207.4,
-    stock: 100,
-    ingredients: ["بابونج", "هماميليس", "جليسرين"],
-    images: [
-      "https://f.nooncdn.com/p/pnsku/N11292849A/45/_/1775549942/3a5c07ed-1ac0-4a9d-8276-955f195d9130.jpg?width=800",
-      "https://f.nooncdn.com/p/pnsku/N11292849A/45/_/1737984907/431b67f8-3c7e-4e5c-80ce-cb4b5d986a4a.jpg?width=800",
-    ],
-    weight: 0.25,
-    dimensions: { length: 5, width: 5, height: 18 },
-    skinType: "حساسة",
-  },
-  {
-    owner_store_id: "{id}",
-    category_id: "69e387b312d268b6bb3b69e0",
-    name: "Nivea MEN DEEP أسود كربون إسبريسو، مزيل عرق رول أون 50 مل",
-    description: "مزيل عرق رول أون مع كربون أسود لحماية طويلة الأمد.",
+    name: "مضاد التعرق Deep DarkWood",
+    description: "مضاد التعرق NIVEA MEN DEEP هو تركيبة فريدة تم تطويرها لإبعاد العرق ورائحة الجسم، وترك بشرتك جافة ونظيفة. تم تطويره كتركيبة مضادة للبكتيريا مع الكربون الأسود، يوفر مضاد التعرق NIVEA MEN Deep حماية موثوقة ضد التعرق لمدة 48 ساعة ويعمل بشكل قوي ضد البكتيريا ليمنحك جفافًا طويل الأمد مع شعور بالنظافة بعد الاستحمام. في NIVEA، لدينا مجموعة واسعة من الصابون، جل الاستحمام، إضافات الحمام، مزيلات العرق، الكريمات، اللوشنات، الحليبات والكثير غيرها. إذا كنت تبحث عن منتجات تساعد في تحسين المظهر الصحي أو إشراقة بشرتك، فنحن نوفر لك ما تحتاجه! ألقِ نظرة الآن واكتشف منتج NIVEA المثالي لاحتياجاتك وتفضيلاتك. لدينا منتجات للرجال والنساء بما في ذلك مستلزمات الحلاقة ومزيلات العرق لجميع متطلباتك الشخصية للعناية بالنظافة. NIVEA MEN، البداية تكون منك!",
     price: 70.7,
     stock: 150,
-    ingredients: ["كلوروهيدرات الألومنيوم", "مسحوق الفحم", "زيت الأفوكادو"],
+    ingredients: ["كلوروهيدرات الألومنيوم", "الكربون الأسود", "زيت الأفوكادو"],
     images: [
       "https://f.nooncdn.com/p/pnsku/N39790177A/45/_/1767607812/c7e66898-f9e5-4ce4-8734-d4eb8f1a5230.jpg?width=800",
       "https://f.nooncdn.com/p/pnsku/N15767861A/45/_/1766585081/4156b4cc-fc54-4094-b51a-fdf354472cd2.jpg?width=800",
+      "https://f.nooncdn.com/p/pzsku/Z6E1E006BC8EE20290DFDZ/45/_/1783866720/af3619fe-1574-42aa-8556-c1d7ceaa919f.jpg?width=800",
+      "https://f.nooncdn.com/p/pzsku/Z6E1E006BC8EE20290DFDZ/45/_/1783866720/4793f8dc-e619-48d4-89f8-29045115dae9.jpg?width=800",
+      "https://f.nooncdn.com/p/pzsku/Z6E1E006BC8EE20290DFDZ/45/_/1783866720/99ce31a7-0851-4dc9-9962-877f8473ab24.jpg?width=800",
       "https://f.nooncdn.com/p/pnsku/N15767861A/45/_/1766585081/cad3fbd5-0063-4a2b-a996-ee421b8d40e6.jpg?width=800",
     ],
-    weight: 0.1,
+    weight: 0.1, // Standard deodorant stick/roll-on
+    volume: 50, // Typical deodorant size (estimated)
     dimensions: { length: 4, width: 4, height: 10 },
-    skinType: "عادية",
+    skinType: "عادية", // Suitable for normal skin
   },
   {
     owner_store_id: "{id}",
     category_id: "69e387b312d268b6bb3b69e0",
-    name: "Nivea MEN Cool Kick جل استحمام 3 في 1 250 مل",
-    description: "جل استحمام 3 في 1 منعش للجسم والوجه والشعر.",
+    name: "حمام جل Hydra Sport",
+    description: "العلامة الرياضية الحقيقية للرجال والنساء، adidas Body Care تفتح لك إمكاناتك الكاملة مع جل الاستحمام adidas Hydra Sport 3in1. بفضل تقنية 3in1 المبتكرة، يوفر هذا الجل المتعدد الاستخدامات عناية كاملة لجميع مناطق الجسم الثلاثة الرئيسية. ينقي وينظف الوجه، ويزيل الدهون الزائدة لبشرة صحية وخالية من اللمعان. ينظف ويرطب الشعر، ويجدد فروة الرأس ويزيل التراكمات. ومع تركيبته غير المسببة للجفاف، يرطب وينظف الجسم، تاركًا بشرتك منتعشة ومريحة. غني بمركب Moisturize+ الفريد، يرطب البشرة فورًا ويخفف من الجفاف والشدة، بينما يتركك عطر Fougere الشرقي المهدئ تشعر بالراحة والانتعاش بعد كل استحمام. مجرب من قبل أطباء الجلد ومتوازن الحموضة، مناسب للاستخدام اليومي. استعد. افتح إمكاناتك الكاملة.",
+    price: 207.4,
+    stock: 100,
+    ingredients: ["مرطب +", "عطر فواجير شرقي", "جليسرين", "بانثينول"],
+    images: [
+      "https://f.nooncdn.com/p/pzsku/ZF6009BB1F8D14AF80FA6Z/45/_/1779789848/d3a9203e-c96b-423e-a1e4-f5b1d8682c0c.jpg?width=800",
+      "https://f.nooncdn.com/p/pzsku/ZF6009BB1F8D14AF80FA6Z/45/_/1779789848/93f11481-5563-4f5b-9da2-93e771fc38bb.jpg?width=800",
+      "https://f.nooncdn.com/p/pzsku/ZF6009BB1F8D14AF80FA6Z/45/_/1779789848/08f074d3-91d1-41ac-8e30-154a09318861.jpg?width=800",
+      "https://f.nooncdn.com/p/pzsku/ZF6009BB1F8D14AF80FA6Z/45/_/1779789848/85a65d87-9970-4c76-87dd-41b01d3d7105.jpg?width=800",
+    ],
+    weight: 0.28, // 250ml liquid product
+    volume: 250, // 250ml from specifications
+    dimensions: { length: 5, width: 5, height: 18 },
+    skinType: "حساسة", // For sensitive skin
+  },
+  {
+    owner_store_id: "{id}",
+    category_id: "69e387b312d268b6bb3b69e0",
+    name: "برفان Defy",
+    description: "قوي. متحدي. مثير. عطر كالفن كلاين ديفاي بارفوم الجديد للرجال مخصص للمتمرد النهائي—أكثر جرأة من أي وقت مضى. هذا العطر المميز من CK للرجال يحمل نفس الحمض النووي الخشبي المميز، لكنه مع لمسة دافئة وأغمق بشكل غير متوقع وجذاب. انفجار من البرتقال اليوسفي وزيت الهيل مع الخزامى وقشرة الكاكاو يخلق رائحة جديدة قوية ومغرية. يفتتح العطر بنفحة مشرقة ومضيئة من الفلفل الوردي، يليه قلب من الخزامى الطبيعي الذي يضيف لمسة منعشة وعطرية. في القاعدة، تضيف قشرة الكاكاو المعاد تدويرها والمستوردة بمسؤولية عمقًا غنيًا وحلوًا، برائحة رائعة حقًا. صُمم لتجسيد رموز تصميم كالفن كلاين البسيطة والوحيدة اللون، الزجاجة الفاخرة تتميز بزجاج أزرق داكن وغطاء أزرق غير لامع وملمسه محكم. التعبئة والتغليف هي احتفال برموز علامة CK—مرتفع، بسيط، وفاخر للغاية. أكثر جرأة وثقة من أي وقت مضى، يحتضن رحلته في التحدي بشكل كامل.",
     price: 83.6,
     stock: 120,
-    ingredients: ["أكوا", "لاوريث سلفات الصوديوم", "كوكاميدوبروبيل بيتين", "منثول"],
+    ingredients: ["زيت البرتقال اليوسفي", "زيت الهيل", "اللافندر", "قشر الكاكاو", "الفلفل الوردي", "الفيتيفر", "خشب الصندل"],
     images: [
-      "https://f.nooncdn.com/p/pnsku/N49145577A/45/_/1715693964/59a893d1-0271-4382-872e-56ebf8abee33.jpg?width=800",
-      "https://f.nooncdn.com/p/v1626262027/N49145577A_2.jpg?width=800",
-      "https://f.nooncdn.com/p/v1626262027/N49145577A_3.jpg?width=800",
+      "https://f.nooncdn.com/p/pzsku/ZF0DFB5E1F4823E4B112AZ/45/_/1779704280/7e7f055f-4f86-4b76-b194-215ab725b009.jpg?width=800",
+      "https://f.nooncdn.com/p/pzsku/ZF0DFB5E1F4823E4B112AZ/45/_/1779704280/0eae0b9f-646a-4e3c-b109-f4fbad3ade5e.jpg?width=800",
+      "https://f.nooncdn.com/p/pzsku/ZF0DFB5E1F4823E4B112AZ/45/_/1779704280/b7f3b13c-ac52-424b-8971-6970d19a1ce7.jpg?width=800",
+      "https://f.nooncdn.com/p/pzsku/ZF0DFB5E1F4823E4B112AZ/45/_/1779704280/ca07279d-c04e-44a6-b4ea-36e025bd748c.jpg?width=800",
+      "https://f.nooncdn.com/p/pzsku/ZF0DFB5E1F4823E4B112AZ/45/_/1779704280/bc587d63-1941-4c6e-a2d9-4a2ea47b51eb.jpg?width=800",
+      "https://f.nooncdn.com/p/pzsku/ZF0DFB5E1F4823E4B112AZ/45/_/1779704280/0b6d00c1-f971-4296-b176-523c1badde30.jpg?width=800",
+      "https://f.nooncdn.com/p/pzsku/ZF0DFB5E1F4823E4B112AZ/45/_/1779704280/98a7999e-e1f4-49a8-b823-f60ab8d396bd.jpg?width=800"
     ],
-    weight: 0.3,
+    weight: 0.25, // 100ml glass perfume bottle
+    volume: 100, // 100ml from specifications
     dimensions: { length: 7, width: 4, height: 18 },
-    skinType: "عادية",
+    skinType: "عادية", // Suitable for normal skin
   },
   {
     owner_store_id: "{id}",
     category_id: "69e387b312d268b6bb3b69e0",
-    name: "Fogg Paradise عطر بخاخ 120 مل",
-    description: "عطر بخاخ طويل الأمد ومنعش برائحة نابضة بالحياة.",
+    name: "رذاذ جسم مزيل للعرق Black",
+    description: "قدّم بيانًا من خلال احتضان قوة التهذيب مع بخاخ الجسم AXE Black للرجال. كجزء من مجموعة العناية بالرجال الجديدة من AXE Black، يتميز هذا البخاخ برائحة خفيفة وراقية للرجال لا تحتاج للصراخ لتُسمع صوتها. مع نفحات عليا من البرغموت المنعش ممزوجًا بإكليل الجبل الطازج وخشب الأرز المريح، تقدّم هذه الرائحة عبيرًا خشبيًا متطورًا للرجال الذين يفضلون الثقة الهادئة. رذاذات قليلة تكفي على الإبطين والصدر لتترك انطباعًا يدوم. قد يختلف التغليف.",
     price: 130.0,
     stock: 70,
-    ingredients: ["كحول إيثيلي", "عطر", "بروبيلين جليكول"],
+    ingredients: ["كحول إيثيلي", "عطر", "البرغموت", "إكليل الجبل", "خشب الأرز"],
     images: [
-      "https://f.nooncdn.com/p/v1568114684/N29713927A_1.jpg?width=800",
-      "https://f.nooncdn.com/p/pzsku/Z3A64CB0A72B840735FABZ/45/_/1738064404/f047b61f-73f0-4e4c-8a7f-eb30a46b9fc1.jpg?width=800",
-      "https://f.nooncdn.com/p/pzsku/Z93E0F7028EB0E48B8466Z/45/1744178475/a77161ce-b412-459e-8af3-08a29ce8842d.jpg?width=800",
+      "https://f.nooncdn.com/p/pnsku/N31470600A/45/_/1781438454/e3b03810-ec75-44a5-829c-542b64fe326c.jpg?width=800",
+      "https://f.nooncdn.com/p/pnsku/N31470600A/45/_/1781438454/48f63bec-dcae-494b-81ac-841f52fe1dc5.jpg?width=800",
+      "https://f.nooncdn.com/p/pnsku/N31470600A/45/_/1732554658/c74ae40d-06ed-4394-8c26-7565b5cf21e6.jpg?width=800",
+      "https://f.nooncdn.com/p/pnsku/N31470600A/45/_/1732554677/92650568-fd63-4dd1-af68-fc68d1b31266.jpg?width=800",
+      "https://f.nooncdn.com/p/pnsku/N31470600A/45/_/1732554659/d40e3724-4a68-496c-8274-40c51f230a76.jpg?width=800",
+      "https://f.nooncdn.com/p/pnsku/N31470600A/45/_/1732554661/1301e231-35a7-4d5a-9d3a-5ac8158d55be.jpg?width=800",
+      "https://f.nooncdn.com/p/pnsku/N31470600A/45/_/1732554665/baa6d706-1219-41de-a221-c3209d866e47.jpg?width=800"
     ],
-    weight: 0.15,
+    weight: 0.15, // 150ml aerosol spray
+    volume: 150, // 150ml from product name
     dimensions: { length: 5, width: 5, height: 15 },
-    skinType: "عادية",
+    skinType: "عادية", // Suitable for normal skin
   },
   //body care products
   {
     owner_store_id: "{id}",
     category_id: "69e387b312d268b6bb3b69de",
-    name: "Glysolid لوشن للجسم كلاسيك",
-    description: "عناية مكثفة للبشرة الجافة والعادية.",
+    name: "غسول جسم مغذي بعمق",
+    description: "غسول الجسم المرطب هذا يجمع بين NutriumMoisture والمنظفات اللطيفة لمساعدة بشرتك على الحفاظ على رطوبتها الطبيعية، ليمنحك بشرة ناعمة وملساء. تركيبة العناية في هذا الغسول من دوف تساعد على الحفاظ على حاجز الرطوبة في بشرتك وتغذيها بعمق في طبقاتها السطحية. يرطب بشرتك ويترك رغوة غنية وكريمية، ليشعرك بالعناية والنظافة والانتعاش. يحتوي على مزيج متوازن بعناية من المنظفات اللطيفة ومكونات الترطيب، وصُمم خصيصًا للبشرة الجافة. يمنحك تغذية مكثفة لبشرة أكثر نعومة وملمسًا بعد أول استحمام. مُختبر من قبل أطباء الجلد ومتوازن الحموضة (pH)، الحجم 500 مل مثالي للاستخدام اليومي، ليكون جزءًا أساسيًا من روتين العناية ببشرتك. دوف—عناية حقيقية لبشرة حقيقية.",
     price: 183.0,
     stock: 50,
+    ingredients: ["جليسرين", "كوكاميدوبروبيل بيتين", "حمض دهني", "نخيلات الصوديوم", "حمض اللوريك"],
     images: [
-      "https://f.nooncdn.com/p/pzsku/Z026C0ADD5EE618467CD8Z/45/_/1776947100/9f493ea4-0898-4d2b-86d4-e33f8b545524.jpg?width=800",
+      "https://f.nooncdn.com/p/pnsku/N20457540A/45/_/1767607803/343309ee-d77b-42ba-a39d-166dd7d7a5ca.jpg?width=800",
+      "https://f.nooncdn.com/p/pnsku/N20457540A/45/_/1764242370/d0fac174-07ea-42f2-a305-7596946bdf8a.jpg?width=800",
+      "https://f.nooncdn.com/p/pnsku/N20457540A/45/_/1764242369/763aa481-75e3-4e3c-83bf-286e2fc8a537.jpg?width=800",
     ],
-    skinType: "عادية",
+    weight: 0.55, // 500ml liquid product
+    volume: 500, // 500ml from description
+    dimensions: { length: 8, width: 8, height: 20 },
+    skinType: "جافة", // Specially formulated for dry skin
   },
   {
     owner_store_id: "{id}",
     category_id: "69e387b312d268b6bb3b69de",
-    name: "Vaseline Intensive Care Cocoa Radiant",
-    description: "مصنوع من 100٪ زبدة كاكاو نقية للحصول على توهج طبيعي.",
+    name: "جيل زيت الجسم فازلين Cocoa Radiant",
+    description: "هل تبحثين عن منتج يجمع بين الترطيب العميق، النعومة المخملية، والتوهّج الجذاب؟ استعيدي إشراقة بشرتك مع زيت الجسم فازلين (نقي 100%) — ترطيب عميق بدون أثر دهني! تركيبة مبتكرة تجمع بين فعالية فازلين وتقنية الزيوت المجددة، لتقدم تجربة عناية مميزة للجسم تعزز الأنوثة وتوفر ترطيبًا عميقًا. تركيبة الزيت-جيل سريعة الامتصاص لا تترك أثراً دهنيًا مزعجًا، بينما يعيد فيتامين E تغذية وتنشيط بشرتك. وبفضل قطرات فازلين جيلي، يحتفظ الزيت بالرطوبة، مستعيدًا الحيوية والمرونة للبشرة الجافة. يترك بشرتك متوهجة وناعمة كالحرير، مما يجعلها مثالية للاستخدام اليومي ولحظات التدليل الخاصة. غني بالزيوت الطبيعية التي تساعد على استعادة إشراق البشرة المتعبة، هذا هو زيت الجسم الأمثل للنساء اللواتي يردن بشرة مشرقة ومرطبة وجميلة كل يوم.",
     price: 275.0,
     stock: 3,
+    ingredients: ["زيت معدني", "فيتامين E", "زيت جوز الهند", "زبدة الكاكاو"],
     images: [
-      "https://f.nooncdn.com/p/pnsku/N23903751A/45/_/1767607791/49643f93-bfda-4632-95db-96ca0d201b7d.jpg?width=800",
-      "https://f.nooncdn.com/p/pnsku/N23903751A/45/_/1764236008/65da4bdc-f8cd-4eda-b9d6-d12526dc6f63.jpg?width=800",
-      "https://f.nooncdn.com/p/pnsku/N23903751A/45/_/1764236005/9c87f170-f8db-4589-bd86-1bcf45af4d50.jpg?width=800",
+      "https://f.nooncdn.com/p/pzsku/Z64FDE5E02435D1E52650Z/45/_/1773010380/d2301411-e676-4512-9412-b7ac58926b4b.jpg?width=800",
+      "https://f.nooncdn.com/p/pzsku/Z64FDE5E02435D1E52650Z/45/_/1773010322/d8b643b3-aa26-4a88-8be2-c1cf09c1de46.jpg?width=800",
+      "https://f.nooncdn.com/p/pzsku/Z64FDE5E02435D1E52650Z/45/_/1773010322/c19e24f0-1983-4150-987f-6cb8ef5a00ec.jpg?width=800",
+      "https://f.nooncdn.com/p/pzsku/Z64FDE5E02435D1E52650Z/45/_/1773010380/ec9bd35f-2499-48d1-a7af-1608da941f02.jpg?width=800",
+      "https://f.nooncdn.com/p/pzsku/Z64FDE5E02435D1E52650Z/45/_/1773010380/d3c4b7a5-1675-4d93-9d6a-7d77089971a8.jpg?width=800",
+      "https://f.nooncdn.com/p/pzsku/Z64FDE5E02435D1E52650Z/45/_/1773010380/9792a617-2fdf-4d07-afca-1169da1a6254.jpg?width=800",
+      "https://f.nooncdn.com/p/pzsku/Z64FDE5E02435D1E52650Z/45/_/1773010380/9974a446-e420-4a8e-a407-46bb1fa31efe.jpg?width=800"
     ],
-    skinType: "عادية",
+    weight: 0.22, // 200ml oil-gel product
+    volume: 200, // 200ml from specifications
+    dimensions: { length: 5, width: 5, height: 15 },
+    skinType: "جافة", // For dry skin
   },
   {
     owner_store_id: "{id}",
     category_id: "69e387b312d268b6bb3b69de",
-    name: "Nuxe Huile Prodigieuse زيت جاف متعدد الأغراض",
-    description: "زيت جاف متعدد الأغراض للوجه والجسم والشعر.",
+    name: "زيت جاف متعدد الاستخدامات",
+    description: "زيت فافيلين متعدد الاستخدامات للبشرة الجافة هو علاج مرطب للوجه والجسم والشعر — معجزة حقيقية مصممة بمزيج فريد من فيتامين E وسبعة زيوت نباتية ثمينة. يشمل هذا المزيج الأسطوري زيت تسوباكي، وزيت الأرجان، وزيت المكاديميا، وزيت البرواريج، وزيت الكاميليا، وزيت البندق، وزيت اللوز الحلو، التي تعمل معًا لتغذية بشرتك وشعرك من الداخل إلى الخارج. تركيبة الزيت الجاف خفيفة الوزن وغير دهنية تمتص بسرعة، وتوفر ترطيبًا مكثفًا وتترك وجهك وشعرك وجسمك بتوهج مشرق طالما حلمت به. مثالي لجميع أنواع البشرة والشعر، هذا الزيت متعدد الاستخدامات بحجم 50 مل هو الحل الشامل للتغذية واللمعان المثالي.",
     price: 3450.0,
     stock: 2,
+    ingredients: ["زيت التوباكي", "زيت الأرجان", "زيت المكاديميا", "زيت لسان الثور", "زيت الكاميليا", "زيت البندق", "زيت اللوز الحلو", "فيتامين E"],
     images: [
-      "https://f.nooncdn.com/p/v1601103580/N11305302A_1.jpg?width=800",
-      "https://f.nooncdn.com/p/v1601103581/N11305302A_2.jpg?width=800",
-      "https://f.nooncdn.com/p/v1601103582/N11305302A_3.jpg?width=800",
+      "https://f.nooncdn.com/p/pzsku/Z663C1AA12574E3E631B0Z/45/_/1775914577/10f775b5-0204-4e07-9cee-1eda3ff9005d.jpg?width=800",
+      "https://f.nooncdn.com/p/pzsku/Z663C1AA12574E3E631B0Z/45/_/1775914611/99c503c3-9e1c-45b3-bbb6-6d3b6f6edc15.jpg?width=800",
+      "https://f.nooncdn.com/p/pzsku/Z663C1AA12574E3E631B0Z/45/_/1775914611/1b09aebe-0931-4b9e-b22c-c0b635126801.jpg?width=800",
+      "https://f.nooncdn.com/p/pzsku/Z663C1AA12574E3E631B0Z/45/_/1775914612/36753967-945c-4313-bd80-1bf9ed4bc33b.jpg?width=800",
+      "https://f.nooncdn.com/p/pzsku/Z663C1AA12574E3E631B0Z/45/_/1775914611/2a4d3d48-c6c3-4b12-a6c7-51a1b3e76053.jpg?width=800",
     ],
-    skinType: "عادية",
+    weight: 0.15, // 50ml glass bottle
+    volume: 50, // 50ml from specifications
+    dimensions: { length: 4, width: 4, height: 12 },
+    skinType: "جافة", // For dry skin
   },
   {
     owner_store_id: "{id}",
     category_id: "69e387b312d268b6bb3b69de",
-    name: "Nut Shell زيت جل للجسم بجوز الهند والكاكاو",
-    description: "زيت جل للجسم مصنوع يدويًا لامتصاص عميق.",
+    name: "لوشن للجسم بجوز المكاديميا وماء الورد",
+    description: "لوسيون الجسم بنكهة جوز الماكاديميا وماء الورد من نات شيل يقدم تجربة ترطيب فاخرة يوميًا، حيث يمزج الجوهر المهدئ لماء الورد مع زيت الماكاديميا المغذي في زجاجة سعة 465 مل. مصمم بمهارة لتوفير ترطيب عميق يدوم طويلاً، هذا اللوشن الغني ولكنه سريع الامتصاص يذوب بسلاسة على البشرة ليعيد لها نعومتها ومرونتها الطبيعية وينعشها برائحة زهرية دقيقة تدوم طويلاً.مشبَع بخصائص تغذية الماكاديميا الغنية، يروي البشرة الجافة، ويستعيد توازن الرطوبة، ويعزز مرونة الجلد. انتعاش ماء الورد المهدئ يغلف حواسك بعطر زهري خفيف وأنيق وهادئ يجعلك تشعر بالانتعاش والاسترخاء طوال اليوم. تركيبته خفيفة وسريعة الامتصاص تنتشر بسهولة على البشرة وتمتص في ثوانٍ دون ترك أي بقايا ثقيلة أو لزجة أو دهنية. حجم 465 مل السخي مثالي للاستخدام اليومي للعناية بالبشرة للعائلة وللاستخدام الشخصي.",
     price: 325.0,
     stock: 100,
+    ingredients: ["زيت المكاديميا", "ماء الورد", "جليسرين", "فيتامين E"],
     images: [
-      "https://f.nooncdn.com/p/pzsku/Z70B9E37366252A5004E7Z/45/1760265205/c5b25312-d28e-4c4c-833c-1d4e7ffaebe5.jpg?width=800",
-      "https://f.nooncdn.com/p/pzsku/Z70B9E37366252A5004E7Z/45/1760265205/a8458bd8-6d44-4f6c-8323-7857ea4f5218.jpg?width=800",
-      "https://f.nooncdn.com/p/pzsku/ZF7A524F117A7F873B038Z/45/_/1771779472/55404c2f-c625-4a5b-89fc-0b024cdfa1a5.jpg?width=800",
+      "https://f.nooncdn.com/p/pzsku/Z1CBCF29800395B192678Z/45/_/1786880158/384886eb-2599-436e-ab45-a38b6f00f439.jpg?width=800",
+      "https://f.nooncdn.com/p/pzsku/Z1CBCF29800395B192678Z/45/_/1786880158/c5f58a21-aa16-481c-a8e0-b4ad28753df8.jpg?width=800",
+      "https://f.nooncdn.com/p/pzsku/Z1CBCF29800395B192678Z/45/_/1786880158/6fae2ee4-76bc-422c-9b1c-7f25a161672e.jpg?width=800",
     ],
-    skinType: "عادية",
+    weight: 0.5, // 465ml lotion
+    volume: 465, // 465ml from description
+    dimensions: { length: 8, width: 6, height: 20 },
+    skinType: "جافة", // For dry skin
   },
   {
     owner_store_id: "{id}",
     category_id: "69e387b312d268b6bb3b69de",
-    name: "Shaan Body Milk",
-    description: "ترطيب لمدة 72 ساعة مع بنتافيتين، حمض الهيالورونيك، نياسيناميد وسيراميد. للبشرة الجافة إلى شديدة الجفاف.",
+    name: "لوشن الجسم المرطب المكثف من شان",
+    description: "دلّلي بشرتك بترطيب فاخر مع لوشن شان بودي ميلك—غسول مرطب بعمق غني بالمكونات الفعّالة التي تجعل بشرتك ناعمة ومرنة ومشرقة لمدة تصل إلى 72 ساعة. بفضل تركيبته القوية التي تحتوي على حمض الهيالورونيك، نياكيناميد، سيراميدات، زبدة الشيا وزيت بذور العنب، يعالج لوشن شان بودي ميلك بفعالية الجفاف، الكيراتوسيس بيلاريس (جلد دجاجي) والالتهابات، ليترك بشرتك ناعمة كالحرير. قوامه خفيف يمتص بسرعة وغير لاصق، ومناسب لجميع أنواع البشرة، حتى الحساسة. الحجم الكبير 300 مل يقدم قيمة ممتازة للاستخدام اليومي الطويل.",
     price: 172.5,
     stock: 80,
+    ingredients: ["حمض الهيالورونيك", "النياسيناميد", "السيراميدات", "زبدة الشيا", "زيت بذور العنب", "فيتامين E"],
     images: [
-      "https://f.nooncdn.com/p/pzsku/Z8D36526F7EFC45853967Z/45/1764270443/c2616570-8d98-4df4-a89e-8473b8b79a94.jpg?width=800",
-      "https://f.nooncdn.com/p/pzsku/Z8D36526F7EFC45853967Z/45/1748175666/5312f163-a8cc-4d05-b14d-2f4da4c7e68b.jpg?width=800",
+      "https://f.nooncdn.com/p/pzsku/ZAC478156209FE8F00EF5Z/45/_/1780770156/676d6fe7-0a6f-42c6-8178-ddcc809d443c.jpg?width=800",
+      "https://f.nooncdn.com/p/pzsku/ZAC478156209FE8F00EF5Z/45/_/1780770156/6eafdd4d-e1d7-4bd4-8181-b9f81458f1de.jpg?width=800",
+      "https://f.nooncdn.com/p/pzsku/ZAC478156209FE8F00EF5Z/45/_/1780770156/f233dcaf-1bd0-4d09-a61b-f639317f27f2.jpg?width=800",
       "https://f.nooncdn.com/p/pzsku/Z8D36526F7EFC45853967Z/45/1748175666/b28c6e21-7c77-4992-a72b-bee1cd62230c.jpg?width=800",
     ],
-    skinType: "جافة",
+    weight: 0.35, // 300ml lotion
+    volume: 300, // 300ml from description
+    dimensions: { length: 7, width: 7, height: 18 },
+    skinType: "جافة", // For dry skin
   },
   //tools and accessories
   {

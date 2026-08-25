@@ -75,7 +75,7 @@ const ProductSchema = new mongoose.Schema(
 
     volume:{
       type: Number,
-      min: 30,
+      min: 1,
       max: 500,
       default: 150//in ML
     },
