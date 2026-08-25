@@ -66,10 +66,13 @@ const UserSchema = new mongoose.Schema(
 
     phoneNumber: {
       type: String,
-      // required: true,
+      required: false,
       index: true,
       validate: {
-        validator: (v) => validator.isMobilePhone(v, "ar-EG"), // /^01[0-2,5]{1}[0-9]{8}$/.test(v)
+        validator: (v) => {
+          if (!v || v === "") return true;
+          return validator.isMobilePhone(v, "ar-EG")
+        }, // /^01[0-2,5]{1}[0-9]{8}$/.test(v)
         message: (props) => `${props.value} not valid phone number!`,
       },
     },

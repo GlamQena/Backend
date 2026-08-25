@@ -73,6 +73,13 @@ const ProductSchema = new mongoose.Schema(
       default: 0.2//in KG
     }, //affect delivery cost
 
+    volume:{
+      type: Number,
+      min: 30,
+      max: 500,
+      default: 150//in ML
+    },
+
     dimensions: {
       type: {
         length: { type: Number, default: 15 , min:1, max:100},
@@ -116,7 +123,10 @@ const ProductSchema = new mongoose.Schema(
     //   default: [],
     // },
 
-    addedAt: Date,
+    addedAt: {
+      type: Date,
+      default: Date.now,
+    },
 
     isActive: {
       type: Boolean,

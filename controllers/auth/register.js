@@ -109,6 +109,7 @@ const registerController = async (req, res) => {
       cart_merged: cartMergeResult?.merged || false,
     });
   } catch (error) {
+    console.error("exception occured while registering: "+ error);
     res
       .status(500)
       .json({ message: "internal server error!", error: error.message });
