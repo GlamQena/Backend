@@ -62,7 +62,23 @@ const UserSchema = new mongoose.Schema(
       default: "user",
     },
 
-    image: String,
+    avatar: {
+      type: String, 
+      required: false
+    },
+
+    avatar_hash: {
+      type: String, 
+      required: false,
+      validate: {
+        validator:(v) => {
+          if(this.avatar && this.avatar.length > 0)
+            return v && v.length > 0;
+          return true;
+        },
+        message: "the avatar hash is required when the avatar provided"
+      },
+    }, //to check for image duplication to not upload the same image twice on cloudinary
 
     phoneNumber: {
       type: String,

@@ -62,9 +62,17 @@ const ProductSchema = new mongoose.Schema(
       type: [String],
       validate:{
         validator: (v)=> v.length>=1 && v.length<=7,
-        error: (data)=> "you must provide at least 1 image for the product and don't exceed 7"
+        error: ()=> "you must provide at least 1 image for the product and don't exceed 7"
       }
     },
+
+    images_hashes: {
+      type: [String],
+      validate:{
+        validator: (v)=> v.length>=1 && v.length<=7,
+        error: ()=> "you must provide at least 1 image for the product and don't exceed 7"
+      }
+    }, //to check for image duplication to not upload the same image twice on cloudinary
 
     weight:{
       type: Number,
@@ -92,7 +100,7 @@ const ProductSchema = new mongoose.Schema(
         width: 10,
         height: 5
       }
-    },
+    }, //in CM
 
     skinType: {
       type: String,

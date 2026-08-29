@@ -82,15 +82,19 @@ const productSchema = zod.object({
     zod.string().trim()
     .min(3, {message: "ingrediant name must be at least three characters"})
     .max(100, { message: "ingredient name must not exceed 100 characters" }))
-    .optional().default([])
+    .nullish().default([])
     .refine(val => val.length<=30, {message: "ingrediants mustn't exceed 30"}),
     images: zod.array(zod.string().trim())
     .min(1, {message: "you must provide at least one image"})
     .max(7, {message: "you can't add more than 7 images"}),
     weight: zod.number()
     .min(0, {message: "weight cannot be negative"})
-    .max(5, {message: "weight cannot exceed 5 KG"})
-    .optional().default(0.2), //optional().default() methods must be at last as they return a type that hasn't .min().max() methods
+    .max(5, {message: "weight cannot exceed 5KG"})
+    .nullish().default(0.2), //nullish().default() methods must be at last as they return a type that hasn't .min().max() methods
+    volume: zod.number()
+    .min(1, {message: "the product must has a real volume (at least 1ML)"})
+    .max(500, {message: "the product volume mustn't exceed 500ML"})
+    .nullish(), //allow both null & undefined values for accessories roducts for example (with no volume)
     dimensions: zod.object({
         length: zod.number()
         .min(1, {message: "please provide a valid length value"})

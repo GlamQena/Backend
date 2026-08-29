@@ -99,14 +99,18 @@ const registerController = async (req, res) => {
     
     setUserVerification(newUser, "10m");
 
+    const authData ={
+      user: newUser,
+      accessToken,
+      refreshToken,
+    };
+
     res.status(201).json({
       message: cartMergeResult?.merged
         ? "Account created successfully! Guest cart merged with your new account. Verification link sent to your email."
         : "Verification link sent to your email to activate your created account!",
-      user: newUser,
-      accessToken,
-      refreshToken,
       cart_merged: cartMergeResult?.merged || false,
+      authData: (role !== "store_owner"? {...authData} : null),
     });
   } catch (error) {
     console.error("exception occured while registering: "+ error);

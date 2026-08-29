@@ -11,6 +11,16 @@ const storeOwnerSchema = new mongoose.Schema({
     index: true,
   },
 
+  logo: {
+    type: String, 
+    required: true
+  }, //cloudinary secure_url
+
+  logo_hash: {
+    type: String, 
+    required: true
+  }, //file hash to check for duplication in upload
+
   store_phone: {
     type: String,
     required: true,

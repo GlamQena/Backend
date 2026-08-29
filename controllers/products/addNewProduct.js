@@ -13,12 +13,23 @@ const addNewProductController = async (req, res) => {
         console.log("add new product request files => ", req.files);
         
         const uploadedUrls = req.uploadedUrls;
+        const uploadedHashes = req.uploadedHashes;
 
+        // Validate images
         if (!uploadedUrls || uploadedUrls.length < 1) {
             return res.status(400).json({ message: "Please upload at least 1 image" });
         }
 
+        // Validate that hashes exist and match URLs count
+        if (!uploadedHashes || uploadedHashes.length !== uploadedUrls.length) {
+            return res.status(400).json({ 
+                message: "Image validation failed. Hashes don't match uploaded images." 
+            });
+        }
+
+        // Assign images and hashes to product data
         productData["images"] = uploadedUrls;
+        productData["images_hashes"] = uploadedHashes;
 
         // Parse JSON strings safely
         let dimensions = { length: 15, width: 10, height: 5 };
@@ -44,6 +55,7 @@ const addNewProductController = async (req, res) => {
             price: Number(productData.price), 
             stock: Number(productData.stock), 
             weight: Number(productData.weight),
+            volume: productData.volume ? Number(productData.volume) : null,
             dimensions: {
                 width: Number(dimensions.width) || 10,
                 height: Number(dimensions.height) || 5,
@@ -53,7 +65,7 @@ const addNewProductController = async (req, res) => {
 
         const parsedData = productSchema.safeParse(enhancedProductData);
         if(!parsedData.success){
-            const zodErrors= parsedData.error?.issues?.map(err =>
+            const zodErrors = parsedData.error?.issues?.map(err =>
                 ({field: err.path.join("."), message: err.message}));
 
             console.log("zod error -> ", zodErrors);
@@ -67,6 +79,7 @@ const addNewProductController = async (req, res) => {
             ...parsedData.data,
             category_id: productData.category_id,
             images: uploadedUrls,
+            images_hashes: uploadedHashes,
             owner_store_id: ownerStoreId
         });
 

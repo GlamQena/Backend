@@ -349,7 +349,7 @@ async function sendWelcomeEmail(userId,email, username, tempPassword, role,otpCo
 <body>
   <div class="container">
     <div class="header">
-      <h1>Welcome to Glam2ena! 🎉</h1>
+      <h1>Welcome to Glam2ena!👋🏼</h1>
       <p>Your account has been successfully created</p>
     </div>
     

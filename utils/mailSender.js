@@ -61,7 +61,7 @@ function getUrlFrontEnd(userId, email, role,ex) {
   const token = jwt.sign(payload, process.env.JWT_SECRET, {
     expiresIn: ex || "10m",
   });
-  const frontend_url = `http://localhost:${process.env.FRONTEND_PORT}/login?email=${email}&token=${token}`;
+  const frontend_url = `http://localhost:${process.env.FRONTEND_PORT}/login?email=${email}&role=${role}&token=${token}`;
   if (process.env.NODE_ENV === "development") {
     console.log(frontend_url);
   }

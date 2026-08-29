@@ -9,6 +9,8 @@ const resetPasswordController= require('../controllers/auth/resetPassword.js');
 const logoutController= require('../controllers/auth/logout.js');
 const refreshAccessTokenController= require('../controllers/auth/refreshToken.js');
 const sendEmailTokenController = require('../controllers/auth/sendEmailToken.js');
+const activateAccountController = require('../controllers/auth/activateAccount.js');
+const resendActivationOTPController = require('../controllers/auth/resendActivationOTP.js');
 const express= require("express");
 const cookieParser = require('cookie-parser'); 
 
@@ -28,5 +30,7 @@ router.post("/sms/send-otp", sendSmsOtpController);
 router.post("/sms/verify-otp", verifySmsOtpController);
 router.delete("/logout", logoutController);
 router.get("/refresh-token", refreshAccessTokenController);
+router.post("/activation/activate", activateAccountController);
+router.post("/activation/resend-otp", resendActivationOTPController);
 
 module.exports= router;

@@ -1,5 +1,5 @@
 const express = require("express");
-const {upload, uploadToCloudinary} = require("../utils/upload.js");
+const {upload, uploadProductImages} = require("../utils/upload.js");
 
 const getProductById = require("../controllers/products/getProductById");
 const addNewProductController = require("../controllers/products/addNewProduct");
@@ -21,7 +21,7 @@ router.use(checkAuth());
 router.use(checkRole(["store_owner"]));
 router.post("/",
      upload.array('images', 7), // Accept up to 7 images
-     uploadToCloudinary, // Process and upload to Cloudinary with duplicate check
+     uploadProductImages, // Process and upload to Cloudinary with duplicate check
      addNewProductController
     );
 
@@ -29,7 +29,7 @@ router.delete("/:id", deleteProductController);
 
 router.put("/:id", 
     upload.array('images', 7),
-    uploadToCloudinary,
+    uploadProductImages,
     editProductById
 );
 

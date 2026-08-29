@@ -49,11 +49,15 @@ const verifyEmailController = async (req, res) => {
     
     const {accessToken, refreshToken} = await setAccessRefreshTokens(req, res, user, false);
 
-    return res.status(200).json({
-      message: "Email verified successfully",
+    const authData ={
       user,
       accessToken,
-      refreshToken
+      refreshToken,
+    };
+
+    return res.status(200).json({
+      message: "Email verified successfully",
+      authData: (user.role !== "store_owner"? {...authData} : null),
     });
 
   } catch (error) {
