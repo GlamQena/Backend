@@ -16,6 +16,8 @@ const LOCAL_IP = getLocalIP();
 
 // Development origins
 const devOrigins = [
+  'https://frontend-lpnvakl5t-semonhany848-7024s-projects.vercel.app',
+  'https://glamqena.vercel.app',
   "http://127.0.0.1:3000",
   "http://localhost:3000",
   "http://localhost:3001",
