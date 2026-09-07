@@ -43,7 +43,8 @@ const devOrigins = [
 const prodOrigins = [
   "https://glamqena.vercel.app",
   "https://frontend-217hp0m4y-semonhany848-7024s-projects.vercel.app",
-  "https://frontend-lpnvakl5t-semonhany848-7024s-projects.vercel.app"
+  "https://frontend-lpnvakl5t-semonhany848-7024s-projects.vercel.app",
+  "https://frontend-2dtdskvlw-semonhany848-7024s-projects.vercel.app/"
 ];
 
 // CORS configuration function
