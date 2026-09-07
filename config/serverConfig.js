@@ -41,9 +41,9 @@ const devOrigins = [
 
 // Production origins
 const prodOrigins = [
-  "https://yourdomain.com",
-  "https://www.yourdomain.com",
-  // Add your production frontend URLs
+  "https://glamqena.vercel.app",
+  "https://frontend-217hp0m4y-semonhany848-7024s-projects.vercel.app",
+  "https://frontend-lpnvakl5t-semonhany848-7024s-projects.vercel.app"
 ];
 
 // CORS configuration function
