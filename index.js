@@ -3,6 +3,7 @@ const path = require("path");
 const cors = require("cors");
 const session = require("express-session");
 const cookie_parser = require("cookie-parser");
+const { LOCAL_IP, getCorsOrigin } = require("./config/serverConfig.js");
 const connect_mongodb = require("./config/connectMongoDB.js");
 const { connect_redis } = require("./config/connectRedis");
 const applySecurity = require("./middleware/applySecurity.js");
@@ -30,28 +31,26 @@ const { storeOwnerModel } = require("./models/users/storeOwner.js");
 require("dotenv").config({ path: path.join(__dirname, ".env") });
 
 const app = express();
-app.use(express.json());
+app.use(express.static(path.join(__dirname, "uploads")));
 
-app.use(express.static(path.join(__dirname, "uploads"))); //to allow access the photos in uploads folder
-
-//enable cookies
-const allowedOrigins = [
-  "http://127.0.0.1:3000",
-  "http://localhost:3001",
-  "http://localhost:3000",
-  "http://192.168.1.100:3000", //dev machine ip
-]; //possible localhost origins
-
+// CORS with dynamic origin validation
 app.use(
   cors({
-    origin: (origin, callback) => {
-      if (!origin || allowedOrigins.includes(origin))
-        //if the request has no origin (e.g. mobile apps) or included in the allowed list,
-        callback(null, true); //call the callback with no Error message and allow the origin
-      else callback(new Error("this origin not allowed by cors!"), false);
-    },
-    credentials: true, //allow cookies
-  }),
+    origin: getCorsOrigin, // Use the function
+    credentials: true,
+    methods: ['GET', 'POST', 'PUT', 'DELETE', 'OPTIONS', 'PATCH'],
+    allowedHeaders: [
+      'Content-Type', 
+      'Authorization', 
+      'Accept', 
+      'Origin',
+      'X-Requested-With',
+      'Cookie'
+    ],
+    exposedHeaders: ['Set-Cookie'],
+    optionsSuccessStatus: 200,
+    preflightContinue: false,
+  })
 );
 
 app.use(cookie_parser());
@@ -62,17 +61,17 @@ app.use(
     resave: false,
     saveUninitialized: false,
     cookie: {
-      httpOnly: true, //httpOnly cookie means its related to the requests itself and can't be accessed by javaScript
+      httpOnly: true,
       maxAge: 7 * 24 * 60 * 60 * 1000,
       secure: process.env.NODE_ENV === "production",
-      sameSite: "lax",
-      domain: process.env.NODE_ENV === "development" ? undefined : "", //TODO => handle production domain later
+      sameSite: process.env.NODE_ENV === "production" ? "none" : "lax", 
+      domain: process.env.NODE_ENV === "production" ? ".yourdomain.com" : undefined,
       path: "/",
     },
-  }),
+  })
 );
 
-//routes
+// Routes
 app.use("/auth", authRouter);
 app.use("/profile", profileRouter);
 app.use("/stores", storesRouter);
@@ -83,30 +82,33 @@ app.use("/cart", cartRouter);
 app.use("/users", usersRouter);
 app.use("/admin", adminRouter);
 
+app.use(express.json());
+
+// Activation endpoint
 const activableModels = {
   clients: {
     model: clientModel,
-    modelName: "client", // For error messages and audit logs
+    modelName: "client",
     allowedRoles: ["admin"],
-    requiredPermission: "manageUsers", // For admins to manage clients
+    requiredPermission: "manageUsers",
   },
   store_owners: {
     model: storeOwnerModel,
     modelName: "store_owner",
     allowedRoles: ["admin"],
-    requiredPermission: "manageStores", // For admins to manage store owners
+    requiredPermission: "manageStores",
   },
   admins: {
     model: adminModel,
     modelName: "admin",
     allowedRoles: ["admin"],
-    requiredPermission: "manageAdmins", // For admins to manage other admins
+    requiredPermission: "manageAdmins",
   },
   products: {
     model: productModel,
     modelName: "product",
-    allowedRoles: ["admin", "store_owner"], // Both can manage products
-    requiredPermission: "manageProducts", // For admins
+    allowedRoles: ["admin", "store_owner"],
+    requiredPermission: "manageProducts",
   },
   categories: {
     model: categoryModel,
@@ -114,40 +116,38 @@ const activableModels = {
     allowedRoles: ["admin"],
     requiredPermission: "manageCategories",
   },
-  // reviews: {
-  //     model: reviewModel,
-  //     modelName: "review",
-  //     allowedRoles: ["admin"],
-  //     requiredPermission: "manageUsers"  // Reviews are user-generated
-  // },
 };
 
 const activationHandler = ActivationFactory(activableModels);
-
 app.patch("/:entity/:id/activation", checkAuth(), activationHandler);
 
-//mongodb connection
+// MongoDB connection
 connect_mongodb();
 
 mongoose.connection.once("connected", async () => {
-  console.log("server connected to mongodb successfully...");
+  console.log("Server connected to MongoDB successfully...");
   // await connect_redis();
 
-  if (require.main === module) {
-    app.listen(process.env.BACKEND_PORT, "0.0.0.0", (err) => {
-      if (err) {
-        console.error(`error listening on port: ${process.env.BACKEND_PORT}!`);
-      } else {
-        console.log(
-          `express server listening on port-> ${process.env.BACKEND_PORT}...`,
-        );
-      }
-    });
-  }
+  // if (require.main === module) {
+  //   const PORT = process.env.BACKEND_PORT || 8080;
+  //   const HOST = process.env.NODE_ENV === 'production' ? '0.0.0.0' : '0.0.0.0'; // Keep 0.0.0.0 for mobile
+
+  //   app.listen(PORT, HOST, (err) => {
+  //     if (err) {
+  //       console.error(`Error listening on port ${PORT}:`, err);
+  //     } else {
+  //       console.log(`Express server listening:`);
+  //       console.log(`   - Local:   http://localhost:${PORT}`);
+  //       console.log(`   - Network: http://${LOCAL_IP}:${PORT}`);
+  //       console.log(`   - Mobile:  http://${LOCAL_IP}:${PORT} (use this on your phone)`);
+  //       console.log(`   - Mode:    ${process.env.NODE_ENV || 'development'}`);
+  //     }
+  //   });
+  // }
 });
 
 mongoose.connection.on("error", (err) => {
-  console.error(`error connecting to mongodb-> ${err}`);
+  console.error(`Error connecting to MongoDB: ${err}`);
 });
 
 module.exports = app;

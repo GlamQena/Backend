@@ -16,11 +16,16 @@ const commonProfileFields= zod.object({
     email: emailField,
     firstName: optionalSchemaHandler(nameField("firstName")),
     lastName: optionalSchemaHandler(nameField("lastName")),
-    notifications: zod.array(optionalEnumHandler(["email", "push", "sms"])).min(1, {message: "you must provide at least one notification preference"}).default(["email"]),
+    notifications: zod
+    .array(zod.enum(["email", "push", "sms"]))
+    .min(1, {
+        message: "you must provide at least one notification preference"
+    })
+    .default(["email"]),
 }).extend(commonOptionalFields.shape);
 
 const clientProfile= zod.object({
-    skinType: optionalSchemaHandler(zod.enum(['جافة', 'دهنية', 'مختلطة', 'حساسة', 'عادية'], {message: "Skin type must be oily, dry, combination, sensitive, or normal"})).default("normal"),
+    skinType: optionalSchemaHandler(zod.enum(['جافة', 'دهنية', 'مختلطة', 'حساسة', 'عادية'], {message: "Skin type must be oily, dry, combination, sensitive, or normal"})).default("عادية"),
     skinConcerns: zod.preprocess((val)=>{
         if(!val || (Array.isArray(val) && val.length===0)) 
             return undefined

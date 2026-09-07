@@ -34,7 +34,7 @@ const OTPSchema = new mongoose.Schema(
       type: Date,
       index: true,
       required: true,
-      default: ()=> Date.now() + 1 * 60 * 1000, //1min
+      default: ()=> Date.now() + 2 * 60 * 1000, //2min
     },
 
     isVerified:{

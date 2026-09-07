@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>${subject}</title>
+  <title>{subject}</title>
   <style>
     body {
       font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
@@ -30,8 +30,13 @@
     .header h1 {
       color: #A855F7;
       margin: 0;
-      font-size: 22px;
-      font-weight: bold;
+      font-size: 24px;
+      font-weight: 700;
+    }
+    .header .subtitle {
+      color: #c8aadf;
+      margin-top: 8px;
+      font-size: 14px;
     }
     .content {
       text-align: center;
@@ -40,8 +45,47 @@
     .content p {
       color: #c8aadf;
       font-size: 15px;
-      line-height: 1.6;
+      line-height: 1.8;
+      margin: 12px 0;
+    }
+    .content strong {
+      color: #f2e8ff;
+    }
+    .content .highlight {
+      color: #FF69B4;
+    }
+    .message-box {
+      background-color: #0e0819;
+      border: 1px solid rgba(168, 85, 247, 0.09);
+      border-radius: 12px;
+      padding: 20px;
+      margin: 20px 0;
+      text-align: center;
+    }
+    .message-box .main-message {
+      color: #f2e8ff;
+      font-size: 16px;
+      font-weight: 500;
       margin: 0;
+    }
+    .button {
+      display: inline-block;
+      background: linear-gradient(135deg, #FF69B4, #A855F7);
+      color: white !important;
+      padding: 12px 28px;
+      text-decoration: none !important;
+      border-radius: 9999px;
+      font-weight: 600;
+      font-size: 15px;
+      margin: 20px 0;
+      box-shadow: 0 4px 18px rgba(168, 85, 247, 0.35);
+      transition: all 0.3s ease;
+      border: none;
+      text-align: center;
+    }
+    .button:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 8px 25px rgba(168, 85, 247, 0.45);
     }
     .footer {
       text-align: center;
@@ -51,19 +95,26 @@
       padding-top: 20px;
       margin-top: 20px;
     }
+    .footer .brand {
+      color: #A855F7;
+      font-weight: bold;
+    }
   </style>
 </head>
 <body>
   <div class="container">
     <div class="header">
       <h1>{subject}</h1>
+      <div class="subtitle"><span class="highlight">Glam2ena</span></div>
     </div>
     <div class="content">
-      <p>{message}</p>
+      <div class="message-box">
+        <p class="main-message">{message}</p>
+      </div>
     </div>
     <div class="footer">
-      <p>This is an automated message, please do not reply to this email.</p>
-      <p>© ${new Date().getFullYear()} Glam2ena. All rights reserved.</p>
+      <p>This is an automated message from <span class="brand">Glam2ena</span>.</p>
+      <p>© {year} Glam2ena. All rights reserved.</p>
     </div>
   </div>
 </body>

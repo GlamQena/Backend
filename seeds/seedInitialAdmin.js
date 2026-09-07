@@ -1,9 +1,11 @@
 const crypto = require("crypto");
 const bcrypt = require("bcrypt");
+const fs = require("fs");
+const path = require("path");
 const connect_mongodb = require("../config/connectMongoDB");
 const {adminModel} = require("../models/users/admin");
 
-const initialAdmin = {
+let initialAdmin = {
   "username": "semon_admin",
   "email": "semonadmin@gmail.com",
   "role": "admin",
@@ -61,6 +63,10 @@ const createRandomPassword = (length)=>{
 const seedAdmin= async ()=>{
     try{
         await connect_mongodb();
+        const initialAdminSourcePath = path.join(__dirname, "../sources/initialAdmin.json");
+        fs.writeFileSync(initialAdminSourcePath, JSON.stringify(initialAdmin));
+        initialAdmin = JSON.parse(fs.readFileSync(initialAdminSourcePath));
+        
         const foundAdmin = await adminModel.findOne({username: initialAdmin["username"], email: initialAdmin["email"]});
 
         if(foundAdmin){
@@ -72,6 +78,7 @@ const seedAdmin= async ()=>{
         initialAdmin["password"] = hashPassword;
         const seededAdmin= await adminModel.create(initialAdmin);
         console.log("seeded initial admin ", seededAdmin);
+        console.log("your plain password: ", randomPassword);
     }catch(e){
         console.error("error seeding the initial admin: ", e);
     }

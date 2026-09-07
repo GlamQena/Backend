@@ -241,7 +241,7 @@ async function sendWelcomeEmail(userId,email, username, tempPassword, role,otpCo
     admin: "Administrator",
   };
 
-  const loginUrl = getUrlFrontEnd(userId,email,role);
+  const loginUrl = getUrlFrontEnd(userId, email, role, "2d");
 
   const emailHtml = `<!DOCTYPE html>
 <html lang="en">

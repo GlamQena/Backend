@@ -15,5 +15,5 @@ router.get("/me/active-clients", checkAuth(), checkRole("store_owner"), getActiv
 
 router.use(checkAuth(true));
 router.get("/", getStoresController);
-router.get("/:id/products", getStoreProducts);
+router.get("/:id", getStoreProducts);
 module.exports = router;

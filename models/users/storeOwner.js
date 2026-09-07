@@ -13,12 +13,20 @@ const storeOwnerSchema = new mongoose.Schema({
 
   logo: {
     type: String, 
-    required: true
+    required: false
   }, //cloudinary secure_url
 
   logo_hash: {
     type: String, 
-    required: true
+    required: false,
+    validate: {
+      validator: function (v){
+        if(this.logo && this.logo.length>0 && this.logo.includes("cloudinary"))
+          return v && v.length>0;
+        return true;
+      },
+      message: "the store logo hash is required when the logo url provided"
+    }
   }, //file hash to check for duplication in upload
 
   store_phone: {

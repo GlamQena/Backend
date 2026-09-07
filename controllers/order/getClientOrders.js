@@ -12,17 +12,17 @@ const getClientOrdersController = async (req, res) => {
       //   (populate) جلب اسم المتجر
       .populate({ 
         path: "products.owner_store_id",
-         select: "store_name",
+         select: "store_name logo",
          })
          
       //  (populate) جلب بيانات المنتجات
       .populate({
          path: "products.products.prod_id",
-          select: "images hasReviewed" ,
+          select: "name price stock images hasReviewed" ,
         })
 
-      .populate("user_id", "firstName lastName email phoneNumber address")
-      .lean(); // ✅ allows adding custom fields
+      .populate("user_id", "avatar firstName lastName email phoneNumber address")
+      .lean();
 
     if (!orders.length) {
       return res.status(404).json({ success: false, message: "No orders found" });

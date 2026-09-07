@@ -224,7 +224,11 @@ OrderSchema.pre("validate", function(next) {
     this.profit_breakdown.platform_revenue.products= (COMMISSION_RATES.PRODUCT_COMMISSION * this.subtotal_price).toFixed(2);
     // this.profit_breakdown.platform_revenue.delivery= ((1/COMMISSION_RATES.DELIVERY_PAYOUT) * COMMISSION_RATES.DELIVERY_COMMISSION * this.profit_breakdown.bosta_delivery_cost).toFixed(2);
     // this.delivery_cost= this.profit_breakdown.bosta_delivery_cost + this.profit_breakdown.platform_revenue.delivery;
-    this.total_price= this.subtotal_price + this.delivery_cost;
+    if (!this.delivery_cost || isNaN(this.delivery_cost)) {
+      this.delivery_cost = 50; // Default fallback
+    }
+
+    this.total_price = this.subtotal_price + this.delivery_cost;
 
     next();
   }catch(error){

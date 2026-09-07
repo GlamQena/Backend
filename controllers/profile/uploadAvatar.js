@@ -1,6 +1,7 @@
  const  userModel  = require("../../models/users/user");
+ const {deleteImageFromCloudinary} = require("../../utils/upload.js")
  
- const uploadImageController= async(req, res)=>{
+ const uploadAvatarController= async(req, res)=>{
   try {
     const userId = req.user.id;
 
@@ -18,8 +19,15 @@
 
     console.log("avatar image file => ", req.uploadedUrl);
 
-    if(user.avatar){
+    if (user.avatar && user.avatar_hash !== req.uploadedHash) {
+      console.log(" New image is different - deleting old one");
       await deleteImageFromCloudinary(user.avatar);
+    } else if (user.avatar && user.avatar_hash === req.uploadedHash) {
+      console.log("Same image uploaded - no changes needed");
+      return res.status(200).json({ 
+        message: "Same avatar image - no changes made", 
+        imagePath: user.avatar 
+      });
     }
 
     user.avatar = req.uploadedUrl;
@@ -33,4 +41,4 @@
 
 }
 
-module.exports= uploadImageController;
+module.exports= uploadAvatarController;

@@ -4,7 +4,7 @@ const cloudinary = require("cloudinary").v2;
 const cloudinary_config = require("../config/connectCloudinary");
 const productModel = require("../models/product");
 const userModel = require("../models/users/user");
-const storeModel = require("../models/users/storeOwner");
+const {storeOwnerModel} = require("../models/users/storeOwner");
 
 cloudinary_config();
 
@@ -28,7 +28,7 @@ const getModelAndField = (folderType) => {
         case FOLDERS.USERS:
             return { model: userModel, field: 'avatar', hashField: 'avatar_hash' };
         case FOLDERS.STORES:
-            return { model: storeModel, field: 'logo', hashField: 'logo_hash' };
+            return { model: storeOwnerModel, field: 'logo', hashField: 'logo_hash' };
         default:
             return { model: null, field: null, hashField: null };
     }
@@ -79,8 +79,8 @@ const upload = multer({
 
 /**
  * Middleware to handle duplicate check and upload to Cloudinary
- * @param {string} folderType - One of FOLDERS constants
- * @param {boolean} isMultiple - Whether to handle multiple files
+ * param {string} folderType - One of FOLDERS constants
+ * param {boolean} isMultiple - Whether to handle multiple files
  */
 const uploadToCloudinary = (folderType = FOLDERS.PRODUCTS, isMultiple = false) => {
     return async (req, res, next) => {
@@ -189,9 +189,40 @@ const uploadToCloudinary = (folderType = FOLDERS.PRODUCTS, isMultiple = false) =
 
 const extractPublicIdFromUrl = (url) => {
   if (!url) return null;
-  const parts = url.split('/');
-  const filename = parts[parts.length - 1];
-  return filename.split('.')[0];
+  
+  console.log("Extracting publicId from the URL:", url);
+  
+  try {
+    const uploadIndex = url.indexOf('/upload/');
+    if (uploadIndex === -1) return null;
+    
+    // Get everything after '/upload/'
+    let path = url.substring(uploadIndex + 8); // length of '/upload/' is 8
+    
+    console.log("Path After '/upload/':", path);
+    
+    // Check if it starts with 'v' (version number)
+    // Version format: v1234567890/
+    if (path.match(/^v\d+\//)) {
+      // Remove the version part (v1234567890/)
+      path = path.substring(path.indexOf('/') + 1);
+      console.log("Path After removing version:", path);
+    }
+    
+    // Remove file extension (.jpg, .png, etc.)
+    const lastDotIndex = path.lastIndexOf('.');
+    if (lastDotIndex !== -1) {
+      path = path.substring(0, lastDotIndex);
+      console.log("Path After removing extension:", path);
+    }
+    
+    console.log("Extracted publicId:", path);
+    return path; // Returns: "GlamQena/users/cute_dog-1788096048872-7e800b08"
+    
+  } catch (error) {
+    console.error("Error extracting publicId:", error);
+    return null;
+  }
 };
 
 const deleteImageFromCloudinary = async (url) => {

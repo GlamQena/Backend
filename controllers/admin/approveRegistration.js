@@ -1,6 +1,6 @@
 const { storeOwnerModel } = require("../../models/users/storeOwner");
 const { adminModel } = require("../../models/users/admin");
-const { sendEmail, getUrlFrontEnd } = require("../../utils/mailSender");
+const { sendEmail } = require("../../utils/mailSender");
 
 const approveRegistration = async (req, res) => {
   try {
@@ -66,10 +66,9 @@ const approveRegistration = async (req, res) => {
       });
     }
 
-    // Approve the store by setting is_approved to true
     storeToApprove.is_approved = true;
-    
-    // Save the updated store information
+    storeToApprove.isActive = true;
+
     const approvedStore = await storeToApprove.save();
 
     // Send approval email to store owner
@@ -77,8 +76,7 @@ const approveRegistration = async (req, res) => {
       await sendApprovalEmail(
         approvedStore.email,
         approvedStore.username || approvedStore.store_name,
-        approvedStore.store_name,
-        approvedStore._id
+        approvedStore.store_name
       );
     } catch (emailError) {
       console.error("Failed to send approval email:", emailError);
@@ -136,8 +134,8 @@ const getMissingFields = (store) => {
 };
 
 // Helper function to send approval email
-async function sendApprovalEmail(email, username, storeName, userId) {
-  const loginUrl = getUrlFrontEnd(userId, email, "store_owner");
+async function sendApprovalEmail(email, username, storeName) {
+  const loginUrl = `http://localhost:${process.env.FRONTEND_PORT}/login`;
 
   const emailHtml = `<!DOCTYPE html>
 <html lang="en">
@@ -309,7 +307,7 @@ async function sendApprovalEmail(email, username, storeName, userId) {
   try {
     await sendEmail({
       to: email,
-      subject: `✔️ Store Registration Approved - Welcome to Glam2ena!`,
+      subject: `Store Registration Approved - Welcome to Glam2ena!`,
       html: emailHtml,
     });
     console.log(`Approval email sent to ${email}`);

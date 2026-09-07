@@ -4,7 +4,10 @@ const getUserProfileController = require("../controllers/profile/getUserProfile.
 const editProfileController= require('../controllers/profile/editProfile.js');
 const changePasswordController= require('../controllers/profile/changePassword.js');
 const {upload, uploadUserImage, uploadStoreImage}= require("../utils/upload.js");
-const uploadImageController = require("../controllers/profile/uploadImage.js");
+const uploadAvatarController = require("../controllers/profile/uploadAvatar.js");
+const deleteAvatarController = require("../controllers/profile/deleteAvatar.js");
+const uploadStoreLogoController = require("../controllers/profile/uploadStoreLogo.js");
+const deleteStoreLogoController = require("../controllers/profile/deleteStoreLogo.js");
 const checkRole = require("../middleware/checkRole.js");
 const deleteUserController = require("../controllers/users/deleteUser.js");
 const requestForDeletion = require("../controllers/profile/requestForDeletion.js");
@@ -16,18 +19,21 @@ router.use(checkAuth());
 router.get("/", getUserProfileController);
 router.put(
     "/edit", 
-    // upload.fields([
-    //     {name: "notifications", maxCount: 3}, 
-    //     {name: "skinConcerns", maxCount: 5}
-    // ]), 
-    upload.single("image"), 
-    uploadStoreImage,  
+    upload.fields([
+        {name: "notifications", maxCount: 3}, 
+        {name: "skinConcerns", maxCount: 5}
+    ]), 
     editProfileController
 );
-router.patch("/avatar", upload.single("image"), uploadUserImage, uploadImageController);
-router.patch("/change-password", changePasswordController);
-router.post("/request/deletion",checkRole(["admin","store_owner"]),requestForDeletion)
+router.patch("/avatar", upload.single("image"), uploadUserImage, uploadAvatarController);
+router.delete("/avatar", deleteAvatarController);
 
-router.delete("/myProfile",checkRole("client"),deleteUserController)
+router.patch("/store-logo", upload.single("logo"), uploadStoreImage, uploadStoreLogoController);
+router.delete("/store-logo", deleteStoreLogoController);
+
+router.patch("/change-password", changePasswordController);
+
+router.post("/request/deletion", checkRole(["admin","store_owner"]), requestForDeletion)
+router.delete("/myProfile", checkRole("client"), deleteUserController)
 
 module.exports= router;

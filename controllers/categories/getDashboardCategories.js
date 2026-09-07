@@ -1,6 +1,6 @@
 const categoryModel = require("../../models/category");
 
-const getCategoriesController = async (req, res) => {
+const getDashboardCategoriesController = async (req, res) => {
   try {
     const {
       page = 1,
@@ -207,7 +207,7 @@ const getCategoriesController = async (req, res) => {
     });
     
   } catch (error) {
-    console.error("Error in getCategoriesController:", error);
+    console.error("Error in getDashboardCategoriesController:", error);
     res.status(500).json({
       success: false,
       message: "Internal server error",
@@ -216,4 +216,4 @@ const getCategoriesController = async (req, res) => {
   }
 };
 
-module.exports = getCategoriesController;
+module.exports = getDashboardCategoriesController;

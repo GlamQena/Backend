@@ -223,62 +223,110 @@ const getProductWithStock = async (productId, requestedQuantity = 1, currentQuan
  * Add product to cart
  */
 const addToCart = async (cart, product, quantity) => {
-  const owner_store_id = product.owner_store_id;
+  // CRITICAL FIX: Get the store ID properly
+  // If owner_store_id is populated, it might be an object with _id
+  let ownerStoreId;
+  if (product.owner_store_id && typeof product.owner_store_id === 'object') {
+    // If it's populated with _id
+    ownerStoreId = product.owner_store_id._id || product.owner_store_id.id || product.owner_store_id;
+  } else {
+    // If it's just the ID string
+    ownerStoreId = product.owner_store_id;
+  }
+  
   const prod_id = product._id;
   
-  let storeIndex = cart.products.findIndex(
-    store => store.owner_store_id.toString() === owner_store_id.toString()
-  );
+  // Convert both to strings for reliable comparison
+  const ownerStoreIdStr = ownerStoreId.toString();
+  const prodIdStr = prod_id.toString();
   
+  console.log(`Adding product ${prodIdStr} to store ${ownerStoreIdStr}`);
+  
+  let storeIndex = -1;
   let productIndex = -1;
   let currentQuantity = 0;
   
-  if (storeIndex !== -1) { //if the cart already have products for the target storeOwner
-    productIndex = cart.products[storeIndex].products.findIndex(
-      p => p.prod_id.toString() === prod_id.toString()
-    );
-    if (productIndex !== -1) { //if the product already added to the cart before
-      currentQuantity = cart.products[storeIndex].products[productIndex].quantity;
+  // Find store - use string comparison for reliability
+  for (let i = 0; i < cart.products.length; i++) {
+    const store = cart.products[i];
+    const storeId = store.owner_store_id._id || store.owner_store_id;
+    if (storeId.toString() === ownerStoreIdStr) {
+      storeIndex = i;
+      break;
     }
   }
+  
+  if (storeIndex !== -1) {
+    // Find product within the store
+    const store = cart.products[storeIndex];
+    for (let j = 0; j < store.products.length; j++) {
+      const prod = store.products[j];
+      const prodId = prod.prod_id._id || prod.prod_id;
+      if (prodId.toString() === prodIdStr) {
+        productIndex = j;
+        currentQuantity = prod.quantity;
+        break;
+      }
+    }
+  }
+  
+  console.log(`Store index: ${storeIndex}, Product index: ${productIndex}, Current quantity: ${currentQuantity}`);
   
   // Validate stock
   const stockCheck = await getProductWithStock(prod_id, quantity, currentQuantity);
   if (!stockCheck.valid) return stockCheck;
   
+  // Get product price
+  const productPrice = product.price || 0;
+  
   if (storeIndex === -1) {
-    // New store
-    cart.products.push({
-      owner_store_id,
+    // New store - create store entry
+    const newStore = {
+      owner_store_id: ownerStoreId,
       products: [{
-        prod_id,
+        prod_id: prod_id,
         name: product.name,
-        price: product.price,
-        quantity,
-        subtotal_price: product.price * quantity
+        price: productPrice,
+        quantity: quantity,
+        subtotal_price: productPrice * quantity
       }],
-      store_subtotal: product.price * quantity
-    });
+      store_subtotal: productPrice * quantity
+    };
+    cart.products.push(newStore);
+    console.log(`Created new store entry for store ${ownerStoreIdStr}`);
+    
   } else if (productIndex === -1) {
     // New product in existing store
-    cart.products[storeIndex].products.push({
-      prod_id,
+    const newProduct = {
+      prod_id: prod_id,
       name: product.name,
-      price: product.price,
-      quantity,
-      subtotal_price: product.price * quantity
-    });
-    cart.products[storeIndex].store_subtotal += product.price * quantity;
-  } else {
-    // Update existing product
-    cart.products[storeIndex].products[productIndex].quantity = stockCheck.totalAfterAdd;
-    cart.products[storeIndex].products[productIndex].subtotal_price = 
-      product.price * stockCheck.totalAfterAdd;
+      price: productPrice,
+      quantity: quantity,
+      subtotal_price: productPrice * quantity
+    };
+    cart.products[storeIndex].products.push(newProduct);
+    
+    // Recalculate store subtotal
     cart.products[storeIndex].store_subtotal = cart.products[storeIndex].products.reduce(
       (sum, p) => sum + p.subtotal_price, 0
     );
+    console.log(`Added new product to existing store ${ownerStoreIdStr}`);
+    
+  } else {
+    // Update existing product
+    const newQuantity = stockCheck.totalAfterAdd;
+    cart.products[storeIndex].products[productIndex].quantity = newQuantity;
+    cart.products[storeIndex].products[productIndex].subtotal_price = 
+      productPrice * newQuantity;
+    
+    // Recalculate store subtotal
+    cart.products[storeIndex].store_subtotal = cart.products[storeIndex].products.reduce(
+      (sum, p) => sum + p.subtotal_price, 0
+    );
+    console.log(`Updated existing product quantity to ${newQuantity}`);
   }
   
+  // Recalculate total price
   cart.total_price = cart.products.reduce((sum, store) => sum + store.store_subtotal, 0);
   await cart.save();
   

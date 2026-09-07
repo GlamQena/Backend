@@ -71,8 +71,8 @@ const UserSchema = new mongoose.Schema(
       type: String, 
       required: false,
       validate: {
-        validator:(v) => {
-          if(this.avatar && this.avatar.length > 0)
+        validator: function (v){
+          if(this.avatar && this.avatar.length > 0 && this.avatar.includes("cloudinary"))
             return v && v.length > 0;
           return true;
         },
@@ -140,13 +140,13 @@ const UserSchema = new mongoose.Schema(
 //indexing the most used columns (username, phone, email, role) for performance and fast access.
 
 UserSchema.virtual("age").get(function () {
-  if (!this.birthDate) return null;
+  if (!this.birthdate) return null;
 
   const today = new Date();
-  let age = today.getFullYear() - this.birthDate.getFullYear();
+  let age = today.getFullYear() - this.birthdate.getFullYear();
 
-  const monthDiff = today.getMonth() - this.birthDate.getMonth();
-  const dateDiff = today.getDate() - this.birthDate.getDate();
+  const monthDiff = today.getMonth() - this.birthdate.getMonth();
+  const dateDiff = today.getDate() - this.birthdate.getDate();
 
   if (monthDiff < 0 || (monthDiff === 0 && dateDiff < 0)) age--;
 

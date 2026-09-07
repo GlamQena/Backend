@@ -30,7 +30,14 @@ const getUserWishlist = async (req, res) => {
 
         let foundClient = await clientModel
             .findById(clientId)
-            .select('_id username email wishlist')
+            .select("-password")
+            .populate({
+                path: 'wishlist.productId',
+                populate: {
+                    path: 'owner_store_id', //the path inside productId
+                    select: 'store_name logo'
+                }
+            })
             .lean(); // For better performance
 
         if (!foundClient) {
@@ -45,8 +52,7 @@ const getUserWishlist = async (req, res) => {
         // Filter out invalid wishlist items
         const validWishlist = wishlist.filter(item => {
             return item && (
-                item.productId || 
-                item.product || 
+                item.productId ||
                 item._id
             );
         });
@@ -57,8 +63,7 @@ const getUserWishlist = async (req, res) => {
             data: {
                 wishlist: validWishlist,
                 totalItems: validWishlist.length,
-                userId: foundClient._id,
-                username: foundClient.username
+                user: foundClient,
             }
         });
 

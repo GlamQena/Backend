@@ -94,13 +94,11 @@ CartSchema.index(
   },
 );
 
-CartSchema.index(
-  { 
-    'products.owner_store_id': 1,
-    'products.products.prod_id': 1 
-  },
-  { unique: true, sparse: true }
-);
+CartSchema.index({ 
+  'products.owner_store_id': 1,
+  'products.products.prod_id': 1 
+});
+
 
 CartSchema.pre("save", function (next) {
   try {

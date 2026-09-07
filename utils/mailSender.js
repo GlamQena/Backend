@@ -32,26 +32,39 @@ async function sendEmail(options) {
 async function sendEmailMessage(options) {
   try {
     const { to, subject, text } = options;
+    
+    if (!to || !subject || !text) {
+      console.error("Missing required fields:", { to, subject, text: !!text });
+      return;
+    }
+
     const templatePath = path.join(
       __dirname,
-      "../templates/emailmsg.template.html",
+      "../templates/emailmsg.template.html"
     );
+    
     let emailMsgTemp = await fs.readFile(templatePath, "utf-8");
 
-    emailMsgTemp = emailMsgTemp.replace("{subject}", subject);
-    emailMsgTemp = emailMsgTemp.replace("{message}", text);
+    const year = new Date().getFullYear();
+
+    // Replace placeholders
+    emailMsgTemp = emailMsgTemp.replace(/\{subject\}/g, subject);
+    emailMsgTemp = emailMsgTemp.replace(/\{message\}/g, text);
+    emailMsgTemp = emailMsgTemp.replace(/\{year\}/g, year);
 
     await sendEmail({
       to,
       subject,
       html: emailMsgTemp,
     });
+    
+    console.log(`Email sent to ${to}`);
   } catch (err) {
-    console.log("Error reading template or sending email:", err);
+    console.log(" Error reading template or sending email:", err);
   }
 }
 
-function getUrlFrontEnd(userId, email, role,ex) {
+function getUrlFrontEnd(userId, email, role, ex) {
   try{
   const payload = {
     id: userId,
@@ -72,7 +85,7 @@ function getUrlFrontEnd(userId, email, role,ex) {
 
 }
 
-async function sendEmailVerificationToUser(email, token) {
+async function sendEmailVerificationToUser(email, token, username) {
   const frontend_url = `http://localhost:${process.env.FRONTEND_PORT}/verify-email?email=${email}&token=${token}`;
   const backend_url = `http://localhost:${process.env.BACKEND_PORT}/auth/verify/${email}/${token}`;
   const url = frontend_url;
@@ -85,7 +98,9 @@ async function sendEmailVerificationToUser(email, token) {
 
     let emailTemp = await fs.readFile(templatePath, "utf-8");
 
+    emailTemp = emailTemp.replace(/\{username\}/g, username);
     emailTemp = emailTemp.replace(/\{url\}/g, url);
+    emailTemp = emailTemp.replace(/\{year\}/g, new Date().getFullYear());
 
     await sendEmail({
       to: email,
@@ -113,7 +128,8 @@ async function setUserVerification(user, ex) {
     expiresIn: ex || "10m",
   });
 
-  await sendEmailVerificationToUser(user.email, emailToken);
+  const fullName = (user.firstName || '') + (user.lastName || "");
+  await sendEmailVerificationToUser(user.email, emailToken, fullName.trim() == "" ? user.username : fullName);
 }
 
 module.exports = {

@@ -19,6 +19,7 @@ const placeOrderController = async (req, res) => {
       }
     }
 
+    let cart = null;
     if (userIdObj) {
       cart = await Cart.findOne({user_id: userIdObj });
       console.log(`fetched cart for user_id ${userIdObj}=>`, cart);
@@ -36,62 +37,81 @@ const placeOrderController = async (req, res) => {
     let totalPrice = 0;
     let orderProducts = [];
     let totalQuantity = 0;
+    const updatedStores = new Set();
 
     for (const storeProds of cart.products) {
-      let store_subtotal = 0;
+      let storeSubtotal = 0;
       const storeProducts = [];
+      const storeId = storeProds.owner_store_id;
 
-      for (let prod of storeProds.products) {
-        const product = await Product.findById(prod.prod_id);
+      // Get store owner to validate existence
+      const storeOwner = await storeOwnerModel.findById(storeId);
+      if (!storeOwner) {
+        return res.status(404).json({ 
+          message: `Store owner not found for store ID: ${storeId}` 
+        });
+      }
+
+      for (const item of storeProds.products) {
+        const product = await Product.findById(item.prod_id);
 
         if (!product) {
+          // Remove invalid product from cart
           for (const store of cart.products) {
             store.products = store.products.filter(
-              (p) => p.prod_id.toString() !== prod.prod_id.toString()
+              (p) => p.prod_id.toString() !== item.prod_id.toString()
             );
           }
           cart.products = cart.products.filter((s) => s.products.length > 0);
           await cart.save();
 
-          // return res.status(400).json({
-          //   message: `A product in your cart is no longer available and has been removed. Please review your cart and try again.`
-          // });
-          continue;
-        }
-
-        if (product.stock < prod.quantity) {
           return res.status(400).json({
-            message: `Not enough stock for ${product.name}`
+            message: `A product in your cart is no longer available and has been removed. Please review your cart and try again.`
           });
         }
 
-        const subtotal = product.price * prod.quantity;
+        if (product.stock < item.quantity) {
+          return res.status(400).json({
+            message: `Not enough stock for "${product.name}". Available: ${product.stock}, Requested: ${item.quantity}`
+          });
+        }
+
+        const subtotal = product.price * item.quantity;
         storeProducts.push({
           prod_id: product._id,
           name: product.name,
           price: product.price,
-          quantity: prod.quantity,
-          subtotal_price: subtotal,
+          quantity: item.quantity,
+          subtotal_price: subtotal, // Will be recalculated by pre-validate hook
         });
 
-        store_subtotal += subtotal;
-        totalQuantity += prod.quantity;
+        storeSubtotal += subtotal;
+        totalQuantity += item.quantity;
+
+        // Update product stock
+        product.stock -= item.quantity;
+        await product.save();
       }
 
       orderProducts.push({
-        owner_store_id: storeProds.owner_store_id,
+        owner_store_id: storeId,
         products: storeProducts,
-        store_subtotal
+        store_subtotal: storeSubtotal, // Will be recalculated by pre-validate hook
       });
 
-      totalPrice += store_subtotal;
+      // Update store owner's total orders (only once per store)
+      if (!updatedStores.has(storeId.toString())) {
+        updatedStores.add(storeId.toString());
+        storeOwner.total_orders = (storeOwner.total_orders || 0) + 1;
+        await storeOwner.save();
+      }
     }
 
     const deliveryFee = 50;
     totalPrice += deliveryFee;
 
     // Create order
-    const order = await Order.create({
+    const order = new Order({
       user_id: userId,
       products: orderProducts,
       total_quantity: totalQuantity,
@@ -99,19 +119,10 @@ const placeOrderController = async (req, res) => {
       total_price: totalPrice,
       status: "قيد الانتظار",
     });
-
-    // Decrease stock and increase total_orders for store owner
-    for (const storeProds of cart.products) {
-      for (const item of storeProds.products) {
-        await Product.findByIdAndUpdate(item.prod_id, {
-          $inc: { stock: -item.quantity },
-        });
-      }
-    await storeOwnerModel.findByIdAndUpdate(storeProds.owner_store_id, {$inc: {total_orders: +1}});
-    }
-
+    await order.save();
+    
     // Increase total_orders for client
-    await clientModel.findByIdAndUpdate(userId, {$inc: {totalOrders: +1}});
+    await clientModel.findByIdAndUpdate(userId, {$inc: {totalOrders: +1, totalSpent: order.total_price}});
     
     // Clear cart
     cart.products = [];
@@ -119,13 +130,27 @@ const placeOrderController = async (req, res) => {
     await cart.save();
 
     return res.status(201).json({
+      success: true,
       message: "Order placed successfully",
-      order
+      order: order,
+      orderSummary: {
+        orderId: order._id,
+        subtotal: order.subtotal_price,
+        deliveryCost: order.delivery_cost,
+        total: order.total_price,
+        totalItems: totalQuantity,
+        status: order.status,
+        stores: order.products.map(store => ({
+          storeId: store.owner_store_id,
+          subtotal: store.store_subtotal,
+          productsCount: store.products.length
+        }))
+      }
     });
 
   } catch (error) {
-    console.error(error);
-    res.status(500).json({ message: "Server error" });
+    console.error(`error placing order: ${JSON.stringify(error)}`);
+    res.status(500).json({ message: "internal Server error", error: error.message});
   }
 };
 

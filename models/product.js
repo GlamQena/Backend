@@ -69,8 +69,13 @@ const ProductSchema = new mongoose.Schema(
     images_hashes: {
       type: [String],
       validate:{
-        validator: (v)=> v.length>=1 && v.length<=7,
-        error: ()=> "you must provide at least 1 image for the product and don't exceed 7"
+        validator: function (v){
+          if(this.images && this.images.length>0 && this.images.includes("cloudinary")){
+            return v.length === this.images.length;
+          }
+          return true;
+        },
+        error: ()=> "images_hashes must be provided for all images when they are uploaded to cloudinary"
       }
     }, //to check for image duplication to not upload the same image twice on cloudinary
 

@@ -8,10 +8,11 @@ const getStoreProducts = async (req, res) => {
 
     // جلب المنتجات الخاصة بالمحل
     const products = await Product.find({ owner_store_id: storeId })
-      .populate({path: "category_id", select: "name icon description"})
-      .select('name description price images average_rating stock'); 
+      .populate({path: "category_id", select: "_id name icon description"})
+      // .populate({path: "owner_store_id", select: "store_name"})
+      .select('name description price images average_rating total_rates stock skinType ingredients'); 
 
-    const store = await storeOwnerModel.findById(storeId).select("store_name total_products average_rating image");
+    const store = await storeOwnerModel.findById(storeId).select("store_name total_products average_rating total_rates total-orders logo");
 
     res.status(200).json({
       success: true,

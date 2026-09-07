@@ -6,10 +6,10 @@ const getSpecialProducts = async(req, res) => {
         const {status= "قيد الانتظار", start_date, end_date, limit=5} = req.query;
         
         // Get recent products
-        const products = await productModel.find()
+        const products = await productModel.find({isActive: true})
             .sort({createdAt: -1})
             .populate("owner_store_id", "store_name")
-            .select("_id name description price images average_rating");
+            .select("_id name volume price stock images total_rates average_rating");
         const recentProducts = products.slice(0, parseInt(limit));
 
         // Build match conditions for orders
@@ -75,6 +75,7 @@ const getSpecialProducts = async(req, res) => {
                 store_id: { $first: "$products.owner_store_id" },
                 store_name: { $first: "$store_info.store_name" },
                 price: { $first: "$products.products.price" },
+                stock: { $first: "$product_info.stock" },
                 name: { $first: { $ifNull: ["$product_info.name", "$products.products.name"] } }, 
                 description: { $first: "$product_info.description" },
                 images: { $first: "$product_info.images" },
@@ -91,6 +92,7 @@ const getSpecialProducts = async(req, res) => {
                 store_id: 1,
                 store_name: 1,
                 price: 1,
+                stock: 1,
                 name: 1,
                 description: 1,
                 images: 1,

@@ -27,7 +27,7 @@ let seedData = [
     ],
     skinType: "عادية",
     weight: 0.15,
-    volume: 200,
+    volume: 150,
     dimensions: { length: 6, width: 6, height: 16 }
   },
   {
@@ -109,7 +109,7 @@ let seedData = [
     ],
     skinType: "عادية",
     weight: 0.15,
-    volume: 220,
+    volume: 200,
     dimensions: { length: 6, width: 6, height: 17 }
   },
   {
@@ -134,9 +134,9 @@ let seedData = [
   {
     owner_store_id: "{id}",
     category_id: "69e387b312d268b6bb3b69db",
-    name: "غسول جاميرا",
+    name: "غسول جاميرا للمناطق الحساسة Bright & White",
     price: 140,
-    description: "غسول التفتيح جيميرا برايت ووايت مُصمّم خصيصًا للبشرة الحساسة. غني بفيتامين C، وفيتامين B3، وحمض اللاكتيك، والبروبوليس، يقوم بتنظيف البشرة بلطف، ويقضي على الروائح، ويوازن مستويات الحموضة، ويُضيء البشرة الداكنة. هذه التركيبة الخالية من البارابين تضمن الانتعاش اليومي مع الحفاظ على حاجز الرطوبة الطبيعي لبشرتك ومكافحة البكتيريا الضارة.",
+    description: "غسول جاميرا Bright & White للمناطق الحساسة، مصمم للتنظيف اللطيف والانتعاش اليومي. يحتوي على فيتامين C وفيتامين B3 وحمض اللاكتيك والبروبوليس، ويساعد على تنظيف المنطقة الحساسة والحفاظ على توازنها مع ترك إحساس منعش. تركيبة خالية من البارابين ومناسبة للاستخدام اليومي.",
     stock: 42,
     ingredients: [
       "فيتامين سي",
@@ -273,13 +273,13 @@ let seedData = [
       "جليسرين"
     ],
     images: [
-      "https://f.nooncdn.com/p/pzsku/ZB7A0F7CD9D36851D2A87Z/45/_/1779179138/457bd44f-3865-4b9e-883e-65988bf71af9.jpg",
-      "https://f.nooncdn.com/p/pzsku/Z35013FF4846F7406876CZ/45/_/1779179162/0120e202-d051-40ec-84fc-42d0a3cf8041.jpg?width=800",
-      "https://f.nooncdn.com/p/pzsku/Z35013FF4846F7406876CZ/45/_/1779179162/d6802472-c0dc-483d-bba9-4b022acff531.jpg?width=800"
-    ],
+       "https://f.nooncdn.com/p/pzsku/ZB7A0F7CD9D36851D2A87Z/45/_/1779179138/457bd44f-3865-4b9e-883e-65988bf71af9.jpg",
+       "https://f.nooncdn.com/p/pzsku/ZB7A0F7CD9D36851D2A87Z/45/_/1779179138/f2137f4d-b679-46a7-b638-865e988b77e0.jpg",
+       "https://f.nooncdn.com/p/pzsku/ZB7A0F7CD9D36851D2A87Z/45/_/1779179138/512e3bfe-50f4-47bb-b25d-f9b1336ce8e1.jpg"
+     ],
     skinType: "جافة",
-    weight: 0.3,
-    volume: 50,
+    weight: 0.34,
+    volume: 340,
     dimensions: { length: 7, width: 7, height: 5 }
   },
   {
@@ -300,27 +300,35 @@ let seedData = [
     ],
     skinType: "عادية",
     weight: 0.2,
-    volume: 50,
+    volume: 150,
     dimensions: { length: 7, width: 7, height: 5 }
   },
   {
     owner_store_id: "{id}",
     category_id: "69e387b312d268b6bb3b69db",
-    name: "جيل تنظيف لطيف أكتي-كلير",
+    name: "جل تنظيف لطيف أكتي-كلير",
     price: 500,
-    description: "جل ديرمايل للتنظيف اللطيف هو تركيبة خالية من الصابون ولا تسبب الجفاف، صُممت خصيصًا للبشرة المختلطة إلى الدهنية، وتعمل على إزالة الشوائب بفعالية مع تنظيم إنتاج الزهم. من أول استخدام، يترك البشرة نقية وناعمة ومرطبة—مهيأة تمامًا لتلقي العناية الجلدية الإضافية.",
+    description:
+      "جل تنظيف لطيف من أكتي-كلير مصمم لتنظيف البشرة بفعالية وإزالة الشوائب والزيوت الزائدة دون التسبب في جفافها. تركيبته مناسبة للاستخدام اليومي وتساعد على ترك البشرة نظيفة ومنتعشة.",
     stock: 14,
     ingredients: [
       "جليسرين",
       "بانثينول"
     ],
     images: [
-      "https://f.nooncdn.com/p/pzsku/ZFD991CF2AF0B322AEAA5Z/45/_/1775709344/b654622c-2fc5-4dd9-a5c7-ca7556c25f5e.jpg"
+      "https://f.nooncdn.com/p/pzsku/Z83AFB033C35207AF31B1Z/45/_/1776665661/6263a55d-1385-4eb8-a31e-7b8b8dbb1247.jpg?width=800",
+      "https://f.nooncdn.com/p/pzsku/Z83AFB033C35207AF31B1Z/45/_/1776665678/53f32f12-6e81-4f22-b33e-c40079d2c975.jpg?width=800",
+      "https://f.nooncdn.com/p/pzsku/Z83AFB033C35207AF31B1Z/45/_/1776665678/aa2f48e4-4e01-480d-8f8b-02dec8f9d2ed.jpg?width=800",
+      "https://f.nooncdn.com/p/pzsku/Z83AFB033C35207AF31B1Z/45/_/1776665678/9806d35d-b2c6-428a-853f-477a57b8d73e.jpg?width=800"
     ],
     skinType: "مختلطة",
     weight: 0.25,
     volume: 200,
-    dimensions: { length: 6, width: 6, height: 16 }
+    dimensions: {
+      length: 6,
+      width: 6,
+      height: 16
+    }
   },
   {
     owner_store_id: "{id}",
@@ -698,13 +706,14 @@ let seedData = [
     stock: 120,
     ingredients: ["كلوروهيدرات الألومنيوم", "الكربون الأسود", "زيت الأفوكادو"],
     images: [
-      "https://f.nooncdn.com/p/pnsku/N39790177A/45/_/1767607812/c7e66898-f9e5-4ce4-8734-d4eb8f1a5230.jpg?width=800",
-      "https://f.nooncdn.com/p/pnsku/N15767861A/45/_/1766585081/4156b4cc-fc54-4094-b51a-fdf354472cd2.jpg?width=800",
-      "https://f.nooncdn.com/p/pzsku/Z6E1E006BC8EE20290DFDZ/45/_/1783866720/af3619fe-1574-42aa-8556-c1d7ceaa919f.jpg?width=800",
-      "https://f.nooncdn.com/p/pzsku/Z6E1E006BC8EE20290DFDZ/45/_/1783866720/4793f8dc-e619-48d4-89f8-29045115dae9.jpg?width=800",
-      "https://f.nooncdn.com/p/pzsku/Z6E1E006BC8EE20290DFDZ/45/_/1783866720/99ce31a7-0851-4dc9-9962-877f8473ab24.jpg?width=800",
-      "https://f.nooncdn.com/p/pnsku/N15767861A/45/_/1766585081/cad3fbd5-0063-4a2b-a996-ee421b8d40e6.jpg?width=800",
-    ],
+       "https://f.nooncdn.com/p/pnsku/N15767861A/45/_/1767607876/0eb84ad8-32b1-4d4f-877d-f223c3371966.jpg",
+       "https://f.nooncdn.com/p/pnsku/N15767861A/45/_/1766585081/4156b4cc-fc54-4094-b51a-fdf354472cd2.jpg",
+       "https://f.nooncdn.com/p/pnsku/N15767861A/45/_/1766585080/605bd038-da09-4322-95e6-da72d0aef523.jpg",
+       "https://f.nooncdn.com/p/pnsku/N15767861A/45/_/1766585082/d465be0d-eeba-4cfc-b96c-6c7d2a174f7e.jpg",
+       "https://f.nooncdn.com/p/pnsku/N15767861A/45/_/1766585080/56720217-d2f9-43aa-a375-560e558ba826.jpg",
+       "https://f.nooncdn.com/p/pnsku/N15767861A/45/_/1766585082/2f1ce8bb-186c-481f-ad70-567abea0d72b.jpg",
+       "https://f.nooncdn.com/p/pnsku/N15767861A/45/_/1766585081/cad3fbd5-0063-4a2b-a996-ee421b8d40e6.jpg"
+     ],
     weight: 0.1,
     volume: 50,
     dimensions: { length: 4, width: 4, height: 10 },
@@ -994,12 +1003,17 @@ let seedData = [
   },
   {
     owner_store_id: "{id}",
-    category_id: "69e387b312d268b6bb3b69dd",
-    name: "Generic Beauty Blender إسفنجة مكياج مع علبة مخروطية",
-    description: "إسفنجة مزج المكياج مع علبة تخزين مخروطية واقية.",
+    category_id: "69e387b312d268b6bb3b69dd", // tools & accessories
+    name: "حقيبة نسائية مبطنة للكتف بتصميم عصري",
+    description: "ارتقِ بأناقتك اليومية مع هذه الحقيبة النسائية المبطنة للكتف، المصممة لتجمع بين الأناقة العصرية والعملية اليومية. مصنوعة من جلد ناعم عالي الجودة، وتتميز بتصميم مبطن فاخر مع خياطة هندسية دقيقة تضفي ملمسًا وجاذبية بصرية. حزام السلسلة الذهبي والإغلاق المعدني يضيفان لمسة من الفخامة، مما يجعل هذه الحقيبة الإكسسوار المثالي سواء للخروجات العادية أو المناسبات الخاصة. رغم حجمها الصغير، توفر مساحة كافية لأساسياتك – الهاتف، المحفظة، المفاتيح، وبعض مستلزمات التجميل الصغيرة – مع المحافظة على خفة الوزن وسهولة الحمل. سواء ارتديتِها على الكتف أو بشكل كروس بودي، تضيف هذه القطعة المتعددة الاستخدام لمسة أنيقة لأي إطلالة.",
     price: 28,
     stock: 180,
-    ingredients: ["رغوة البولي يوريثان"],
+    ingredients: [
+      "جلد ناعم عالي الجودة",
+      "رغوة البولي يوريثان",
+      "سلسلة ذهبية",
+      "إغلاق معدني"
+    ],
     images: [
       "https://f.nooncdn.com/p/pzsku/Z56B88F696EC23E36043BZ/45/_/1778685803/2386ce07-ec5d-4a1a-ae7d-91beba9b120d.jpg?width=800",
       "https://f.nooncdn.com/p/pzsku/Z56B88F696EC23E36043BZ/45/_/1778685926/295d7edd-2bfc-4686-aad5-9d0bdc7923ae.jpg?width=800",
@@ -1009,10 +1023,14 @@ let seedData = [
       "https://f.nooncdn.com/p/pzsku/Z56B88F696EC23E36043BZ/45/_/1778685926/38b5b6f3-e458-41c6-ad27-4d8484b4198b.jpg?width=800",
       "https://f.nooncdn.com/p/pzsku/Z56B88F696EC23E36043BZ/45/_/1778685926/99ba19e8-2e0e-43ae-8d68-a44c9b8a7838.jpg?width=800"
     ],
-    skinType: "عادية",
-    weight: 0.01,
+    skinType: "عادية", // Not applicable for bags, but kept as per schema
+    weight: 0.5, // ~500g - realistic for a small shoulder bag
     volume: null,
-    dimensions: { length: 5, width: 4, height: 4 },
+    dimensions: { 
+      length: 25, // ~25cm length
+      width: 8,   // ~8cm width/depth
+      height: 18  // ~18cm height
+    }
   },
   {
     owner_store_id: "{id}",
@@ -1080,47 +1098,126 @@ const owner_store_id = "6a8c7a7e1305b056a96d98a0"; //consider as ObjectId not st
 // Marcos_store           => 6a8db64016293e067b46591d
 
 const SeedDB = async () => {
-  try {
-    await mongoose.connect(process.env.MONGO_URI);
-    console.log("Connected to MongoDB...");
+    try {
+        await mongoose.connect(process.env.MONGO_URI);
+        console.log("✅ Connected to MongoDB...");
 
-    await Product.deleteMany({ owner_store_id });
+        // Get all store owners
+        const stores = await storeOwnerModel.find({ 
+            role: "store_owner",
+            isActive: true,
+            is_approved: true 
+        });
 
-    fs.writeFileSync(path.join(__dirname, "../sources/products.json"), JSON.stringify(seedData), "utf-8");
-    seedData= fs.readFileSync(path.join(__dirname, "../sources/products.json"), "utf-8");
-    seedData= JSON.parse(seedData.replace(/"\{id\}"/g, `"${owner_store_id}"`));
-    const products= await Product.insertMany(seedData);
-    await storeOwnerModel.findByIdAndUpdate(owner_store_id, {$inc:{total_products: products.length}}, {new: true});
+        if (stores.length === 0) {
+            console.log("⚠️ No stores found in database. Please seed stores first.");
+            process.exit(0);
+        }
 
-     // Aggregate products by category to update category totalProducts
-    const categoryCounts = {};
-    for (const product of products) {
-      const categoryId = product.category_id.toString();
-      if (!categoryCounts[categoryId]) {
-        categoryCounts[categoryId] = 0;
-      }
-      categoryCounts[categoryId]++;
-    }
+        console.log(`📊 Found ${stores.length} stores to seed products for...`);
 
-    // Update each category with its product count
-    const categoryUpdatePromises = Object.entries(categoryCounts).map(
-      ([categoryId, count]) => {
-        return categoryModel.findByIdAndUpdate(
-          categoryId,
-          { $inc: { totalProducts: count } },  //without &inc if we want to reseed these initial products
-          { new: true }
+        // Get all categories
+        const categories = await categoryModel.find({});
+        if (categories.length === 0) {
+            console.log("⚠️ No categories found. Please seed categories first.");
+            process.exit(0);
+        }
+
+        console.log(`📁 Found ${categories.length} categories`);
+
+        // Shuffle function for random distribution
+        const shuffleArray = (array) => {
+            const shuffled = [...array];
+            for (let i = shuffled.length - 1; i > 0; i--) {
+                const j = Math.floor(Math.random() * (i + 1));
+                [shuffled[i], shuffled[j]] = [shuffled[j], shuffled[i]];
+            }
+            return shuffled;
+        };
+
+        // Process each store
+        let totalProductsSeeded = 0;
+        const allSeededProducts = [];
+
+        for (const store of stores) {
+            console.log(`\n📦 Processing store: ${store.store_name} (${store._id})`);
+
+            // Delete existing products for this store
+            const deletedCount = await Product.deleteMany({ owner_store_id: store._id });
+            if (deletedCount.deletedCount > 0) {
+                console.log(`   🗑️ Deleted ${deletedCount.deletedCount} existing products`);
+            }
+
+            // Random number of products per store (between 10 and 50)
+            const minProducts = 10;
+            const maxProducts = 50;
+            const numProducts = Math.floor(Math.random() * (maxProducts - minProducts + 1)) + minProducts;
+            
+            console.log(`🎲 Will seed ${numProducts} random products`);
+
+            // Shuffle the seed data and pick random products
+            const shuffledProducts = shuffleArray(seedData);
+            const selectedProducts = shuffledProducts.slice(0, numProducts);
+
+            const preparedProducts = selectedProducts.map(product => ({
+              ...product,
+              owner_store_id: store._id,
+            }));
+
+            // Insert products for this store
+            if (preparedProducts.length > 0) {
+                const insertedProducts = await Product.insertMany(preparedProducts);
+                allSeededProducts.push(...insertedProducts);
+                totalProductsSeeded += insertedProducts.length;
+
+                console.log(`✅ Seeded ${insertedProducts.length} products for ${store.store_name}`);
+
+                // Update store's total_products count
+                await storeOwnerModel.findByIdAndUpdate(
+                    store._id,
+                    { $inc: { total_products: insertedProducts.length } },
+                    { new: true }
+                );
+            }
+        }
+
+        // Update category totalProducts
+        console.log(`\n📊 Updating category product counts...`);
+        
+        // Aggregate products by category
+        const categoryCounts = {};
+        for (const product of allSeededProducts) {
+            const categoryId = product.category_id.toString();
+            if (!categoryCounts[categoryId]) {
+                categoryCounts[categoryId] = 0;
+            }
+            categoryCounts[categoryId]++;
+        }
+
+        // Update each category with its product count
+        const categoryUpdatePromises = Object.entries(categoryCounts).map(
+            ([categoryId, count]) => {
+                return categoryModel.findByIdAndUpdate(
+                    categoryId,
+                    { $inc: { totalProducts: count } },
+                    { new: true }
+                );
+            }
         );
-      }
-    );
 
-    await Promise.all(categoryUpdatePromises); //runs multiple database update operations in parallel and waits for all of them to complete before continuing
+        await Promise.all(categoryUpdatePromises);
 
-    console.log(" All products seeded successfully!");
-    process.exit();
-  } catch (err) {
-    console.error(" Seeding failed:", err.message);
-    process.exit(1);
-  }
+        console.log(`\n🎉 Seeding completed successfully!`);
+        console.log(`📊 Total stores processed: ${stores.length}`);
+        console.log(`📊 Total products seeded: ${totalProductsSeeded}`);
+        console.log(`📊 Total categories updated: ${Object.keys(categoryCounts).length}`);
+
+        process.exit(0);
+    } catch (err) {
+        console.error("❌ Seeding failed:", err.message);
+        console.error(err.stack);
+        process.exit(1);
+    }
 };
 
 SeedDB();

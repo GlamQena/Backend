@@ -22,14 +22,29 @@ const addProductToCart = async (req, res) => {
       });
     }
 
-    // Get product from database
-    const product = await productModel.findById(product_id);
+    // Get product from database with populated owner_store_id
+    const product = await productModel.findById(product_id).populate('owner_store_id');
     if (!product) {
       return res.status(404).json({
         success: false,
         message: "Product not found",
       });
     }
+
+    //trial to test the case of creatinf duplicate groups of the same product and storeOwner in the same cart
+
+    // Ensure product has owner_store_id
+    if (!product.owner_store_id) {
+      return res.status(400).json({
+        success: false,
+        message: "Product does not have an associated store",
+      });
+    }
+
+    // Log for debugging
+    console.log("Product owner_store_id:", product.owner_store_id);
+    console.log("Product owner_store_id type:", typeof product.owner_store_id);
+    console.log("Product owner_store_id _id:", product.owner_store_id._id || product.owner_store_id);
 
     // Get cart with retry logic
     let cart = null;
@@ -56,7 +71,14 @@ const addProductToCart = async (req, res) => {
       });
     }
 
-    // Add product to cart
+    // Log existing cart stores
+    console.log("Cart stores before add:", cart.products.map(s => ({
+      store_id: s.owner_store_id,
+      store_id_str: s.owner_store_id.toString(),
+      product_count: s.products.length
+    })));
+
+    // Add product to cart with proper store identification
     const result = await addToCart(cart, product, quantity);
     
     if (!result.valid) {
