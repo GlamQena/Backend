@@ -61,7 +61,7 @@ const loginController = async (req, res) => {
       cartMergeResult = await mergeGuestCartWithUserCart(user._id, session_id);
     }
 
-    // Generate tokens
+    // Generate tokensS
     const userData = user.toObject();
     delete userData.password;
 
@@ -83,7 +83,7 @@ const loginController = async (req, res) => {
     });
 
   } catch (error) {
-    console.error("Login error:", error);
+    console.error("Login error:", JSON.stringify(error));
     res.status(500).json({ 
       success: false,
       message: "Internal server error" 

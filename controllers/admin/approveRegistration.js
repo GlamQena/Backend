@@ -1,6 +1,7 @@
 const { storeOwnerModel } = require("../../models/users/storeOwner");
 const { adminModel } = require("../../models/users/admin");
 const { sendEmail } = require("../../utils/mailSender");
+const { webUrl } = require("../../config/urls");
 
 const approveRegistration = async (req, res) => {
   try {
@@ -135,7 +136,7 @@ const getMissingFields = (store) => {
 
 // Helper function to send approval email
 async function sendApprovalEmail(email, username, storeName) {
-  const loginUrl = `http://localhost:${process.env.FRONTEND_PORT}/login`;
+  const loginUrl = webUrl("/login");
 
   const emailHtml = `<!DOCTYPE html>
 <html lang="en">

@@ -19,6 +19,7 @@ const registerController = async (req, res) => {
         .json({ message: parsedRegister.error.issues[0].message });
     }
 
+    const {platform} = req.query;
     const { role, username, email, password, session_id, ...otherData } =
       // parsedRegister.data || 
       req.body;

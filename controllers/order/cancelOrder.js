@@ -3,9 +3,6 @@ const Product = require("../../models/product");
 const { clientModel } = require("../../models/users/client");
 const  {storeOwnerModel}  = require("../../models/users/storeOwner");
 const axios = require("axios");
-const path = require("path");
-
-require("dotenv").config({ path: path.join(__dirname, "../.env") });
 
 const paymob_api_key = process.env.PAYMOB_API_KEY;
 
@@ -131,7 +128,6 @@ async function processRefund(order) {
         }
 
         // Process refund through Paymob
-        // Note: Paymob's refund API endpoint might vary - check their documentation
         const refundResponse = await axios.post(
             "https://accept.paymob.com/api/acceptance/void_refund/refund",
             {

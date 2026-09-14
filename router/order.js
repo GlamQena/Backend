@@ -56,7 +56,7 @@ router.get(
   checkRole(["client", "store_owner", "admin"]),
   getOrderDetailsController,
 );
-router.get("/", checkRole("store_owner"), getOrdersByOwnerStoreId);
+router.get("/store", checkRole("store_owner"), getOrdersByOwnerStoreId);
 
 router.post("/", checkRole(["client", "admin"]), placeOrderController);
 router.post("/:id/payment", checkRole(["client", "admin"]), paymentCheckoutController);
@@ -70,6 +70,6 @@ router.patch(
   cancelOrderController,
 );
 
-router.get("/admin/orders", checkRole("admin"), checkAdminPermissions(["manageOrders"]), getAllOrders);
+router.get("/admin", checkRole("admin"), checkAdminPermissions(["manageOrders"]), getAllOrders);
 
 module.exports = router;

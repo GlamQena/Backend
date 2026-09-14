@@ -73,6 +73,7 @@ const getAllOrders = async (req, res) => {
       const orConditions = [
         { "user_id.firstName": searchRegex },
         { "user_id.lastName": searchRegex },
+        { "user_id.username": searchRegex },
         { "user_id.phoneNumber": searchRegex },
       ];
       if (mongoose.Types.ObjectId.isValid(search.trim())) {

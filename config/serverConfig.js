@@ -16,8 +16,6 @@ const LOCAL_IP = getLocalIP();
 
 // Development origins
 const devOrigins = [
-  'https://frontend-lpnvakl5t-semonhany848-7024s-projects.vercel.app',
-  'https://glamqena.vercel.app',
   "http://127.0.0.1:3000",
   "http://localhost:3000",
   "http://localhost:3001",
@@ -28,11 +26,11 @@ const devOrigins = [
   "http://192.168.1.101:3000",
   // Allow any local network IP (for mobile testing)
   (origin) => {
-    // Dynamic check for local network origins
+    // Dynamic check for local network origins for the mobile app testing
     if (!origin) return true;
-    const isLocalNetwork = origin.match(/^http:\/\/192\.168\./) || 
-                          origin.match(/^http:\/\/10\./) ||
-                          origin.match(/^http:\/\/172\.16\./) ||
+    const isLocalNetwork = origin.match(/^http:\/\/192\.168\./) || //most home networks
+                          origin.match(/^http:\/\/10\./) || //corporate networks
+                          origin.match(/^http:\/\/172\.16\./) || //private networks
                           origin.match(/^http:\/\/localhost/) ||
                           origin.match(/^http:\/\/127\.0\.0\.1/);
     return !!isLocalNetwork;
@@ -41,8 +39,8 @@ const devOrigins = [
 
 // Production origins
 const prodOrigins = [
+  "https://frontend-pearl-delta-37.vercel.app",
   "https://glamqena.vercel.app",
-  "https://frontend-217hp0m4y-semonhany848-7024s-projects.vercel.app",
 ];
 
 // CORS configuration function

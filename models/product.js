@@ -22,12 +22,14 @@ const ProductSchema = new mongoose.Schema(
       trim: true,
       min: 3,
       max: 100,
+      index: true
     },
 
     description: {
       type: String,
       trim: true,
       max: 600,
+      index: true
     },
 
     price: {
@@ -122,28 +124,18 @@ const ProductSchema = new mongoose.Schema(
       type: Number,
       min: 0,
       max: 5,
-      default: 0,
+      default: 0
     },
 
     total_rates: {
       type: Number,
-      default: 0,
-    },
-  
-    // review_IDs: {
-    //   type: [mongoose.Schema.Types.ObjectId],
-    //   ref: "review",
-    //   default: [],
-    // },
-
-    addedAt: {
-      type: Date,
-      default: Date.now,
+      default: 0
     },
 
     isActive: {
       type: Boolean,
       default: true,
+      index: true
     },
 
   },
@@ -153,6 +145,8 @@ const ProductSchema = new mongoose.Schema(
     versionKey: false,
   },
 );
+
+ProductSchema.index({ createdAt: -1, average_rating: -1, total_rates: -1 });
 
 let productModel = mongoose.model("product", ProductSchema);
 

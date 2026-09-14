@@ -1,11 +1,9 @@
 const axios = require("axios");
 const { sendEmail } = require("../../utils/mailSender");
-const path = require("path");
 const orderModel = require("../../models/order");
 const { clientModel } = require("../../models/users/client");
 const { billingSchema } = require("../../validations/billing");
-
-require("dotenv").config({ path: path.join(__dirname, "../.env") });
+const { ORDERS_WEB, ORDERS_MOBILE, FRONTEND_URL } = require("../../config/urls");
 
 const paymob_api_key = process.env.PAYMOB_API_KEY;
 const paymob_card_integration_id = process.env.PAYMOB_CARD_INTEGRATION_ID;
@@ -14,7 +12,7 @@ const paymob_iframe_id = process.env.PAYMOB_IFRAME_ID;
 
 const paymentCheckoutController = async (req, res) => {
   try {
-    let {billing_data, payment_method} = req.body;
+    let { billing_data, payment_method, redirect_url, wallet_phone, wallet_provider } = req.body;
     const userId = req.user.id;
     const orderId = req.params.id;
 
@@ -54,12 +52,20 @@ const paymentCheckoutController = async (req, res) => {
     const authToken = await getAuthToken();
     const used_integration_id = payment_method === "card" ? paymob_card_integration_id : paymob_wallet_integration_id;
     const order_id = await registerOrder(authToken, total_amount_cents, order_prods);
+    
+    let finalRedirectUrl = redirect_url;
+    if (!finalRedirectUrl) {
+      const isMobileRequest = req.headers['user-agent']?.match(/Android|iPhone|iPad/i);
+      finalRedirectUrl = isMobileRequest ? ORDERS_MOBILE : ORDERS_WEB;
+    }
+
     const paymentToken = await getPaymentKey(
       authToken,
       order_id,
       total_amount_cents,
       billing_data,
       used_integration_id,
+      finalRedirectUrl,
     );
 
     let updatedUser = await clientModel.findByIdAndUpdate(userId, {$set:{
@@ -89,10 +95,18 @@ const paymentCheckoutController = async (req, res) => {
 
     await updatedUser.save();
 
-    order.payment.method = payment_method;
-    if(payment_method !== "cash"){
+    if(payment_method === "wallet"){
+      order.payment.method = "wallet";
       order.payment.status = "قيد المعالجة";
       order.payment.paymob_order_id = order_id;
+      order.payment.wallet_phone = wallet_phone || billing_data.phone_number;
+      order.payment.wallet_provider = wallet_provider || null;
+    } else {
+      order.payment.method = payment_method;
+      if(payment_method !== "cash"){
+        order.payment.status = "قيد المعالجة";
+        order.payment.paymob_order_id = order_id;
+      }
     }
     await order.save();
 
@@ -120,7 +134,9 @@ const paymentCheckoutController = async (req, res) => {
     
     else if(payment_method === "wallet") {
       try {
-          const walletPaymentResult = await processWalletPayment(paymentToken, billing_data.phone_number);
+          const walletPhone = wallet_phone || billing_data.phone_number;
+          
+          const walletPaymentResult = await processWalletPayment(paymentToken, walletPhone);
           
           order.payment.method = "wallet";
           order.payment.status = "قيد المعالجة";
@@ -155,7 +171,7 @@ const paymentCheckoutController = async (req, res) => {
                 from: process.env.EMAIL,
                 to: to,
                 subject: "❌ فشل الدفع - Glam2ena",
-                html: getPaymentFailedEmail(error.message),
+                html: getPaymentFailedEmail(error.message, finalRedirectUrl),
               });
           }
           
@@ -388,7 +404,7 @@ function getWalletPaymentEmail(paymentUrl, order, user, totalAmount) {
   const orderId = order._id.toString().slice(-6).toUpperCase();
   const formattedTotal = totalAmount.toLocaleString('ar-EG');
   const walletProvider = order.payment?.method || 'المحفظة الإلكترونية';
-  const phoneNumber = user.phoneNumber || billing_data?.phone_number || '';
+  const phoneNumber = user.phoneNumber || '';
 
   return `<!DOCTYPE html>
 <html lang="ar" dir="rtl">
@@ -589,7 +605,7 @@ function getWalletPaymentEmail(paymentUrl, order, user, totalAmount) {
 </html>`;
 }
 
-function getPaymentFailedEmail(errorMessage) {
+function getPaymentFailedEmail(errorMessage, orders_redirect_url) {
   return `<!DOCTYPE html>
 <html lang="ar" dir="rtl">
 <head>
@@ -663,7 +679,7 @@ function getPaymentFailedEmail(errorMessage) {
       <p>يمكنك محاولة إتمام الدفع مرة أخرى من خلال حسابك في Glam2ena.</p>
       
       <div style="text-align: center; margin-top: 20px;">
-        <a href="https://glam2ena.com/orders" class="button-secondary">📋 الذهاب إلى طلباتي</a>
+        <a href="${orders_redirect_url}" class="button-secondary">📋 الذهاب إلى طلباتي</a>
       </div>
     </div>
     
@@ -714,6 +730,7 @@ async function getPaymentKey(
   amountCents,
   billingData,
   integration_id,
+  redirect_url
 ) {
   try {
     const response = await axios.post(
@@ -727,6 +744,8 @@ async function getPaymentKey(
         billing_data: billingData,
         expiration: 36000,
         lock_order_when_paid: false,
+        // Paymob uses this as the redirect URL after payment!
+        redirect_url: redirect_url || ORDERS_WEB
       },
     );
     return response.data.token;
@@ -755,7 +774,7 @@ async function processWalletPayment(paymentToken, phoneNumber) {
         headers: {
           'Content-Type': 'application/json',
           'Accept': 'application/json',
-          'Origin': 'http://localhost:3000'
+          "origin": FRONTEND_URL
         }
       }
     );
@@ -772,9 +791,11 @@ async function processWalletPayment(paymentToken, phoneNumber) {
       transaction_id: response.data.id
     };
     
-  } catch (err) {
-    console.error("Paymob Wallet Error:", err.response?.data || err.message);
-    throw new Error("Failed to initiate wallet payment. Please check the phone number.");
+  } catch (error) {
+    console.error("Paymob Wallet Error:", error.response?.data || error.message);
+    const err = new Error("Failed to initiate wallet payment...");
+    err.iframe_redirect_url = err.response?.data?.iframe_redirect_url;
+    throw err;
   }
 }
 

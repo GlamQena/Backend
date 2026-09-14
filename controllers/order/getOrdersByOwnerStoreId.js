@@ -1,5 +1,36 @@
+const mongoose = require("mongoose");
 const Order = require("../../models/order");
-const Product = require("../../models/product");
+const { clientModel } = require("../../models/users/client.js");
+
+function escapeRegex(str) {
+  return str.replace(/[.*+?^${}()|[\]\\]/g, "\\$&");
+}
+
+function parseOrderIdInput(raw) {
+  if (!raw) return "";
+  let value = String(raw).trim().replace(/^#+/, "").trim();
+  value = value.replace(/^(GQ|GE)[-\s]/i, "").trim();
+  const hexOnly = value.replace(/[^0-9a-fA-F]/g, "").toLowerCase();
+  if (hexOnly.length < 2) return "";
+  return hexOnly.slice(0, 24);
+}
+
+function emptySummary() {
+  return {
+    totalOrders: 0,
+    statusCounts: {},
+    paymentStatusCounts: {},
+  };
+}
+
+function emptyResponse(storeId) {
+  return {
+    success: true,
+    store_id: storeId,
+    summary: emptySummary(),
+    orders: [],
+  };
+}
 
 const getOrdersByOwnerStoreId = async (req, res) => {
   try {
@@ -12,30 +43,156 @@ const getOrdersByOwnerStoreId = async (req, res) => {
       });
     }
 
-    // Find all orders that contain products from this specific store
-    const orders = await Order.find({
-      "products.owner_store_id": storeId,
-    }).populate("user_id", "firstName lastName username email phoneNumber address")
-    .populate("products.products.prod_id", "images hasReviewed").lean();
+    const storeObjectId = new mongoose.Types.ObjectId(storeId);
 
-    if (!orders || orders.length === 0) {
-      return res.status(404).json({
-        success: false,
-        message: "No orders found for this store",
-      });
+    const {
+      sortBy = "newest",
+      status,
+      paymentStatus,
+      orderId,
+      clientSearch,
+      productName,
+    } = req.query;
+
+    const orderFilter = { "products.owner_store_id": storeObjectId };
+
+    if (status) {
+      orderFilter.status = status;
     }
 
-    // Extract only the store's product information from each order
+    if (paymentStatus) {
+      orderFilter["payment.status"] = paymentStatus;
+    }
+
+    if (orderId && orderId.trim()) {
+      const parsed = parseOrderIdInput(orderId);
+
+      if (!parsed) {
+        return res.status(200).json(emptyResponse(storeId));
+      }
+
+      if (parsed.length === 24 && mongoose.Types.ObjectId.isValid(parsed)) {
+        orderFilter._id = new mongoose.Types.ObjectId(parsed);
+      } else {
+        const escaped = escapeRegex(parsed);
+        const matchingIds = await Order.aggregate([
+          { $match: { "products.owner_store_id": storeObjectId } },
+          { $addFields: { _idStr: { $toString: "$_id" } } },
+          { $match: { _idStr: { $regex: `${escaped}$`, $options: "i" } } },
+          { $project: { _id: 1 } },
+          { $limit: 500 },
+        ]);
+
+        if (matchingIds.length === 0) {
+          return res.status(200).json(emptyResponse(storeId));
+        }
+
+        orderFilter._id = { $in: matchingIds.map((o) => o._id) };
+      }
+    }
+
+    if (clientSearch && clientSearch.trim()) {
+      const raw = clientSearch.trim();
+      const escaped = escapeRegex(raw);
+
+      const matchingClients = await clientModel
+        .find({
+          $or: [
+            { firstName: { $regex: escaped, $options: "i" } },
+            { lastName: { $regex: escaped, $options: "i" } },
+            { username: { $regex: escaped, $options: "i" } },
+            { phoneNumber: { $regex: escaped, $options: "i" } },
+          ],
+        })
+        .select("_id")
+        .limit(500)
+        .lean();
+
+      if (matchingClients.length === 0) {
+        return res.status(200).json(emptyResponse(storeId));
+      }
+
+      orderFilter.user_id = { $in: matchingClients.map((c) => c._id) };
+    }
+
+    if (productName && productName.trim()) {
+      const escaped = escapeRegex(productName.trim());
+      orderFilter["products.products.name"] = {
+        $regex: escaped,
+        $options: "i",
+      };
+    }
+
+    // -------------------------------------------------------------
+    // Sorting (price sort uses the whole order total; see note below)
+    // -------------------------------------------------------------
+    let sort = { createdAt: -1 };
+    switch (sortBy) {
+      case "oldest":
+        sort = { createdAt: 1 };
+        break;
+      case "price_high":
+        sort = { total_price: -1 };
+        break;
+      case "price_low":
+        sort = { total_price: 1 };
+        break;
+      case "newest":
+      default:
+        sort = { createdAt: -1 };
+        break;
+    }
+
+    // -------------------------------------------------------------
+    // Status counts + total (over ALL matching orders)
+    // -------------------------------------------------------------
+    const [countsAgg] = await Order.aggregate([
+      { $match: orderFilter },
+      {
+        $facet: {
+          orderStatusCounts: [
+            { $group: { _id: "$status", count: { $sum: 1 } } },
+          ],
+          paymentStatusCounts: [
+            { $group: { _id: "$payment.status", count: { $sum: 1 } } },
+          ],
+          total: [{ $count: "count" }],
+        },
+      },
+    ]);
+
+    const statusCounts = {};
+    countsAgg.orderStatusCounts.forEach(({ _id, count }) => {
+      if (_id) statusCounts[_id] = count;
+    });
+
+    const paymentStatusCounts = {};
+    countsAgg.paymentStatusCounts.forEach(({ _id, count }) => {
+      if (_id) paymentStatusCounts[_id] = count;
+    });
+
+    const totalOrders = countsAgg.total[0]?.count || 0;
+
+    const orders = await Order.find(orderFilter)
+      .sort(sort)
+      .populate(
+        "user_id",
+        "firstName lastName username email phoneNumber address",
+      )
+      .populate("products.products.prod_id", "images hasReviewed")
+      .lean();
+
+    // -------------------------------------------------------------
+    // Shape response: one row per order, only this store's slice
+    // -------------------------------------------------------------
     const storeOrders = orders
       .map((order) => {
-        // Find the specific store's data within the order
         const storeData = order.products.find(
-          (store) => store.owner_store_id.toString() === storeId.toString(),
+          (s) => s.owner_store_id.toString() === storeId.toString(),
         );
 
         if (!storeData) return null;
 
-        // Return only relevant information for this store
         return {
           order_id: order._id,
           order_status: order.status,
@@ -43,24 +200,22 @@ const getOrdersByOwnerStoreId = async (req, res) => {
           payment_method: order.payment?.method,
           payment_status: order.payment?.status,
 
-          // Store-specific product information
           store_products: storeData.products.map((product) => ({
             product_id: product.prod_id,
             product_name: product.name,
             quantity: product.quantity,
-           hasReviewed: product.prod_id?.hasReviewed || false,
-  images: product.prod_id?.images || [],  
+            hasReviewed: product.prod_id?.hasReviewed || false,
+            images: product.prod_id?.images || [],
             price_per_unit: product.price,
             subtotal: product.subtotal_price,
           })),
 
           store_subtotal: storeData.store_subtotal,
 
-          // Customer information
-        customer: {
+          customer: {
             id: order.user_id?._id || order.user_id,
-            name: order.user_id?.firstName 
-              ? `${order.user_id.firstName} ${order.user_id.lastName || ''}`.trim()
+            name: order.user_id?.firstName
+              ? `${order.user_id.firstName} ${order.user_id.lastName || ""}`.trim()
               : order.user_id?.username || "",
             email: order.user_id?.email,
             phone: order.user_id?.phoneNumber,
@@ -69,51 +224,33 @@ const getOrdersByOwnerStoreId = async (req, res) => {
                   order.user_id.address.street,
                   order.user_id.address.district,
                   order.user_id.address.city,
-                ].filter(Boolean).join("، ") //.filter(Boolean) remove any falsy or empty value from the list befor concatenate with arabic comma
+                ]
+                  .filter(Boolean)
+                  .join("، ")
               : "",
           },
-          // Store's payout amount from profit breakdown
+
           store_payout:
             order.profit_breakdown?.stores_payout?.find(
-              (payout) => payout.owner_store_id.toString() === storeId,
+              (p) => p.owner_store_id.toString() === storeId,
             )?.amount || 0,
 
-          // Delivery information
           delivery_cost: order.delivery_cost,
 
-          // Timestamps relevant to the store owner
           order_created_at: order.createdAt,
           order_updated_at: order.updatedAt,
         };
       })
-      .filter((order) => order !== null); // Remove any null entries
-
-    // Sort orders from oldest to newest
-    storeOrders.sort(
-      (a, b) => new Date(a.order_created_at) - new Date(b.order_created_at),
-    );
-
-    // Calculate summary statistics for the store owner
-    const summary = {
-      total_orders: storeOrders.length,
-      total_revenue: storeOrders.reduce(
-        (sum, order) => sum + (order.store_subtotal || 0),
-        0,
-      ),
-      total_payout: storeOrders.reduce(
-        (sum, order) => sum + (order.store_payout || 0),
-        0,
-      ),
-      orders_by_status: storeOrders.reduce((acc, order) => {
-        acc[order.order_status] = (acc[order.order_status] || 0) + 1;
-        return acc;
-      }, {}),
-    };
+      .filter(Boolean);
 
     return res.status(200).json({
       success: true,
       store_id: storeId,
-      summary,
+      summary: {
+        totalOrders,
+        statusCounts,
+        paymentStatusCounts,
+      },
       orders: storeOrders,
     });
   } catch (error) {

@@ -324,13 +324,13 @@ function getPaymentSuccessEmail(client, order) {
       </div>
       
       <div class="delivery-estimate">
-        🚚 وقت التوصيل المتوقع: 3-5 أيام عمل
+        وقت التوصيل المتوقع: 3-5 أيام عمل
       </div>
       
       <div class="button-container">
-        <a href="http://127.0.0.1:3000/orders/${order._id}" class="button">📋 تتبع طلبك</a>
+        <a href= ${webUrl(`/orders/${order._id}`)} class="button">📋 تتبع طلبك</a>
         <br><br>
-        <a href="http://127.0.0.1:3000" class="button-secondary">🏠 العودة إلى المتجر</a>
+        <a href= ${webUrl()} class="button-secondary">العودة إلى المنصة</a>
       </div>
     </div>
     
@@ -513,9 +513,9 @@ function getPaymentFailureEmail(client, order) {
       <p>يمكنك محاولة إتمام الدفع مرة أخرى من خلال حسابك في Glam2ena.</p>
       
       <div class="button-container">
-        <a href="http://127.0.0.1:3000/orders/${order._id}" class="button">🔄 محاولة الدفع مرة أخرى</a>
+        <a href= ${webUrl(`/orders/${order._id}`)} class="button">🔄 محاولة الدفع مرة أخرى</a>
         <br><br>
-        <a href="http://127.0.0.1:3000" class="button-secondary">🏠 العودة إلى المتجر</a>
+        <a href= ${webUrl()} class="button-secondary">العودة إلى المنصة</a>
       </div>
     </div>
     

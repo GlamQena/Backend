@@ -1,5 +1,20 @@
+const path = require("path");  
+
+const env = process.env.NODE_ENV === "production" ? "production" : "development";
+
+require("dotenv").config({ path: path.join(__dirname, ".env") });
+require("dotenv").config({ path: path.join(__dirname, `.env.${env}`), override: true });
+require("dotenv").config({
+  path: path.join(__dirname, ".env.local"),
+  override: true,
+});
+//moved to the top because the require operation done syncronously so did it to ensure the env variables loaded before any other operation
+
+console.log(`[boot] env=${env}`);
+console.log(`[boot] FRONTEND_URL=${process.env.FRONTEND_URL}`);
+console.log(`[boot] BACKEND_URL=${process.env.API_URL}`);
+
 const express = require("express");
-const path = require("path");
 const cors = require("cors");
 const session = require("express-session");
 const cookie_parser = require("cookie-parser");
@@ -28,8 +43,6 @@ const { adminModel } = require("./models/users/admin.js");
 const { clientModel } = require("./models/users/client.js");
 const { storeOwnerModel } = require("./models/users/storeOwner.js");
 
-require("dotenv").config({ path: path.join(__dirname, ".env") });
-
 const app = express();
 app.use(express.static(path.join(__dirname, "uploads")));
 
@@ -38,19 +51,19 @@ app.use(
   cors({
     origin: getCorsOrigin, // Use the function
     credentials: true,
-    methods: ['GET', 'POST', 'PUT', 'DELETE', 'OPTIONS', 'PATCH'],
+    methods: ["GET", "POST", "PUT", "DELETE", "OPTIONS", "PATCH"],
     allowedHeaders: [
-      'Content-Type', 
-      'Authorization', 
-      'Accept', 
-      'Origin',
-      'X-Requested-With',
-      'Cookie'
+      "Content-Type",
+      "Authorization",
+      "Accept",
+      "Origin",
+      "X-Requested-With",
+      "Cookie",
     ],
-    exposedHeaders: ['Set-Cookie'],
+    exposedHeaders: ["Set-Cookie"],
     optionsSuccessStatus: 200,
     preflightContinue: false,
-  })
+  }),
 );
 
 app.use(cookie_parser());
@@ -64,12 +77,15 @@ app.use(
       httpOnly: true,
       maxAge: 7 * 24 * 60 * 60 * 1000,
       secure: process.env.NODE_ENV === "production",
-      sameSite: process.env.NODE_ENV === "production" ? "none" : "lax", 
-      domain: process.env.NODE_ENV === "production" ? ".yourdomain.com" : undefined,
+      sameSite: process.env.NODE_ENV === "production" ? "none" : "lax",
+      domain:
+        process.env.NODE_ENV === "production" ? ".yourdomain.com" : undefined,
       path: "/",
     },
-  })
+  }),
 );
+
+app.use(express.json());
 
 // Routes
 app.use("/auth", authRouter);
@@ -81,8 +97,6 @@ app.use("/order", orderRouter);
 app.use("/cart", cartRouter);
 app.use("/users", usersRouter);
 app.use("/admin", adminRouter);
-
-app.use(express.json());
 
 // Activation endpoint
 const activableModels = {
@@ -128,22 +142,23 @@ mongoose.connection.once("connected", async () => {
   console.log("Server connected to MongoDB successfully...");
   // await connect_redis();
 
-  // if (require.main === module) {
-  //   const PORT = process.env.BACKEND_PORT || 8080;
-  //   const HOST = process.env.NODE_ENV === 'production' ? '0.0.0.0' : '0.0.0.0'; // Keep 0.0.0.0 for mobile
+  if (require.main === module) {
+    const PORT = process.env.BACKEND_PORT || 8080;
+    const HOST = "0.0.0.0";
 
-  //   app.listen(PORT, HOST, (err) => {
-  //     if (err) {
-  //       console.error(`Error listening on port ${PORT}:`, err);
-  //     } else {
-  //       console.log(`Express server listening:`);
-  //       console.log(`   - Local:   http://localhost:${PORT}`);
-  //       console.log(`   - Network: http://${LOCAL_IP}:${PORT}`);
-  //       console.log(`   - Mobile:  http://${LOCAL_IP}:${PORT} (use this on your phone)`);
-  //       console.log(`   - Mode:    ${process.env.NODE_ENV || 'development'}`);
-  //     }
-  //   });
-  // }
+    app.listen(PORT, HOST, (err) => {
+      if (err) {
+        console.error(`Error listening on port ${PORT}:`, err);
+      } else {
+        console.log(`Express server listening:`);
+        console.log(`   - Network: http://${LOCAL_IP}:${PORT}`);
+        console.log(
+          `   - Mobile:  http://${LOCAL_IP}:${PORT} (use this on your phone)`,
+        );
+        console.log(`   - Mode:    ${process.env.NODE_ENV || "development"}`);
+      }
+    });
+  }
 });
 
 mongoose.connection.on("error", (err) => {
