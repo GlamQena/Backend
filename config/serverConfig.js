@@ -1,14 +1,53 @@
 const os = require('os');
 
+// Skip these — virtual adapters that phones can't reach
+const VIRTUAL_ADAPTER_PATTERNS = [
+  /vmware/i,
+  /vmnet/i,
+  /wsl/i,
+  /hyper-?v/i,
+  /vethernet/i,
+  /virtualbox/i,
+  /vbox/i,
+  /docker/i,
+  /loopback/i,
+  /bluetooth/i,
+  /tunnel/i,
+  /tailscale/i,
+  /zerotier/i,
+];
+
+// Prefer these — real physical network adapters
+const PREFERRED_ADAPTER_PATTERNS = [
+  /wi-?fi/i,
+  /wireless/i,
+  /wlan/i,
+  /ethernet/i,
+  /^en\d/i,
+  /^eth\d/i,
+];
+
 const getLocalIP = () => {
   const nets = os.networkInterfaces();
+  const candidates = [];
+
   for (const name of Object.keys(nets)) {
-    for (const net of nets[name]) {
+    if (VIRTUAL_ADAPTER_PATTERNS.some((p) => p.test(name))) continue;
+
+    for (const net of nets[name] || []) {
       if (net.family === 'IPv4' && !net.internal) {
-        return net.address;
+        candidates.push({ name, address: net.address });
       }
     }
   }
+
+  const preferred = candidates.find((c) =>
+    PREFERRED_ADAPTER_PATTERNS.some((p) => p.test(c.name)),
+  );
+
+  if (preferred) return preferred.address;
+  if (candidates.length > 0) return candidates[0].address;
+
   return '127.0.0.1';
 };
 

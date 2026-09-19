@@ -1,19 +1,13 @@
-const { clientModel, userModel } = require("../../models/users/client");
-const { storeOwnerModel } = require("../../models/users/storeOwner");
+const userModel = require("../../models/users/user");
 const { setAccessRefreshTokens } = require("../../utils/acc_ref_tokens");
 const { loginSchema } = require("../../validations/auth");
 const { mergeGuestCartWithUserCart } = require("../../utils/cartMergeHelper");
 const bcrypt = require("bcrypt");
-const jwt = require("jsonwebtoken");
-const otpModel = require("../../models/auth-temps/otp");
-const { sendEmailMessage } = require("../../utils/mailSender");
-const { promisify } = require("util");
-const jwtVerify = promisify(jwt.verify);
 
-// loginController.js - Pure login logic
 const loginController = async (req, res) => {
   try {
     const { usernameOrEmail, password, rememberMe, session_id } = req.body;
+    const {platform} = req.query;
 
     // Validate input
     const validated = loginSchema.safeParse({ usernameOrEmail, password });
@@ -65,10 +59,11 @@ const loginController = async (req, res) => {
     const userData = user.toObject();
     delete userData.password;
 
-    const { accessToken, refreshToken } = setAccessRefreshTokens(
+    const { accessToken, refreshToken, accessTokenExp, refreshTokenExp } = setAccessRefreshTokens(
       res,
       user,
-      rememberMe
+      rememberMe,
+      platform
     );
 
     res.status(200).json({
@@ -79,6 +74,8 @@ const loginController = async (req, res) => {
       user: userData,
       accessToken,
       refreshToken,
+      accessTokenExp,
+      refreshTokenExp,
       cart_merged: cartMergeResult?.merged || false,
     });
 

@@ -5,6 +5,7 @@ const { setAccessRefreshTokens } = require("../../utils/acc_ref_tokens");
 const verifyEmailController = async (req, res) => {
   try {
     const { email, token } = req.params;
+    const {platform} = req.query;
 
     const user = await userModel.findOne({ email }).select("-password");
 
@@ -74,12 +75,14 @@ const verifyEmailController = async (req, res) => {
     const userData = user.toObject();
     delete userData.password;
 
-    const { accessToken, refreshToken } = setAccessRefreshTokens(res, user, false);
+    const { accessToken, refreshToken, accessTokenExp, refreshTokenExp } = setAccessRefreshTokens(res, user, false, platform);
 
     const authData = {
       user: userData,
       accessToken,
       refreshToken,
+      accessTokenExp,
+      refreshTokenExp
     };
 
     return res.status(200).json({

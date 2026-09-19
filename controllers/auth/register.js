@@ -89,21 +89,22 @@ const registerController = async (req, res) => {
         newUser._id,
         session_id,
       );
-    //  console.log("Cart merge result during registration:", cartMergeResult);
     }
-  //====MERGE CART ONLY DURING LOGIN if session_id is provided===//
-    const { accessToken, refreshToken } = setAccessRefreshTokens(
+    const { accessToken, refreshToken, accessTokenExp, refreshTokenExp } = setAccessRefreshTokens(
       res,
       newUser,
       false,
+      platform
     );
     
-    setUserVerification(newUser, "10m");
+    setUserVerification(newUser, "10m", platform);
 
     const authData ={
       user: newUser,
       accessToken,
       refreshToken,
+      accessTokenExp,
+      refreshTokenExp
     };
 
     res.status(201).json({

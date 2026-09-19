@@ -11,8 +11,6 @@ const UserSchema = new mongoose.Schema(
   {
     username: {
       type: String,
-      unique: true,
-      required: true,
       minlength:3,
       maxlength: 64,
       lowercase: true,
@@ -34,8 +32,6 @@ const UserSchema = new mongoose.Schema(
 
     email: {
       type: String,
-      required: true,
-      unique: true,
       maxlength: 254,
       lowercase: true,
       trim: true,
@@ -49,12 +45,22 @@ const UserSchema = new mongoose.Schema(
     password: {
       type: String,
       trim: true,
-      required: true,
+      sparse: true,
       minlength: 8,
       maxlength: 64,
       select: false, //excluded by default when querying, for security.
     },
 
+    googleId: { 
+      type: String, 
+    },
+
+    authProvider: { 
+      type: String, 
+      enum: ['local', 'google', 'both'], 
+      default: 'local' 
+    },
+    
     role: {
       type: String,
       index: true,
@@ -152,6 +158,22 @@ UserSchema.virtual("age").get(function () {
 
   return age;
 }); //this function call fire each time the property accessed from the model
+
+UserSchema.index(
+  { email: 1 },
+  { unique: true, partialFilterExpression: { email: { $type: 'string' } } }
+);
+
+UserSchema.index(
+  { googleId: 1 },
+  { unique: true, partialFilterExpression: { googleId: { $type: 'string' } } }
+);
+
+UserSchema.index(
+  { username: 1 },
+  { unique: true, partialFilterExpression: { username: { $type: 'string' } } }
+);
+//partial filter used instead of combining the sparse and unique with true value, enable omitting the field not just equal it to null if not provided
 
 const userModel = mongoose.model("user", UserSchema);
 

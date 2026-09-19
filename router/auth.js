@@ -1,5 +1,6 @@
 const registerController= require('../controllers/auth/register.js');
 const loginController= require('../controllers/auth/login.js');
+const googleSignController= require("../controllers/auth/googleSign.js");
 const verifyEmailController= require('../controllers/auth/verifyEmail.js');
 const sendPasswordOtpController= require('../controllers/auth/sendPasswordOtp.js');
 const sendSmsOtpController= require('../controllers/auth/sendSmsOtp.js');
@@ -21,6 +22,7 @@ router.use(cookieParser());
 
 router.post("/register", registerController);
 router.post("/login", loginController);
+router.post("/google-sign", googleSignController);
 router.post("/email/send-token", sendEmailTokenController);
 router.get("/verify/:email/:token", verifyEmailController);
 router.post("/password/send-otp", sendPasswordOtpController);

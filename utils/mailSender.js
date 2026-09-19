@@ -92,12 +92,17 @@ async function sendEmailVerificationToUser(email, token, username, platform = "w
   const frontend_url = `${webUrl("/verify-email")}?email=${encodedEmail}&token=${encodedToken}`;
   const backend_url = backendUrl(`/auth/verify/${encodedEmail}/${encodedToken}`);
   const mobile_deepLink = mobileUrl("verify", { email, token });
+  console.log(`mobile deepLink: ${mobile_deepLink}\n email: ${email},\n token: ${token}`);
+  const mobile_bridgeUrl =
+  `${webUrl("/app/verify")}?deepLink=${encodeURIComponent(mobile_deepLink)}`;
+  //encodeUriComponent here prevent causing double "?" exist 
+  // making the URLSearchParams in the AppRedirect receive the deepLink besides the email as a query param and strip the token
 
   // Only web and mobile are supported clients.
   // Anything else defaults to web (safe fallback — never a raw JSON endpoint).
   let url;
   if (platform === "mobile") {
-    url = mobile_deepLink;
+    url = mobile_bridgeUrl;
   } else {
     if (platform && platform !== "web") {
       console.warn(`[mailSender] unknown platform "${platform}", defaulting to web`);
