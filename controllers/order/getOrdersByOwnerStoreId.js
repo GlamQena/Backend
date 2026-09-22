@@ -15,19 +15,19 @@ function parseOrderIdInput(raw) {
   return hexOnly.slice(0, 24);
 }
 
-function emptySummary() {
+function emptySummary(totalForStore) {
   return {
-    totalOrders: 0,
+    totalOrders: totalForStore,
     statusCounts: {},
     paymentStatusCounts: {},
   };
 }
 
-function emptyResponse(storeId) {
+function emptyResponse(storeId, totalForStore) {
   return {
     success: true,
     store_id: storeId,
-    summary: emptySummary(),
+    summary: emptySummary(totalForStore),
     orders: [],
   };
 }
@@ -55,6 +55,7 @@ const getOrdersByOwnerStoreId = async (req, res) => {
     } = req.query;
 
     const orderFilter = { "products.owner_store_id": storeObjectId };
+    const totalForStore = await Order.countDocuments(orderFilter);
 
     if (status) {
       orderFilter.status = status;
@@ -68,7 +69,7 @@ const getOrdersByOwnerStoreId = async (req, res) => {
       const parsed = parseOrderIdInput(orderId);
 
       if (!parsed) {
-        return res.status(200).json(emptyResponse(storeId));
+        return res.status(200).json(emptyResponse(storeId, totalForStore));
       }
 
       if (parsed.length === 24 && mongoose.Types.ObjectId.isValid(parsed)) {
@@ -84,7 +85,7 @@ const getOrdersByOwnerStoreId = async (req, res) => {
         ]);
 
         if (matchingIds.length === 0) {
-          return res.status(200).json(emptyResponse(storeId));
+          return res.status(200).json(emptyResponse(storeId, totalForStore));
         }
 
         orderFilter._id = { $in: matchingIds.map((o) => o._id) };
@@ -109,7 +110,7 @@ const getOrdersByOwnerStoreId = async (req, res) => {
         .lean();
 
       if (matchingClients.length === 0) {
-        return res.status(200).json(emptyResponse(storeId));
+        return res.status(200).json(emptyResponse(storeId, totalForStore));
       }
 
       orderFilter.user_id = { $in: matchingClients.map((c) => c._id) };
@@ -247,7 +248,8 @@ const getOrdersByOwnerStoreId = async (req, res) => {
       success: true,
       store_id: storeId,
       summary: {
-        totalOrders,
+        totalOrders: totalForStore,
+        filteredCount: totalOrders,
         statusCounts,
         paymentStatusCounts,
       },

@@ -1,0 +1,89 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>{{subject}}</title>
+</head>
+<body style="
+  margin:0;
+  padding:20px;
+  background-color:{{bgPage}};
+  font-family:'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+  line-height:1.6;
+  color:{{textPrimary}};
+  -webkit-text-size-adjust:100%;
+">
+  <div style="
+    max-width:600px;
+    margin:0 auto;
+    background-color:{{bgCard}};
+    border:1px solid {{borderProminent}};
+    border-radius:28px;
+    padding:30px;
+  ">
+
+    <!-- Header -->
+    <div style="
+      text-align:center;
+      border-bottom:2px solid {{primaryMain}};
+      padding-bottom:20px;
+      margin-bottom:20px;
+    ">
+      <h1 style="
+        color:{{primaryMain}};
+        margin:0;
+        font-size:24px;
+        font-weight:700;
+      ">{{subject}}</h1>
+      <div style="
+        color:{{textSecondary}};
+        margin-top:8px;
+        font-size:14px;
+      ">
+        <span style="color:{{primaryMain}};">Glam2ena</span>
+      </div>
+    </div>
+
+    <!-- Body -->
+    <div style="text-align:center; padding:10px 0;">
+
+      <div style="
+        background-color:{{bgInput}};
+        border:1px solid {{borderSubtle}};
+        border-radius:12px;
+        padding:20px;
+        margin:20px 0;
+        text-align:center;
+      ">
+        <p style="
+          color:{{textPrimary}};
+          font-size:16px;
+          font-weight:500;
+          margin:0;
+        ">{{message}}</p>
+      </div>
+
+    </div>
+
+    <!-- Footer -->
+    <div style="
+      text-align:center;
+      font-size:12px;
+      color:{{textMuted}};
+      border-top:1px solid {{borderSubtle}};
+      padding-top:20px;
+      margin-top:20px;
+    ">
+      <p style="margin:4px 0;">
+        This is an automated message from
+        <span style="color:{{primaryMain}}; font-weight:bold;">Glam2ena</span>.
+      </p>
+      <p style="margin:4px 0;">
+        © {{year}} Glam2ena. All rights reserved.
+      </p>
+    </div>
+
+  </div>
+</body>
+</html>

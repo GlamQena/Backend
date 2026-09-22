@@ -6,6 +6,7 @@ const otpModel = require("../../models/auth-temps/otp");
 const bcrypt = require("bcrypt");
 const { sendEmail,getUrlFrontEnd } = require("../../utils/mailSender");
 const auditLogModel = require("../../models/users/adminAuditLog");
+const { resolveEmailPalette } = require("../../utils/emailPalettes");
 
 const addUser = async (req, res) => {
   try {
@@ -13,15 +14,6 @@ const addUser = async (req, res) => {
 
     const admin = await adminModel.findById(req.user.id);
     const adminPermissions = admin.permission || [];
-
-    // Validate permissions for each role
-    // if (role === "client" && !adminPermissions.includes("manageUsers")) {
-    //   return res.status(403).json({
-    //     success: false,
-    //     message:
-    //       "Access denied. You need 'manageUsers' permission to add clients.",
-    //   });
-    // }
 
     if (role === "store_owner" && !adminPermissions.includes("manageStores")) {
       return res.status(403).json({
@@ -41,7 +33,6 @@ const addUser = async (req, res) => {
 
     // Validate role
     const allowedRoles = [
-      // "client", 
       "store_owner", 
       "admin"];
     if (!allowedRoles.includes(role)) {
@@ -85,14 +76,6 @@ const addUser = async (req, res) => {
 
     // Create user based on role
     switch (role) {
-      // case "client":
-      //   newUser = new clientModel({
-      //     ...userData,
-      //     password: hashedPassword,
-      //     role: "client",
-      //   });
-      //   break;
-
       case "store_owner":
         // Validate required store owner fields
         if (!userData.store_name || !userData.store_email) {
@@ -187,6 +170,8 @@ const addUser = async (req, res) => {
 
     await otpObject.save();
 
+    const palette = resolveEmailPalette(newUser.preferences?.theme);
+
     // Send welcome email with login credentials
     await sendWelcomeEmail(
       newUser._id,
@@ -194,7 +179,8 @@ const addUser = async (req, res) => {
       newUser.username || userData.username,
       userData.password,
       role,
-      otp
+      otp,
+      palette
     );
 
     // Remove sensitive data from response
@@ -233,12 +219,12 @@ const addUser = async (req, res) => {
   }
 };
 
-// Helper function to send welcome email
-async function sendWelcomeEmail(userId,email, username, tempPassword, role,otpCode) {
+async function sendWelcomeEmail(userId, email, username, tempPassword, role, otpCode, palette) {
+  const p = palette;
+
   const roleDisplay = {
-    client: "Client",
     store_owner: "Store Owner",
-    admin: "Administrator",
+    admin:       "Administrator",
   };
 
   const loginUrl = getUrlFrontEnd(userId, email, role, "2d");
@@ -249,143 +235,137 @@ async function sendWelcomeEmail(userId,email, username, tempPassword, role,otpCo
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Welcome to Glam2ena</title>
-  <style>
-    body {
-      font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-      line-height: 1.6;
-      color: #f2e8ff;
-      background-color: #07040f;
-      max-width: 600px;
-      margin: 0 auto;
-      padding: 20px;
-    }
-    .container {
-      background-color: #1a0e2e;
-      border-radius: 28px;
-      padding: 30px;
-      border: 1px solid rgba(168, 85, 247, 0.22);
-      box-shadow: 0 20px 60px rgba(75, 0, 130, 0.50);
-    }
-    .header {
-      text-align: center;
-      border-bottom: 2px solid #A855F7;
-      padding-bottom: 20px;
-      margin-bottom: 20px;
-    }
-    .header h1 {
-      color: #A855F7;
-      margin: 0;
-    }
-    .content {
-      margin-bottom: 30px;
-    }
-    .credentials {
-      background-color: #0e0819;
-      border: 1px solid rgba(168, 85, 247, 0.09);
-      border-radius: 10px;
-      padding: 15px;
-      margin: 20px 0;
-      font-family: monospace;
-      font-size: 16px;
-    }
-    .credentials p {
-      margin: 5px 0;
-      color: #f2e8ff;
-    }
-    a{
-      color: #f2e8ff;
-      text-decoration: none;
-    }
-    .credentials strong {
-      color: #A855F7;
-    }
-    .warning {
-      background-color: rgba(239, 68, 68, 0.10);
-      border-left: 4px solid #ef4444;
-      padding: 15px;
-      margin: 20px 0;
-      font-size: 14px;
-      color: #c8aadf;
-    }
-    .warning strong {
-      color: #ef4444;
-    }
-    .button {
-      display: inline-block;
-      background: linear-gradient(135deg, #FF69B4, #A855F7);
-      color: white;
-      padding: 12px 24px;
-      text-decoration: none;
-      border-radius: 9999px;
-      margin: 20px 0;
-      text-align: center;
-      box-shadow: 0 4px 18px rgba(168, 85, 247, 0.35);
-    }
-    .footer {
-      text-align: center;
-      font-size: 12px;
-      color: #7a5a9a;
-      border-top: 1px solid rgba(168, 85, 247, 0.09);
-      padding-top: 20px;
-      margin-top: 20px;
-    }
-    .role-badge {
-      display: inline-block;
-      background: linear-gradient(135deg, #FF69B4, #A855F7);
-      color: white;
-      padding: 4px 12px;
-      border-radius: 20px;
-      font-size: 12px;
-      font-weight: bold;
-    }
-    strong {
-      color: #f2e8ff;
-    }
-    .content p {
-      color: #c8aadf;
-    }
-  </style>
 </head>
-<body>
-  <div class="container">
-    <div class="header">
-      <h1>Welcome to Glam2ena!👋🏼</h1>
-      <p>Your account has been successfully created</p>
-    </div>
-    
-    <div class="content">
-      <p>Hello <strong>${username}</strong>,</p>
-      
-      <p>An administrator has created a <span class="role-badge">${roleDisplay[role]}</span> account for you on the Glam2ena platform.</p>
-      
-      <div class="credentials">
-        <p><strong>Your Login Credentials:</strong></p>
-        <p>📧 <strong>Email:</strong> ${email}</p>
-        <p>🔑 <strong>Temporary Password:</strong> ${tempPassword}</p>
-        <p>🔗 <strong>Activation Code:</strong> ${otpCode}</p>
-      </div>
-      
-      <div class="warning">
-        <strong>⚠️ Important Security Notice:</strong>
-        <p>This is a temporary password. For security reasons, you must change your password after your first login.</p>
-      </div>
-      
-      <div style="text-align: center;">
-        <a href="${loginUrl}" class="button">Go to Login Page</a>
-      </div>
-      
-      <p>After logging in, you can change your password from your account settings.</p>
+<body style="
+  margin:0;
+  padding:20px;
+  background-color:${p.bgPage};
+  font-family:'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+  line-height:1.6;
+  color:${p.textPrimary};
+  -webkit-text-size-adjust:100%;
+">
+  <div style="
+    max-width:600px;
+    margin:0 auto;
+    background-color:${p.bgCard};
+    border:1px solid ${p.borderProminent};
+    border-radius:28px;
+    padding:30px;
+  ">
 
+    <!-- Header -->
+    <div style="
+      text-align:center;
+      border-bottom:2px solid ${p.primaryMain};
+      padding-bottom:20px;
+      margin-bottom:20px;
+    ">
+      <h1 style="color:${p.primaryMain}; margin:0; font-size:28px;">
+        Welcome to Glam2ena! 👋🏼
+      </h1>
+      <p style="color:${p.textSecondary}; margin:8px 0 0;">
+        Your account has been successfully created
+      </p>
     </div>
-    
-    <div class="footer">
-      <p>This is an automated message, please do not reply to this email.</p>
-      <p>© ${new Date().getFullYear()} Glam2ena. All rights reserved.</p>
+
+    <!-- Body -->
+    <div>
+      <p style="color:${p.textSecondary}; margin:12px 0;">
+        Hello <strong style="color:${p.textPrimary};">${username}</strong>,
+      </p>
+
+      <p style="color:${p.textSecondary}; margin:12px 0;">
+        An administrator has created a
+        <span style="
+          display:inline-block;
+          background:${p.primaryGradient};
+          color:${p.buttonText};
+          padding:4px 12px;
+          border-radius:20px;
+          font-size:12px;
+          font-weight:bold;
+        ">${roleDisplay[role]}</span>
+        account for you on the Glam2ena platform.
+      </p>
+
+      <!-- Credentials -->
+      <div style="
+        background-color:${p.bgInput};
+        border:1px solid ${p.borderSubtle};
+        border-radius:10px;
+        padding:15px;
+        margin:20px 0;
+        font-family:'Courier New', monospace;
+        font-size:16px;
+      ">
+        <p style="margin:5px 0; color:${p.textPrimary};">
+          <strong style="color:${p.primaryMain};">Your Login Credentials:</strong>
+        </p>
+        <p style="margin:5px 0; color:${p.textPrimary};">
+          📧 <strong style="color:${p.primaryMain};">Email:</strong> ${email}
+        </p>
+        <p style="margin:5px 0; color:${p.textPrimary};">
+          🔑 <strong style="color:${p.primaryMain};">Temporary Password:</strong> ${tempPassword}
+        </p>
+        <p style="margin:5px 0; color:${p.textPrimary};">
+          🔗 <strong style="color:${p.primaryMain};">Activation Code:</strong> ${otpCode}
+        </p>
+      </div>
+
+      <!-- Security warning -->
+      <div style="
+        background-color:${p.dangerBg};
+        border-left:4px solid ${p.dangerBorder};
+        padding:15px;
+        margin:20px 0;
+        font-size:14px;
+        color:${p.textSecondary};
+      ">
+        <strong style="color:${p.dangerText};">⚠️ Important Security Notice:</strong>
+        <p style="margin:8px 0 0; color:${p.textSecondary};">
+          This is a temporary password. For security reasons, you must change
+          your password after your first login.
+        </p>
+      </div>
+
+      <!-- CTA -->
+      <div style="text-align:center;">
+        <a href="${loginUrl}" style="
+          display:inline-block;
+          background-color:${p.primaryMain};
+          background:${p.primaryGradient};
+          color:${p.buttonText};
+          padding:12px 24px;
+          text-decoration:none;
+          border-radius:9999px;
+          margin:20px 0;
+          text-align:center;
+          font-weight:600;
+        ">Go to Login Page</a>
+      </div>
+
+      <p style="color:${p.textSecondary}; margin:12px 0;">
+        After logging in, you can change your password from your account settings.
+      </p>
     </div>
+
+    <!-- Footer -->
+    <div style="
+      text-align:center;
+      font-size:12px;
+      color:${p.textMuted};
+      border-top:1px solid ${p.borderSubtle};
+      padding-top:20px;
+      margin-top:20px;
+    ">
+      <p style="margin:4px 0;">This is an automated message, please do not reply to this email.</p>
+      <p style="margin:4px 0;">© ${new Date().getFullYear()} Glam2ena. All rights reserved.</p>
+    </div>
+
   </div>
 </body>
-</html>
-  `;
+</html>`;
 
   try {
     await sendEmail({
@@ -396,7 +376,7 @@ async function sendWelcomeEmail(userId,email, username, tempPassword, role,otpCo
     console.log(`Welcome email sent to ${email}`);
   } catch (error) {
     console.error(`Failed to send welcome email to ${email}:`, error);
-    // Don't throw error - user creation succeeded, just email failed
+    // Don't throw — user creation succeeded, just email failed
   }
 }
 

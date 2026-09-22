@@ -88,6 +88,12 @@ const commonOptionalFields = z.object({
     phoneNumber: phoneNumberField,
     birthdate: optionalDateHandler,
     gender: optionalEnumHandler(["male", "female"]),
+    preferences: optionalSchemaHandler(
+    z.object({
+      theme: optionalEnumHandler(["light", "dark", "system"]),
+      locale: optionalEnumHandler(["ar", "en"]),
+    })
+  ),
 });
 
 const loginSchema= z.object({usernameOrEmail: usernameOrEmailField, password: passwordField});

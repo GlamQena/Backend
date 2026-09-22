@@ -68,6 +68,19 @@ const UserSchema = new mongoose.Schema(
       default: "user",
     },
 
+    preferences: {
+      theme: {
+        type: String,
+        enum: ["light", "dark", "system"],
+        default: "system",
+      },
+      locale: {
+        type: String,
+        enum: ["ar", "en"],
+        default: "ar",
+      }
+    },
+
     avatar: {
       type: String, 
       required: false

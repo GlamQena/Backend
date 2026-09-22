@@ -184,9 +184,6 @@ const mergeCarts = async (userCart, sessionCart) => {
   return userCart;
 };
 
-/**
- * Get product with stock validation
- */
 const getProductWithStock = async (productId, requestedQuantity = 1, currentQuantity = 0) => {
   const product = await productModel.findById(productId);
   
@@ -219,9 +216,6 @@ const getProductWithStock = async (productId, requestedQuantity = 1, currentQuan
   return { valid: true, product, totalAfterAdd };
 };
 
-/**
- * Add product to cart
- */
 const addToCart = async (cart, product, quantity) => {
   // CRITICAL FIX: Get the store ID properly
   // If owner_store_id is populated, it might be an object with _id
@@ -333,9 +327,6 @@ const addToCart = async (cart, product, quantity) => {
   return { valid: true, totalAfterAdd: stockCheck.totalAfterAdd, product };
 };
 
-/**
- * Remove product from cart
- */
 const removeFromCart = async (cart, productId, owner_store_id, removeAll = false) => {
   const storeIndex = cart.products.findIndex(
     store => store.owner_store_id.toString() === owner_store_id.toString()

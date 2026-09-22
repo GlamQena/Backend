@@ -18,7 +18,7 @@ console.log("storeId =>", storeId);
       .populate({
         path: "products.products.prod_id",
         model: "product",
-        select: "images hasReviewed",
+        select: "name images hasReviewed",
       })
       .lean();
 
@@ -77,8 +77,8 @@ let data = enrichedOrder;
 
           // Store-specific product information
           store_products: storeData.products.map((product) => ({
-            product_id: product.prod_id,
-            product_name: product.name,
+            product_id: product.prod_id?._id || product.prod_id,
+            product_name: product.name || product.prod_id?.name,
             quantity: product.quantity,
            hasReviewed: product.prod_id?.hasReviewed || false,
   images: product.prod_id?.images || [],  

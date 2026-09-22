@@ -1,0 +1,179 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Verify Your Email - Glam2ena</title>
+  </head>
+  <body
+    style="
+  margin:0;
+  padding:20px;
+  background-color:{{ bgPage }};
+  font-family:'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+  line-height:1.6;
+  color:{{ textPrimary }};
+  -webkit-text-size-adjust:100%;
+"
+  >
+    <div
+      style="
+    max-width:600px;
+    margin:0 auto;
+    background-color:{{ bgCard }};
+    border:1px solid {{ borderProminent }};
+    border-radius:28px;
+    padding:30px;
+    text-align:center;
+  "
+    >
+      <!-- Header -->
+      <div
+        style="
+      border-bottom:2px solid {{ primaryMain }};
+      padding-bottom:20px;
+      margin-bottom:20px;
+    "
+      >
+        <h1
+          style="
+        color:{{ primaryMain }};
+        margin:0;
+        font-size:24px;
+        font-weight:bold;
+      "
+        >
+          Verify Your Email Address ✉️
+        </h1>
+        <div
+          style="
+        color:{{ textSecondary }};
+        margin-top:8px;
+        font-size:14px;
+      "
+        >
+          Welcome to
+          <span style="color:{{ primaryMain }};">Glam2ena</span>
+        </div>
+      </div>
+
+      <!-- Body -->
+      <div style="margin: 25px 0">
+        <p
+          style="
+        color:{{ textSecondary }};
+        font-size:15px;
+        line-height:1.8;
+        margin:12px 0;
+      "
+        >
+          Hello
+          <strong style="color:{{ textPrimary }};">{{ username }}</strong>,
+        </p>
+
+        <p
+          style="
+        color:{{ textSecondary }};
+        font-size:15px;
+        line-height:1.8;
+        margin:12px 0;
+      "
+        >
+          Thank you for joining
+          <span style="color:{{ primaryMain }};">Glam2ena</span>! Please click
+          the button below to confirm and verify your email address.
+        </p>
+
+        <!-- Info box -->
+        <div
+          style="
+        background-color:{{ bgInput }};
+        border:1px solid {{ borderSubtle }};
+        border-radius:10px;
+        padding:20px;
+        margin:20px 0;
+      "
+        >
+          <p
+            style="
+          margin:8px 0;
+          color:{{ textPrimary }};
+          font-size:14px;
+        "
+          >
+            <strong style="color:{{ primaryMain }};">🔑 Quick Tip:</strong>
+            Verify your email to access all features
+          </p>
+        </div>
+
+        <!-- CTA -->
+        <a
+          href="{{ url }}"
+          style="
+        display:inline-block;
+        background-color:{{ primaryMain }};
+        background:{{ primaryGradient }};
+        color:#ffffff !important;
+        padding:14px 32px;
+        text-decoration:none !important;
+        border-radius:30px;
+        font-weight:600;
+        font-size:16px;
+        margin:20px 0;
+        text-align:center;
+      "
+          >Verify Email Address</a
+        >
+
+        <!-- Warning -->
+        <div
+          style="
+        background-color:{{ dangerBg }};
+        border-left:4px solid {{ dangerBorder }};
+        padding:15px;
+        margin:20px 0;
+        font-size:13px;
+        color:{{ textSecondary }};
+        text-align:right;
+        border-radius:8px;
+      "
+        >
+          <strong style="color:{{ dangerText }};">⚠️ Important:</strong>
+          <p style="margin:8px 0 0; color:{{ textSecondary }};">
+            This link will expire in <strong>10 minutes</strong>.
+          </p>
+        </div>
+
+        <p
+          style="
+        font-size:13px;
+        color:{{ textMuted }};
+      "
+        >
+          If you didn't create an account with Glam2ena, please ignore this
+          email.
+        </p>
+      </div>
+
+      <!-- Footer -->
+      <div
+        style="
+      text-align:center;
+      font-size:12px;
+      color:{{ textMuted }};
+      border-top:1px solid {{ borderSubtle }};
+      padding-top:20px;
+      margin-top:20px;
+    "
+      >
+        <p style="margin: 4px 0">
+          This is an automated message from
+          <span style="color:{{ primaryMain }}; font-weight:bold;"
+            >Glam2ena</span
+          >.
+        </p>
+        <p style="margin: 4px 0">© {{ year }} Glam2ena. All rights reserved.</p>
+      </div>
+    </div>
+  </body>
+</html>

@@ -51,12 +51,12 @@ router.post("/completion",
 router.use(checkAuth());
 
 router.get("/history", checkRole(["client", "admin"]), getClientOrdersController);
+router.get("/store", checkRole("store_owner"), getOrdersByOwnerStoreId);
 router.get(
   "/:id",
   checkRole(["client", "store_owner", "admin"]),
   getOrderDetailsController,
 );
-router.get("/store", checkRole("store_owner"), getOrdersByOwnerStoreId);
 
 router.post("/", checkRole(["client", "admin"]), placeOrderController);
 router.post("/:id/payment", checkRole(["client", "admin"]), paymentCheckoutController);

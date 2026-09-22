@@ -11,6 +11,7 @@ const deleteStoreLogoController = require("../controllers/profile/deleteStoreLog
 const checkRole = require("../middleware/checkRole.js");
 const deleteUserController = require("../controllers/users/deleteUser.js");
 const requestForDeletion = require("../controllers/profile/requestForDeletion.js");
+const updatePreferences = require("../controllers/profile/updatePreferences.js");
 
 const router= express.Router();
 
@@ -25,6 +26,7 @@ router.put(
     ]), 
     editProfileController
 );
+router.patch("/preferences", updatePreferences);
 router.patch("/avatar", upload.single("image"), uploadUserImage, uploadAvatarController);
 router.delete("/avatar", deleteAvatarController);
 

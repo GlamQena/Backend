@@ -1,5 +1,10 @@
 const checkRole = (allowedRole) => {
     return async(req, res, next) => {
+        if(!req.user) {
+            next(); //pass for the routes allowing quests
+            return;
+        }
+
         const userRole = req.user.role;
         console.log("user role in checkRole =>", userRole);
         

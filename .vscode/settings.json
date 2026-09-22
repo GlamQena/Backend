@@ -1,1 +1,17 @@
-{}
+{
+  "files.associations": {
+    "**/templates/**/*.html": "html",
+    "**/*.hbs": "handlebars"
+  },
+  "html.validate.scripts": false,
+  "html.validate.styles": false,
+  "css.validate": false,
+  "less.validate": false,
+  "scss.validate": false,
+  "[html]": {
+    "editor.defaultFormatter": "vscode.html-language-features"
+  },
+  "[handlebars]": {
+    "editor.defaultFormatter": null
+  }
+}

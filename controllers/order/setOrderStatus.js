@@ -20,7 +20,6 @@ const setOrderStatusController = async(req, res) => {
             return res.status(404).json({message: `order with id ${order_id} not found`});
         }
 
-        // FIXED: Use foundOrder instead of order
         const orderUser = await userModel.findById(foundOrder.user_id);
 
         if(!orderUser) {
@@ -45,7 +44,7 @@ const setOrderStatusController = async(req, res) => {
 
         const user = await userModel.findById(user_id);
 
-        // FIXED: Proper permission checks
+        // Proper permission checks
         if((status === "قيد التوصيل" || status === "تم التوصيل") && 
            (user_role !== "admin" || !user.permission?.includes("manageOrders"))) {
             return res.status(403).json({message: "you're not authorized to set delivery status"});
@@ -81,14 +80,14 @@ const setOrderStatusController = async(req, res) => {
             return res.status(400).json({message: "can't set order to pending status"});
         }
         
-        // if(status !== "ملغي") {
-        //     if(newStatusIndex <= currentStatusIndex) {
-        //         return res.status(400).json({message: "can't set current order status to previous one"});
-        //     }
-        //     if(newStatusIndex - currentStatusIndex !== 1) {
-        //         return res.status(400).json({message: "the order status must follow the normal flow (one step at a time)"});
-        //     }
-        // } //commented temporarily for test easily
+        if(status !== "ملغي") {
+            if(newStatusIndex <= currentStatusIndex) {
+                return res.status(400).json({message: "can't set current order status to previous one"});
+            }
+            if(newStatusIndex - currentStatusIndex !== 1) {
+                return res.status(400).json({message: "the order status must follow the normal flow (one step at a time)"});
+            }
+        }
 
         foundOrder.status = status;
         await foundOrder.save();

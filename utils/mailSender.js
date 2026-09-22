@@ -8,6 +8,7 @@ const {
   backendUrl,
   mobileUrl,
 } = require("../config/urls");
+const { EMAIL_PALETTES, resolveEmailPalette } = require("./emailPalettes");
 
 const transporter = nodemailer.createTransport({
   service: "gmail",
@@ -45,26 +46,46 @@ async function sendEmailMessage(options) {
 
     const templatePath = path.join(
       __dirname,
-      "../templates/emailmsg.template.html",
+      "../templates/emailMessage.hbs",
     );
 
-    let emailMsgTemp = await fs.readFile(templatePath, "utf-8");
+    const emailMsgTemp = await fs.readFile(templatePath, "utf-8");
 
-    const year = new Date().getFullYear();
+    const data = {
+      ...EMAIL_PALETTES.light,   // generic messages always use light
+      subject,
+      message: text,
+      year: new Date().getFullYear(),
+    };
 
-    emailMsgTemp = emailMsgTemp.replace(/\{subject\}/g, subject);
-    emailMsgTemp = emailMsgTemp.replace(/\{message\}/g, text);
-    emailMsgTemp = emailMsgTemp.replace(/\{year\}/g, year);
+    const missing = [];
+    const rendered = emailMsgTemp.replace(
+      /\{\{\s*(\w+)\s*\}\}/g,
+      (match, key) => {
+        if (Object.prototype.hasOwnProperty.call(data, key)) {
+          return String(data[key]);
+        }
+        missing.push(key);
+        return match;
+      },
+    );
+
+    if (missing.length > 0) {
+      throw new Error(
+        `sendEmailMessage: missing values for: ${[...new Set(missing)].join(", ")}`,
+      );
+    }
 
     await sendEmail({
       to,
       subject,
-      html: emailMsgTemp,
+      html: rendered,
     });
 
     console.log(`Email sent to ${to}`);
   } catch (err) {
-    console.log("Error reading template or sending email:", err);
+    console.error("Error reading template or sending email:", err);
+    throw err;
   }
 }
 
@@ -85,21 +106,17 @@ function getUrlFrontEnd(userId, email, role, ex) {
   return url;
 }
 
-async function sendEmailVerificationToUser(email, token, username, platform = "web") {
+async function sendEmailVerificationToUser(email, token, username, platform = "web", theme) {
   const encodedEmail = encodeURIComponent(email);
   const encodedToken = encodeURIComponent(token);
 
   const frontend_url = `${webUrl("/verify-email")}?email=${encodedEmail}&token=${encodedToken}`;
   const backend_url = backendUrl(`/auth/verify/${encodedEmail}/${encodedToken}`);
   const mobile_deepLink = mobileUrl("verify", { email, token });
-  console.log(`mobile deepLink: ${mobile_deepLink}\n email: ${email},\n token: ${token}`);
-  const mobile_bridgeUrl =
-  `${webUrl("/app/verify")}?deepLink=${encodeURIComponent(mobile_deepLink)}`;
-  //encodeUriComponent here prevent causing double "?" exist 
-  // making the URLSearchParams in the AppRedirect receive the deepLink besides the email as a query param and strip the token
 
-  // Only web and mobile are supported clients.
-  // Anything else defaults to web (safe fallback — never a raw JSON endpoint).
+  const mobile_bridgeUrl =
+    `${webUrl("/app/verify")}?deepLink=${encodeURIComponent(mobile_deepLink)}`;
+
   let url;
   if (platform === "mobile") {
     url = mobile_bridgeUrl;
@@ -113,24 +130,46 @@ async function sendEmailVerificationToUser(email, token, username, platform = "w
   try {
     const templatePath = path.join(
       __dirname,
-      "../templates/email.template.html",
+      "../templates/verifyEmail.hbs",
     );
 
     let emailTemp = await fs.readFile(templatePath, "utf-8");
 
-    emailTemp = emailTemp.replace(/\{username\}/g, username);
-    emailTemp = emailTemp.replace(/\{url\}/g, url);
-    emailTemp = emailTemp.replace(/\{year\}/g, new Date().getFullYear());
+    const data = {
+      ...resolveEmailPalette(theme),    // verification email always uses light considering the user hasn't been logged-in to update his prefered theme choice
+      username,
+      url,
+      year: new Date().getFullYear(),
+    };
+
+    const missing = [];
+    const rendered = emailTemp.replace(
+      /\{\{\s*(\w+)\s*\}\}/g,
+      (match, key) => {
+        if (Object.prototype.hasOwnProperty.call(data, key)) {
+          return String(data[key]);
+        }
+        missing.push(key);
+        return match;                     // leave the placeholder for diagnosis
+      },
+    );
+
+    if (missing.length > 0) {
+      throw new Error(
+        `sendEmailVerificationToUser: missing values for: ${[...new Set(missing)].join(", ")}`,
+      );
+    }
 
     await sendEmail({
       to: email,
       subject: "Email Verification",
-      html: emailTemp,
+      html: rendered,
     });
 
     console.log(`[verify-email] platform=${platform} url=${url}`);
   } catch (err) {
-    console.log("Error reading template or sending email:", err);
+    console.error("[verify-email] failed:", err);   // ← use error, not log
+    throw err;                                      // ← let the caller decide
   }
 }
 
@@ -152,6 +191,7 @@ async function setUserVerification(user, ex, platform = "web") {
     emailToken,
     fullName.trim() === "" ? user.username : fullName,
     platform,
+    user.preferences?.theme
   );
 }
 
